@@ -51,8 +51,8 @@ public class LoginFrame extends JFrame {
             User user = UserDatabase.userDatabase.get(id);
             if (user.getPassword().equals(pw)) {
                 JOptionPane.showMessageDialog(this, user.getName() + "님 환영합니다!");
-                CalendarFrame01 appFrame = new CalendarFrame01();
-                appFrame.setVisible(true);
+                new CalendarFrame01(user).setVisible(true);
+                this.dispose(); // 로그인 창 닫기
             } else {
                 JOptionPane.showMessageDialog(this, "비밀번호가 틀렸습니다.");
             }
@@ -62,6 +62,7 @@ public class LoginFrame extends JFrame {
     }
 
 }
+
 
 
 
