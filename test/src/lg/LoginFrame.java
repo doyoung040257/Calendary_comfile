@@ -61,11 +61,8 @@ public class LoginFrame extends JFrame {
         }
     }
 
-    // LoginFrame.java -> 이 부분은 그룹 페이지 제작하면서 내용 추가한 부분임.
-    public String getPasswordFieldValue() {
-        return new String(passwordField.getPassword());
-    }
 }
+
 
 
 
