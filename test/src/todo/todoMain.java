@@ -114,7 +114,6 @@ private void renderList() {
             final int idx = i;
             
             b.addActionListener(ev -> {
-                // ★ 수정 창 오픈: sharedList, 선택된 인덱스, 저장 후 콜백
                 new todo_modify(sharedList, idx, this::renderList).open();
             });
             
@@ -131,6 +130,7 @@ private void renderList() {
         
 	}
 }
+
 
 
 
