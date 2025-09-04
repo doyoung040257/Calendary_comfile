@@ -12,6 +12,7 @@ import javax.swing.JFrame;
 public class todoMain extends Frame{
 
 	private final static makeList sharedList = new makeList();
+	private final java.util.List<JCheckBox> rowChecks = new java.util.ArrayList<>();
 
 	public JFrame fr;
 	public Button addition;
@@ -55,9 +56,30 @@ public class todoMain extends Frame{
 		
 		renderList();
 		
-        addition.addActionListener(e -> {
-            todo_addition addi = new todo_addition(sharedList, this::renderList);
-            addi.todo_addition_page();
+        addition.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+	            todo_addition addi = new todo_addition(sharedList, todoMain.this::renderList);
+	            addi.todo_addition_page();	
+			}
+		});
+        
+        delete.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                boolean any = false;
+                for (int i = rowChecks.size() - 1; i >= 0; i--) {   // ★ 역순!
+                    if (rowChecks.get(i).isSelected()) {
+                        sharedList.getTodolist().remove(i);
+                        any = true;
+                    }
+                }
+                if (!any) {
+                    JOptionPane.showMessageDialog(fr, "삭제할 항목을 선택하세요.");
+                    return;
+                }
+                renderList();
+            }
         });
 		
 		fr.setVisible(true);
@@ -65,42 +87,53 @@ public class todoMain extends Frame{
 	}
 
 	//sharedList 개수만큼 버튼 채우기(list 패널 내부에 생성)
-	private void renderList() {
-        list.removeAll(); // 기존에 채워진 버튼 제거
+private void renderList() {
+        list.removeAll();
+        
+        for (JCheckBox c : rowChecks) {
+            fr.getContentPane().remove(c);
+        }
+        rowChecks.clear();
 
         int y = 10; // 버튼의 시작 y좌표
-		int y = 165; // 체크박스의 시작 y좌표
+        int y2 = 165;
         for (int i = 0; i < sharedList.getTodolist().size(); i++) {
-            todo_list t = sharedList.getTodolist().get(i); // todo_list 변수 t에 sharedList의 첫번째 리스트 저장
+            todo_list t = sharedList.getTodolist().get(i);
 
-            Button b = new Button(t.getWork()); // 버튼 b 생성, 버튼 이름은 t.getWork
-            b.setBounds(10, y, 280, 40); // 버튼 위치 지정 (list 패널 내부)
+            JButton b = new JButton(t.getWork()); // 라벨을 work로
+            b.setBounds(10, y, 280, 40);
+            // 필요하면 클릭 시 상세 보기/수정 등 리스너 추가 가능
+            // b.addActionListener(ev -> System.out.println(t));
 
-			JCheckBox cb = new JCheckBox();
+            JCheckBox cb = new JCheckBox();
     		cb.setBounds(410, y2, 30, 30);
-			
-            list.add(b); // 리스트에 버튼 추가
-			fr.add(cb); // 프레임에 체크박스 추가
+    		rowChecks.add(cb);
+    		 
+    		fr.add(cb);
+            list.add(b);
             
-            final int idx = i; // 인덱스 고정, 람다-지역변수캡쳐
+            
+            final int idx = i;
             
             b.addActionListener(ev -> {
-                new todo_modify(sharedList, idx, this::renderList).open(); // sharedList, 인덱스, 저장 후 콜백
+                // ★ 수정 창 오픈: sharedList, 선택된 인덱스, 저장 후 콜백
+                new todo_modify(sharedList, idx, this::renderList).open();
             });
-			// 콜백전달 -> 저장 버튼을 누를 때 호출
             
-            y += 45; // 버튼 y좌표 변경
-			y2 += 45 // 체크박스 y좌표 변경
+            y += 45; // 다음 버튼 아래로
+            y2 += 45;
             
         }
 
-        list.validate(); // 레이아웃 유효화
-        list.repaint(); // 화면 갱신
-		fr.getContentPane().revalidate();
+        // AWT 컨테이너 갱신
+        list.validate();
+        list.repaint();
+        fr.getContentPane().revalidate();
         fr.getContentPane().repaint();
         
-	}	
+	}
 }
+
 
 
 
