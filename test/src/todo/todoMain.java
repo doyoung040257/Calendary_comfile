@@ -12,17 +12,16 @@ import javax.swing.JFrame;
 public class todoMain extends Frame{
 
 	private final static makeList sharedList = new makeList();
-	
+
+	public JFrame fr;
 	public Button addition;
 	public Button delete;
-	
 	private Panel list;
 	private Panel title;
 	
 	public todoMain() {
 		
-		JFrame fr = new JFrame();
-		
+		fr = new JFrame();
 		fr.setTitle("할 일");
 		fr.setSize(500,800);
 		fr.setLayout(null); // 위치 직접 설정
@@ -94,5 +93,6 @@ public class todoMain extends Frame{
         
 	}	
 }
+
 
 
