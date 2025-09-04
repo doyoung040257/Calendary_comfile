@@ -66,7 +66,7 @@ public class todoMain extends Frame{
             @Override
             public void actionPerformed(ActionEvent e) {
                 boolean any = false;
-                for (int i = rowChecks.size() - 1; i >= 0; i--) {   // ★ 역순!
+                for (int i = rowChecks.size() - 1; i >= 0; i--) {   //
                     if (rowChecks.get(i).isSelected()) {
                         sharedList.getTodolist().remove(i);
                         any = true;
@@ -130,6 +130,7 @@ private void renderList() {
         
 	}
 }
+
 
 
 
