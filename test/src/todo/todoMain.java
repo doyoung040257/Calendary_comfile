@@ -63,29 +63,27 @@ public class todoMain extends Frame{
 		fr.setVisible(true);
 
 	}
-	
+
+	//sharedList 개수만큼 버튼 채우기(list 패널 내부에 생성)
 	private void renderList() {
-        list.removeAll();
+        list.removeAll(); // 기존에 채워진 버튼 제거
 
         int y = 10; // 버튼의 시작 y좌표
         for (int i = 0; i < sharedList.getTodolist().size(); i++) {
-            todo_list t = sharedList.getTodolist().get(i);
+            todo_list t = sharedList.getTodolist().get(i); // todo_list 변수 t에 sharedList의 첫번째 리스트 저장
 
-            Button b = new Button(t.getWork()); // 라벨을 work로
-            b.setBounds(10, y, 280, 40);
-            // 필요하면 클릭 시 상세 보기/수정 등 리스너 추가 가능
-            // b.addActionListener(ev -> System.out.println(t));
+            Button b = new Button(t.getWork()); // 버튼 b 생성, 버튼 이름은 t.getWork
+            b.setBounds(10, y, 280, 40); // 버튼 위치 지정 (list 패널 내부)
 
-            list.add(b);
+            list.add(b); // 리스트에 버튼 추가
             
             final int idx = i;
             
             b.addActionListener(ev -> {
-                // ★ 수정 창 오픈: sharedList, 선택된 인덱스, 저장 후 콜백
-                new todo_modify(sharedList, idx, this::renderList).open();
+                new todo_modify(sharedList, idx, this::renderList).open(); // sharedList, 인덱스, 저장 후 콜백
             });
             
-            y += 45; // 다음 버튼 아래로
+            y += 45; // y좌표 변경(버튼 위치 변경)
             
         }
 
@@ -95,3 +93,4 @@ public class todoMain extends Frame{
         
 	}	
 }
+
