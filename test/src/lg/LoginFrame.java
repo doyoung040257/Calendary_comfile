@@ -60,6 +60,12 @@ public class LoginFrame extends JFrame {
             JOptionPane.showMessageDialog(this, "존재하지 않는 아이디입니다.");
         }
     }
+
+    // LoginFrame.java -> 이 부분은 그룹 페이지 제작하면서 내용 추가한 부분임.
+    public String getPasswordFieldValue() {
+        return new String(passwordField.getPassword());
+    }
 }
+
 
 
