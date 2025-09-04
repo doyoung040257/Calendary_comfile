@@ -70,6 +70,26 @@ public class todo_addition extends JFrame {
         }
         time.setBounds(150, 250, 200, 30);
 
+		/*
+		JButton time = new JButton("여기에는 현재시간 넣어야지");
+        time.setBounds(150, 250, 200, 30);
+        time.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				new TimeEditor(new TimeSelectedListener() {
+			        @Override
+			        public void onTimeSelected(int hour, int minute) {
+			            time.setText(hour + "시 " + minute + "분");
+			        }
+			    });
+				
+			}
+        });
+		*/
+
+		
+
         // 할 일 - 중요도
 
         // 할 일 - 메모
@@ -180,11 +200,3 @@ public class todo_addition extends JFrame {
         this.todoNote = todoNote;
     }
 }
-
-
-/*
-Panel → JPanel
-Button → JButton
-Choice → JComboBox<String>
-한 줄 입력은 JTextArea보다 **JTextField**가 적합
-*/
