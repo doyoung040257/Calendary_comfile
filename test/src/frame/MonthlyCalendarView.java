@@ -82,7 +82,7 @@ public class MonthlyCalendarView extends JFrame {
         mainButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                CalendarFrame01 calendarFrame = new CalendarFrame01();
+                CalendarFrame01 calendarFrame = new CalendarFrame01(null);
                 calendarFrame.setVisible(true);
 
             }
@@ -191,4 +191,5 @@ public class MonthlyCalendarView extends JFrame {
     }
 
 }
+
 
