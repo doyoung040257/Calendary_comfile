@@ -18,6 +18,8 @@ import java.util.Locale;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
+import Settings.SettingsMenu;
+
 public class TodoPageView extends JFrame {
 
     private JProgressBar progressBar;
@@ -290,3 +292,4 @@ public class TodoPageView extends JFrame {
     }
 
 }
+
