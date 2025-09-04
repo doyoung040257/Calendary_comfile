@@ -95,6 +95,8 @@ public class MonthlyCalendarView extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 System.out.println("설정 페이지 버튼");
+                new SettingsMenu(); // 설정 메뉴 창 띄우기
+			    dispose();
             }
         });
         
@@ -185,4 +187,5 @@ public class MonthlyCalendarView extends JFrame {
 
         return cell;
     }
+
 }
