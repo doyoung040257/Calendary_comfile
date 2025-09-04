@@ -87,7 +87,7 @@ public class todoMain extends Frame{
             b.addActionListener(ev -> {
                 new todo_modify(sharedList, idx, this::renderList).open(); // sharedList, 인덱스, 저장 후 콜백
             });
-			// 콜백전달 -> 저장 버튼을 누를 때 호출해라?
+			// 콜백전달 -> 저장 버튼을 누를 때 호출
             
             y += 45; // 버튼 y좌표 변경
 			y2 += 45 // 체크박스 y좌표 변경
@@ -101,6 +101,7 @@ public class todoMain extends Frame{
         
 	}	
 }
+
 
 
 
