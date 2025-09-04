@@ -81,7 +81,6 @@ public class todoMain extends Frame{
         });
 		
 		fr.setVisible(true);
-
 	}
 
 	//sharedList 개수만큼 버튼 채우기(list 패널 내부에 생성)
@@ -116,17 +115,14 @@ private void renderList() {
             
             y += 45; // 다음 버튼 아래로
             y2 += 45;
-            
         }
-
-        // AWT 컨테이너 갱신
         list.validate();
         list.repaint();
         fr.getContentPane().revalidate();
-        fr.getContentPane().repaint();
-        
+        fr.getContentPane().repaint();    
 	}
 }
+
 
 
 
