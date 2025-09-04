@@ -38,7 +38,7 @@ public class MainPanel extends JPanel {
                     "확인", JOptionPane.YES_NO_OPTION);
             if (confirm == JOptionPane.YES_OPTION) {
                 SwingUtilities.getWindowAncestor(this).dispose();
-                new CalendarFrame01().setVisible(true);
+                new CalendarFrame01(null).setVisible(true);
             }
         });
         topPanel.add(mainBackBtn, BorderLayout.EAST);
@@ -145,3 +145,4 @@ public class MainPanel extends JPanel {
         groupListModel.removeElement(groupName);
     }
 }
+
