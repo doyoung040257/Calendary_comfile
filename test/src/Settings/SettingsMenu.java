@@ -3,7 +3,7 @@ package Settings;
 import javax.swing.*;
 import java.awt.*;
 import Settings.*;
-import frame.CalendarFrame;
+import frame.CalendarFrame01;
 import lg.User;
 
 public class SettingsMenu extends JFrame {
@@ -108,3 +108,4 @@ public class SettingsMenu extends JFrame {
 		setVisible(true);
 	}
 }
+
