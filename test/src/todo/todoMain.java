@@ -15,10 +15,10 @@ public class todoMain extends Frame{
 	private final java.util.List<JCheckBox> rowChecks = new java.util.ArrayList<>();
 
 	public JFrame fr;
-	public Button addition;
-	public Button delete;
-	private Panel list;
-	private Panel title;
+	public JButton addition;
+	public JButton delete;
+	
+	private JPanel list;
 	
 	public todoMain() {
 		
@@ -30,7 +30,7 @@ public class todoMain extends Frame{
 		
 		
 		//제목
-		title = new Panel();
+		JPanel title = new JPanel();
 		title.setBounds(100, 25, 300, 80);
 		title.setBackground(Color.LIGHT_GRAY);
 		Label todo = new Label("할 일", Label.CENTER);
@@ -38,17 +38,15 @@ public class todoMain extends Frame{
 		fr.add(title);
 		
 		//리스트
-		list = new Panel();
+		list = new JPanel();
 		list.setLayout(null);
 		list.setBounds(100, 150, 300, 450);
 		list.setBackground(Color.LIGHT_GRAY);
 		fr.add(list);
 		
-		
-		
 		//추가, 삭제
-		addition = new Button("추가");
-		delete = new Button("삭제");
+		addition = new JButton("추가");
+		delete = new JButton("삭제");
 		addition.setBounds(100, 650, 150, 80); // 위치(가로), 위치(세로), 버큰 크기(가로), 버튼 크기(높이)
 		delete.setBounds(250, 650, 150, 80);
 		fr.add(addition);
@@ -133,6 +131,7 @@ private void renderList() {
         
 	}
 }
+
 
 
 
