@@ -1,5 +1,6 @@
 package Settings;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.FlowLayout;
@@ -36,20 +37,20 @@ public class PersonalInfoPage extends JFrame {
 		panel = new JPanel();
 		panel.setLayout(new GridLayout(6, 2, 10, 10));
 
-		add(new JLabel("아이디:"));
-		add(new JLabel(user.getId()));
+		panel.add(new JLabel("아이디:"));
+		panel.add(new JLabel(user.getId()));
 
-		add(new JLabel("이름:"));
-		add(new JLabel(user.getName()));
+		panel.add(new JLabel("이름:"));
+		panel.add(new JLabel(user.getName()));
 
-		add(new JLabel("생년월일:"));
-		add(new JLabel(user.getBirth()));
+		panel.add(new JLabel("생년월일:"));
+		panel.add(new JLabel(user.getBirth()));
 
-		add(new JLabel("성별:"));
-		add(new JLabel(user.getGender()));
+		panel.add(new JLabel("성별:"));
+		panel.add(new JLabel(user.getGender()));
 
-		add(new JLabel("이메일:"));
-		add(new JLabel(user.getEmail()));
+		panel.add(new JLabel("이메일:"));
+		panel.add(new JLabel(user.getEmail()));
 
 		savebtn = new JButton("저장");
 		savebtn.addActionListener(e -> {
@@ -59,16 +60,18 @@ public class PersonalInfoPage extends JFrame {
 
 		backButton = new JButton("뒤로가기");
 		backButton.addActionListener(e -> {
-			new SettingsMenu().setVisible(true);
-			this.dispose(); // 현재 창 닫기
+		    new SettingsMenu(user).setVisible(true); // 로그인된 User 객체 전달
+		    this.dispose();
 		});
+
 
 		JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 10));
 		buttonPanel.add(savebtn);
 		buttonPanel.add(backButton);
 
-		add(buttonPanel);
-		add(panel);
+		setLayout(new BorderLayout());
+		add(panel, BorderLayout.CENTER);
+		add(buttonPanel, BorderLayout.SOUTH);
 
 		applyTheme();
 
