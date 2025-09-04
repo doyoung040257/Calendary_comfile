@@ -1,4 +1,4 @@
-package Group3;
+package GroupTest;
 
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
@@ -39,3 +39,4 @@ public class CalenderGroupPage {
     // 외부에서 setVisible 호출해도 동작 없음
     public void setVisible(boolean b) {}
 }
+
