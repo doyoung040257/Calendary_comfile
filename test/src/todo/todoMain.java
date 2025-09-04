@@ -69,13 +69,18 @@ public class todoMain extends Frame{
         list.removeAll(); // 기존에 채워진 버튼 제거
 
         int y = 10; // 버튼의 시작 y좌표
+		int y = 165; // 체크박스의 시작 y좌표
         for (int i = 0; i < sharedList.getTodolist().size(); i++) {
             todo_list t = sharedList.getTodolist().get(i); // todo_list 변수 t에 sharedList의 첫번째 리스트 저장
 
             Button b = new Button(t.getWork()); // 버튼 b 생성, 버튼 이름은 t.getWork
             b.setBounds(10, y, 280, 40); // 버튼 위치 지정 (list 패널 내부)
 
+			JCheckBox cb = new JCheckBox();
+    		cb.setBounds(410, y2, 30, 30);
+			
             list.add(b); // 리스트에 버튼 추가
+			fr.add(cb); // 프레임에 체크박스 추가
             
             final int idx = i; // 인덱스 고정, 람다-지역변수캡쳐
             
@@ -84,15 +89,19 @@ public class todoMain extends Frame{
             });
 			// 콜백전달 -> 저장 버튼을 누를 때 호출해라?
             
-            y += 45; // y좌표 변경(버튼 위치 변경)
+            y += 45; // 버튼 y좌표 변경
+			y2 += 45 // 체크박스 y좌표 변경
             
         }
 
         list.validate(); // 레이아웃 유효화
         list.repaint(); // 화면 갱신
+		fr.getContentPane().revalidate();
+        fr.getContentPane().repaint();
         
 	}	
 }
+
 
 
 
