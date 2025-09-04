@@ -83,7 +83,7 @@ public class todoMain extends Frame{
 		fr.setVisible(true);
 	}
 
-	//sharedList 개수만큼 버튼 채우기(list 패널 내부에 생성)
+//sharedList 개수만큼 버튼 채우기(list 패널 내부에 생성)
 private void renderList() {
         list.removeAll();
         
@@ -122,6 +122,7 @@ private void renderList() {
         fr.getContentPane().repaint();    
 	}
 }
+
 
 
 
