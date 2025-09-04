@@ -24,6 +24,8 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
+import Settings.SettingsMenu;
+
 public class MonthlyCalendarView extends JFrame {
 
     private final int YEAR = 2025;
@@ -189,3 +191,4 @@ public class MonthlyCalendarView extends JFrame {
     }
 
 }
+
