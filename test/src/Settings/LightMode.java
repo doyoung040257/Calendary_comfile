@@ -13,7 +13,7 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.SwingConstants;
 
-import frame.CalendarFrame;
+import frame.CalendarFrame01;
 
 
 public class LightMode extends JFrame {
@@ -103,3 +103,4 @@ public class LightMode extends JFrame {
 	}
 
 }
+
