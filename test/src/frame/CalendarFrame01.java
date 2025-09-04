@@ -100,10 +100,8 @@ public class CalendarFrame01 extends JFrame {
         JButton settingsButton = createStyledButton("설정\n페이지\n버튼", new Color(220, 220, 220));
         settingsButton.addActionListener(e -> {
         	JDialog settingsDialog = new JDialog(this, "설정", true);
-            settingsDialog.setSize(300, 200);
-            settingsDialog.setLocationRelativeTo(this);
-            settingsDialog.add(new JLabel("설정 페이지입니다.", SwingConstants.CENTER));
-            settingsDialog.setVisible(true);
+            new SettingsMenu(); // 설정 메뉴 창 띄우기
+			dispose();
         });
 
         bottomButtonPanel.add(todoButton);
@@ -256,4 +254,5 @@ public class CalendarFrame01 extends JFrame {
         button.setPreferredSize(new Dimension(80, 50));
         return button;
     }
+
 }
