@@ -100,8 +100,6 @@ private void renderList() {
 
             JButton b = new JButton(t.getWork()); // 라벨을 work로
             b.setBounds(10, y, 280, 40);
-            // 필요하면 클릭 시 상세 보기/수정 등 리스너 추가 가능
-            // b.addActionListener(ev -> System.out.println(t));
 
             JCheckBox cb = new JCheckBox();
     		cb.setBounds(410, y2, 30, 30);
@@ -109,7 +107,6 @@ private void renderList() {
     		 
     		fr.add(cb);
             list.add(b);
-            
             
             final int idx = i;
             
@@ -130,6 +127,7 @@ private void renderList() {
         
 	}
 }
+
 
 
 
