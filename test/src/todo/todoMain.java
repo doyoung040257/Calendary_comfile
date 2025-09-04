@@ -17,6 +17,7 @@ public class todoMain extends Frame{
 	public Button delete;
 	
 	private Panel list;
+	private Panel title;
 	
 	public todoMain() {
 		
@@ -29,7 +30,7 @@ public class todoMain extends Frame{
 		
 		
 		//제목
-		Panel title = new Panel();
+		title = new Panel();
 		title.setBounds(100, 25, 300, 80);
 		title.setBackground(Color.LIGHT_GRAY);
 		Label todo = new Label("할 일", Label.CENTER);
@@ -77,20 +78,21 @@ public class todoMain extends Frame{
 
             list.add(b); // 리스트에 버튼 추가
             
-            final int idx = i;
+            final int idx = i; // 인덱스 고정, 람다-지역변수캡쳐
             
             b.addActionListener(ev -> {
                 new todo_modify(sharedList, idx, this::renderList).open(); // sharedList, 인덱스, 저장 후 콜백
             });
+			// 콜백전달 -> 저장 버튼을 누를 때 호출해라?
             
             y += 45; // y좌표 변경(버튼 위치 변경)
             
         }
 
-        // AWT 컨테이너 갱신
-        list.validate();
-        list.repaint();
+        list.validate(); // 레이아웃 유효화
+        list.repaint(); // 화면 갱신
         
 	}	
 }
+
 
