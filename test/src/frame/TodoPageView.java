@@ -191,10 +191,8 @@ public class TodoPageView extends JFrame {
         setupMultiLineButton(settingsPageButton, "설정<br>페이지<br>버튼", Color.GRAY, 100, 80);
         settingsPageButton.addActionListener(e -> {
             JDialog settingsDialog = new JDialog(this, "설정", true);
-            settingsDialog.setSize(300, 200);
-            settingsDialog.setLocationRelativeTo(this);
-            settingsDialog.add(new JLabel("설정 페이지입니다.", SwingConstants.CENTER));
-            settingsDialog.setVisible(true);
+            new SettingsMenu(); // 설정 메뉴 창 띄우기
+			dispose();
         });
 
         bottomSectionPanel.add(mainPageButton);
@@ -290,4 +288,5 @@ public class TodoPageView extends JFrame {
         button.setText("<html><center>" + text + "</center></html>");
         button.setFont(new Font("Malgun Gothic", Font.BOLD, 14));
     }
+
 }
