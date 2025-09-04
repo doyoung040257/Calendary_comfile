@@ -86,7 +86,7 @@ public class CalendarFrame01 extends JFrame {
 
         JButton groupButton = createStyledButton("그룹\n페이지\n버튼", new Color(204, 255, 204));
         groupButton.addActionListener(new ActionListener() {
-			
+			/*
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				String loginUser = JOptionPane.showInputDialog("사용자 이름을 입력하세요:");
@@ -94,6 +94,16 @@ public class CalendarFrame01 extends JFrame {
 
 		        String finalLoginUser = loginUser;
 		        SwingUtilities.invokeLater(() -> new MainFrame(finalLoginUser));
+				
+			}
+		*/
+			//그룹 페이지 담당자(김현준)가 변경해둠
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				System.out.println("그룹 페이지 버튼");
+				
+				 // CalenderGroupPage 실행 (비밀번호 입력 화면)
+			    CalenderGroupPage.main(new String[0]);
 				
 			}
 		});
@@ -257,5 +267,6 @@ public class CalendarFrame01 extends JFrame {
     }
 
 }
+
 
 
