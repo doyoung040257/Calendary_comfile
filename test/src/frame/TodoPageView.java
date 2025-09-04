@@ -185,7 +185,7 @@ public class TodoPageView extends JFrame {
         JButton mainPageButton = new JButton();
         setupMultiLineButton(mainPageButton, "메인<br>페이지<br>버튼", Color.BLACK, 100, 80);
         mainPageButton.addActionListener(e -> {
-            new CalendarFrame01().setVisible(true);
+            new CalendarFrame01(null).setVisible(true);
 
         });
 
@@ -292,4 +292,5 @@ public class TodoPageView extends JFrame {
     }
 
 }
+
 
