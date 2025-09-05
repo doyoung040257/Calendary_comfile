@@ -2,10 +2,7 @@ package todo;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseWheelEvent;
-import java.awt.event.MouseWheelListener;
+import java.awt.event.*;
 
 public class todoClock extends JFrame {
 
@@ -14,7 +11,6 @@ public class todoClock extends JFrame {
     private JLabel hourLab;
 	private JLabel minuteLab;
 	private todoClockListener listener;
-
 
     //위치 지정 보류!!!
     public todoClock(todoClockListener listener) {
@@ -82,3 +78,4 @@ public class todoClock extends JFrame {
         setVisible(true);        
     }
 }
+
