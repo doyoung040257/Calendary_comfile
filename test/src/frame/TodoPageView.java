@@ -131,7 +131,22 @@ public class TodoPageView extends JFrame {
             newTodoTextField.setText(""); // 입력 필드 초기화
             loadTodoList();
         });
-        
+
+		JButton groupButton = new JButton("달력 페이지");
+        groupButton.setFont(new Font("Malgun Gothic", Font.BOLD, 14));
+        groupButton.setPreferredSize(new Dimension(90, 30));
+        groupButton.setFocusPainted(false);
+        groupButton.setBackground(new Color(230, 204, 255));
+        groupButton.setBorder(new LineBorder(Color.BLACK, 2));
+        groupButton.addActionListener(e -> {
+
+        MonthlyCalendarView monthlyCalendarView = new MonthlyCalendarView();
+
+        monthlyCalendarView.setVisible(true);
+
+        });
+
+		newTodoPanel.add(groupButton);
         newTodoPanel.add(newTodoTextField);
         newTodoPanel.add(addNewTodoButton);
         centerSectionPanel.add(newTodoPanel);
@@ -292,5 +307,6 @@ public class TodoPageView extends JFrame {
     }
 
 }
+
 
 
