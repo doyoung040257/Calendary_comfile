@@ -69,6 +69,7 @@ public class CalendarFrame01 extends JFrame {
 			monthButton.addActionListener(e -> {
 				MonthlyCalendarView monthlyCalendarView = new MonthlyCalendarView();
 				monthlyCalendarView.setVisible(true);
+				dispose();
 
 			});
 			contentPane.add(monthButton, BorderLayout.NORTH);
@@ -268,6 +269,7 @@ public class CalendarFrame01 extends JFrame {
 	}
 
 }
+
 
 
 
