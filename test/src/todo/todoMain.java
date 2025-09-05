@@ -1,14 +1,13 @@
 package todo;
 
 import java.awt.Color;
-import java.awt.Frame;
 import java.awt.Label;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.JFrame;
 import javax.swing.*;
 
-public class todoMain extends Frame{
+public class todoMain{
 
 	private final static todoListMake sharedList = new todoListMake();
 	private final java.util.List<JCheckBox> rowChecks = new java.util.ArrayList<>();
@@ -25,7 +24,7 @@ public class todoMain extends Frame{
 		fr.setTitle("할 일");
 		fr.setSize(500,800);
 		fr.setLayout(null); // 위치 직접 설정
-		fr.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		fr.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		
 		
 		//제목
@@ -121,6 +120,7 @@ private void renderList() {
         fr.getContentPane().repaint();    
 	}
 }
+
 
 
 
