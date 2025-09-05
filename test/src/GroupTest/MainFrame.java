@@ -23,7 +23,7 @@ public class MainFrame extends JFrame {
         this.currentUser = currentUser;
         setTitle("그룹 캘린더");
         setSize(600, 800);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null);
 
         cardLayout = new CardLayout();
@@ -78,3 +78,4 @@ public class MainFrame extends JFrame {
         return mainPage;
     }
 }
+
