@@ -63,7 +63,6 @@ public class todoModify {
 						datebtn.setText(year + "-" + month + "-" + day + "[" + dayWeek + "]");
 					}
 				});
-				
 			}
 		});
         datebtn.setText(item.getDay());
@@ -86,8 +85,7 @@ public class todoModify {
 			        public void onTimeSelected(int hour, int minute) {
 			        	timebtn.setText(hour + "시 " + minute + "분");
 			        }
-			    });
-				
+			    });	
 			}
         });
         //기존 시간 선택
@@ -158,6 +156,11 @@ public class todoModify {
 
         fr.setVisible(true);
     }
+		private BufferedImage createStarImage(int i, int j) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }
+
 
 
