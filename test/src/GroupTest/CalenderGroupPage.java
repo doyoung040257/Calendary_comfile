@@ -15,9 +15,11 @@ public class CalenderGroupPage {
         while (true) {
             loginUser = JOptionPane.showInputDialog("비밀번호를 입력하세요:");
 
-            // 취소 클릭 시 종료
+            // 취소 클릭 시 종료 -> 전체종료 되는거 때문에 수정
             if (loginUser == null) {
-                System.exit(0);
+                // 특정 페이지로 이동 (예: OtherPage)
+                SwingUtilities.invokeLater(() -> new CalendarFrame01(null));
+                break; // while 루프 종료
             }
 
             // 입력이 없으면 경고창 띄우고 반복
@@ -39,4 +41,5 @@ public class CalenderGroupPage {
     // 외부에서 setVisible 호출해도 동작 없음
     public void setVisible(boolean b) {}
 }
+
 
