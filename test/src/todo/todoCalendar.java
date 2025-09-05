@@ -57,6 +57,7 @@ public class todoCalendar extends JFrame {
 					if (listener != null) {
 						listener.onDateSelected(year,month,day,dayWeek);
 					}
+					dispose();
 				}
 			});
             panel.add(buttons[i]);
@@ -148,5 +149,6 @@ public class todoCalendar extends JFrame {
     }
 
 }
+
 
 
