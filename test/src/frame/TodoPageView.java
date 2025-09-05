@@ -146,9 +146,9 @@ public class TodoPageView extends JFrame {
 
         });
 
-		newTodoPanel.add(groupButton);
         newTodoPanel.add(newTodoTextField);
         newTodoPanel.add(addNewTodoButton);
+		newTodoPanel.add(groupButton);
         centerSectionPanel.add(newTodoPanel);
         centerSectionPanel.add(Box.createVerticalStrut(10));
         
@@ -307,6 +307,7 @@ public class TodoPageView extends JFrame {
     }
 
 }
+
 
 
 
