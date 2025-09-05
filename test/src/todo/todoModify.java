@@ -93,6 +93,27 @@ public class todoModify {
         //기존 시간 선택
         timebtn.setText(item.getTime());
 
+		//할 일 - 중요도
+		JLabel importancetitle = new JLabel("중요도", JLabel.CENTER);
+        importancetitle.setBounds(50, 300, 100, 30);
+        importancetitle.setBackground(Color.gray);
+        fr.add(importancetitle);
+        
+		BufferedImage img1 = todoStarMake.createStarImage(40, 40);
+		BufferedImage img2 = todoStarMake2.createStarImage(40, 40);
+		ImageIcon ystar = new ImageIcon(img1);
+		ImageIcon gstar = new ImageIcon(img2);
+		
+		JLabel[] starLabels = new JLabel[3];
+		
+		int x = 170;
+		for(int i=0; i<starLabels.length; i++) {
+			starLabels[i] = new JLabel(gstar);
+			starLabels[i].setBounds(x, 300, 40, 40);
+			fr.add(starLabels[i]);
+			x += 60;
+		}
+
         // 메모
         JTextArea note = new JTextArea("메모", 10, 60);
         note.setText(item.getNote() != null ? item.getNote() : "");
@@ -138,4 +159,5 @@ public class todoModify {
         fr.setVisible(true);
     }
 }
+
 
