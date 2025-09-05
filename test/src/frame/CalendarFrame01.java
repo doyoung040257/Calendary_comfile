@@ -4,7 +4,7 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.MatteBorder;
 
-import GroupTest.CalenderGroupPage;
+import GroupTest.CalenderGroupPage; //원래는 이 부분으로 이동했으나 경로 수정후 필요하지 않으니 삭제하셔도 됩니다. ->김현준 작성
 import GroupTest.MainFrame;
 import Settings.SettingsMenu;
 import lg.User;
@@ -265,5 +265,6 @@ public class CalendarFrame01 extends JFrame {
 	}
 
 }
+
 
 
