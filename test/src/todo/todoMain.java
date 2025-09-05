@@ -1,10 +1,7 @@
 package todo;
 
-import java.awt.Color;
-import java.awt.Label;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import javax.swing.JFrame;
+import java.awt.*;
+import java.awt.event.*;
 import javax.swing.*;
 
 public class todoMain{
@@ -120,6 +117,7 @@ private void renderList() {
         fr.getContentPane().repaint();    
 	}
 }
+
 
 
 
