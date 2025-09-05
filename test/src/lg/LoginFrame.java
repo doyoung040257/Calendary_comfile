@@ -3,6 +3,8 @@ package lg;
 import javax.swing.*;
 import java.awt.*;
 
+import frame.CalendarFrame01;
+
 public class LoginFrame extends JFrame {
     private JTextField idField;
     private JPasswordField passwordField;
@@ -83,6 +85,8 @@ public class LoginFrame extends JFrame {
             User user = UserDatabase.userDatabase.get(id);
             if (user.getPassword().equals(pw)) {
                 JOptionPane.showMessageDialog(this, user.getName() + "님 환영합니다!");
+                CalendarFrame01 calendarFrame01 = new CalendarFrame01(null);
+                calendarFrame01.setVisible(true);
             } else {
                 JOptionPane.showMessageDialog(this, "비밀번호가 틀렸습니다.");
             }
@@ -91,3 +95,4 @@ public class LoginFrame extends JFrame {
         }
     }
 }
+
