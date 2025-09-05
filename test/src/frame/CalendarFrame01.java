@@ -90,7 +90,7 @@ public class CalendarFrame01 extends JFrame {
 			JButton todoButton = createStyledButton("할일\n페이지\n버튼", new Color(255, 255, 204));
 			todoButton.addActionListener(e -> {
 				System.out.println("할일 페이지 버튼");
-				// todoMain todomain = new todoMain();
+				todoMain todomain = new todoMain();
 				// todomain.setVisible(true);
 			});
 
@@ -262,3 +262,4 @@ public class CalendarFrame01 extends JFrame {
 	}
 
 }
+
