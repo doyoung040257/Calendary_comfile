@@ -53,8 +53,7 @@ public class todoAddition extends JFrame {
 					public void onDateSelected(int year, int month, int day, String dayWeek) {
 						datebtn.setText(year + "-" + month + "-" + day + "[" + dayWeek + "]");
 					}
-				});
-				
+				});	
 			}
 		});
         fr.add(datebtn);
@@ -77,12 +76,31 @@ public class todoAddition extends JFrame {
 			        	timebtn.setText(hour + "시 " + minute + "분");
 			        }
 			    });
-				
 			}
         });
 		fr.add(timebtn);
 
         // 할 일 - 중요도
+		JLabel importancetitle = new JLabel("중요도", JLabel.CENTER);
+        importancetitle.setBounds(50, 300, 100, 30);
+        importancetitle.setBackground(Color.gray);
+        fr.add(importancetitle);
+		
+        
+		BufferedImage img1 = todoStarMake.createStarImage(40, 40);
+		BufferedImage img2 = todoStarMake2.createStarImage(40, 40);
+		ImageIcon ystar = new ImageIcon(img1);
+		ImageIcon gstar = new ImageIcon(img2);
+		
+		JLabel[] starLabels = new JLabel[3];
+		
+		int x = 170;
+		for(int i=0; i<starLabels.length; i++) {
+			starLabels[i] = new JLabel(gstar);
+			starLabels[i].setBounds(x, 300, 40, 40);
+			fr.add(starLabels[i]);
+			x += 60;
+		}
 
         // 할 일 - 메모
         JTextArea note = new JTextArea("메모", 10, 60);
@@ -118,9 +136,6 @@ public class todoAddition extends JFrame {
                 fr.dispose();
             }
         });
-        
         fr.setVisible(true);
     }
-    
-
 }
