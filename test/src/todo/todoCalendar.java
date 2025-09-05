@@ -18,8 +18,7 @@ public class todoCalendar extends JFrame {
     public todoCalendar(todoCalendarListener listener) {
     	this.listener = listener;
 
-        setTitle("달력");
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setSize(400, 400);
         setLocationRelativeTo(null); // 화면 정중앙 위치
         setLayout(new BorderLayout());
@@ -37,7 +36,6 @@ public class todoCalendar extends JFrame {
         String[] labels = {"Sun", "Mon", "Tue", "Wen", "Thur", "Fri", "Sat"};
         JPanel panel = new JPanel(new GridLayout(0, 7, 8, 8)); // 행 자동, 열 7, 간격 8px
 
-        
         //요일 라벨 생성
         for (int i = 0; i < labels.length; i++) {
         	Label l = new Label(labels[i], Label.CENTER);
@@ -62,10 +60,8 @@ public class todoCalendar extends JFrame {
 					if (listener != null) {
 						listener.onDateSelected(year,month,day,dayWeek);
 					}
-					
 				}
 			});
-            
             panel.add(buttons[i]);
         }
         
@@ -91,7 +87,6 @@ public class todoCalendar extends JFrame {
             currentYM = currentYM.plusMonths(1);
             fillCalendar(buttons, lb_title);
         });
-        
     }
     
     //첫 화면 뜨는 캘린더채우기(버튼 ,타이틀)
@@ -148,8 +143,7 @@ public class todoCalendar extends JFrame {
     		dayofweek = "Sat";
     	}
     	return dayofweek;
-    }
-
+	}
    
     // 한 자리 수이면 앞에 0 붙이기
     public static String ZeroString(int n) {
@@ -157,3 +151,4 @@ public class todoCalendar extends JFrame {
     }
 
 }
+
