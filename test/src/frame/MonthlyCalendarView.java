@@ -35,7 +35,7 @@ public class MonthlyCalendarView extends JFrame {
         // --- 프레임 기본 설정 ---
         setTitle("2025년 9월 달력");
         setSize(800, 800);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null);
 
         // --- 전체 레이아웃 설정 ---
@@ -84,7 +84,7 @@ public class MonthlyCalendarView extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 CalendarFrame01 calendarFrame = new CalendarFrame01(null);
                 calendarFrame.setVisible(true);
-
+				dispose();
             }
         });
 
@@ -191,5 +191,6 @@ public class MonthlyCalendarView extends JFrame {
     }
 
 }
+
 
 
