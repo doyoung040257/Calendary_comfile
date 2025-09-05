@@ -42,10 +42,8 @@ public class todoClock extends JFrame {
         minuteLab.setFont(new Font("맑은 고딕", Font.BOLD, 32));
         clock.add(minuteLab);
 
-        
         JButton confirm = new JButton("확인");
         JButton cancle = new JButton("취소");
-        
         
         hourLab.addMouseWheelListener(new MouseWheelListener() {
 			@Override
@@ -57,7 +55,6 @@ public class todoClock extends JFrame {
 	            e.consume();
 			}
 		});
-
         
         minuteLab.addMouseWheelListener(new MouseWheelListener() {
 			@Override
@@ -71,14 +68,12 @@ public class todoClock extends JFrame {
 		});
         
         confirm.addActionListener(new ActionListener() {
-			
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (listener != null) {
 	                listener.onTimeSelected(hour, minute);
 	            }
 	            dispose();
-				
 			}
 		});
         
@@ -86,9 +81,4 @@ public class todoClock extends JFrame {
         add(cancle, BorderLayout.SOUTH);
         setVisible(true);        
     }
-    
-    
 }
-
-
-
