@@ -102,8 +102,11 @@ public class CalendarFrame01 extends JFrame {
 				public void actionPerformed(ActionEvent e) {
 					System.out.println("그룹 페이지 버튼");
 
-					// CalenderGroupPage 실행 (비밀번호 입력 화면)
-					CalenderGroupPage.main(new String[0]);
+					// CalenderGroupPage 실행 부분 삭제됨 ❌
+	                // CalenderGroupPage.main(new String[0]);
+
+	                // ✅ 바로 MainFrame 실행
+	                SwingUtilities.invokeLater(() -> new MainFrame("사용자")); // 기본 사용자명 전달
 
 				}
 			});
@@ -262,4 +265,5 @@ public class CalendarFrame01 extends JFrame {
 	}
 
 }
+
 
