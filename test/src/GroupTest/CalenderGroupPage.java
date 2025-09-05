@@ -3,6 +3,8 @@ package GroupTest;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
+import frame.CalendarFrame01;
+
 public class CalenderGroupPage {
 
     private CalenderGroupPage() {
@@ -41,6 +43,7 @@ public class CalenderGroupPage {
     // 외부에서 setVisible 호출해도 동작 없음
     public void setVisible(boolean b) {}
 }
+
 
 
 
