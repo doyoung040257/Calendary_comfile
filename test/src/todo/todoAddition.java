@@ -138,4 +138,9 @@ public class todoAddition extends JFrame {
         });
         fr.setVisible(true);
     }
+		private BufferedImage createStarImage(int i, int j) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }
+
