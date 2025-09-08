@@ -96,7 +96,7 @@ public class MainPanel extends JPanel {
                     "메인화면으로 돌아가시겠습니까?", "확인", JOptionPane.YES_NO_OPTION);
             if (confirm != JOptionPane.YES_OPTION) return;
             SwingUtilities.getWindowAncestor(this).dispose();
-            new CalendarFrame01(null).setVisible(true);
+            new CalendarFrame01().setVisible(true);
         });
 
         JButton todoBtn = new JButton("할 일");
@@ -226,3 +226,4 @@ public class MainPanel extends JPanel {
         removeGroupButton(groupName);
     }
 }
+
