@@ -3,9 +3,10 @@ package todo;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
+
 import javax.swing.*;
 
-public class todoModify {
+public class todoModify extends JFrame {
 
     private final todoListMake list;   // 공유 리스트
     private final int index;       // 수정할 리스트의 인덱스
@@ -23,10 +24,11 @@ public class todoModify {
         //list 모델 가져오기
         todoList item = list.getTodolist().get(index);
 
-        JFrame fr = new JFrame();
-        fr.setTitle("할 일 수정");
-        fr.setSize(400, 700);
-        fr.setLayout(null);
+        setTitle("할 일 수정");
+        setSize(400, 700);
+        setLocationRelativeTo(null);
+        setLayout(null);
+
 
         // 상단 제목
         JPanel title = new JPanel();
@@ -34,27 +36,45 @@ public class todoModify {
         title.setBackground(Color.LIGHT_GRAY);
         JLabel todo = new JLabel("할 일 수정하기", JLabel.CENTER);
         title.add(todo);
-        fr.add(title);
-
+        add(title);
+        
         // 할 일 - 이름
         JLabel todoTitle = new JLabel("할 일", JLabel.CENTER);
         todoTitle.setBounds(50, 150, 100, 30);
-        fr.add(todoTitle);
+        add(todoTitle);
 
         JTextField txt = new JTextField ();
+        SwingUtilities.invokeLater(() -> getRootPane().requestFocusInWindow());
         txt.setBounds(150, 150, 200, 30);
         txt.setText(item.getWork()); // 초기값
-        fr.add(txt);
+        add(txt);
+        
+        txt.addFocusListener(new FocusListener() {
+            @Override
+            public void focusGained(FocusEvent e) {
+                if (txt.getText().equals("할 일 입력")) {
+                    txt.setText("");
+                }
+            }
+
+            @Override
+            public void focusLost(FocusEvent e) {
+                if (txt.getText().isEmpty()) {
+                    txt.setText("할 일 입력");
+                }
+            }
+        });
 
         // 할 일 - 날짜
         JLabel daytitle = new JLabel("날짜", JLabel.CENTER);
         daytitle.setBounds(50, 200, 100, 30);
         daytitle.setBackground(Color.gray);
-        fr.add(daytitle);
+        add(daytitle);
 
         JButton datebtn = new JButton("여기에 현재 날짜 넣어야지");
+        datebtn.setFocusPainted(false);
         datebtn.setBounds(150, 200, 200, 30);
-        fr.add(datebtn);
+        add(datebtn);
         datebtn.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -73,11 +93,12 @@ public class todoModify {
         JLabel timetitle = new JLabel("시간", JLabel.CENTER);
         timetitle.setBounds(50, 250, 100, 30);
         timetitle.setBackground(Color.gray);
-        fr.add(timetitle);
+        add(timetitle);
 
 		JButton timebtn = new JButton("여기에는 현재시간 넣어야지");
+		timebtn.setFocusPainted(false);
 		timebtn.setBounds(150, 250, 200, 30);
-        fr.add(timebtn);
+        add(timebtn);
         timebtn.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -96,7 +117,7 @@ public class todoModify {
 		JLabel importancetitle = new JLabel("중요도", JLabel.CENTER);
         importancetitle.setBounds(50, 300, 100, 30);
         importancetitle.setBackground(Color.gray);
-        fr.add(importancetitle);
+        add(importancetitle);
         
 		BufferedImage img1 = todoStarMake.createStarImage(40, 40);
 		BufferedImage img2 = todoStarMake2.createStarImage(40, 40);
@@ -104,28 +125,71 @@ public class todoModify {
 		ImageIcon gstar = new ImageIcon(img2);
 		
 		JLabel[] starLabels = new JLabel[3];
+		int savedImportance = item.getImportance();
 		
 		int x = 170;
 		for(int i=0; i<starLabels.length; i++) {
 			starLabels[i] = new JLabel(gstar);
+			starLabels[i].setIcon(i < savedImportance ? ystar : gstar);
 			starLabels[i].setBounds(x, 300, 40, 40);
-			fr.add(starLabels[i]);
+			add(starLabels[i]);
 			x += 60;
+
+		    final int index = i;
+		    starLabels[i].addMouseListener(new MouseAdapter() {
+		        @Override
+		        public void mouseClicked(MouseEvent e) {
+		            // 현재 index 번째 별이 노란별인지 확인
+		            boolean isYellow = starLabels[index].getIcon().equals(ystar);
+
+		            if (isYellow) {
+		                // 이미 노란별이면 → 전부 검은별로 초기화
+		                for (int j = 0; j < starLabels.length; j++) {
+		                    starLabels[j].setIcon(gstar);
+		                }
+		            } else {
+		                // 검은별이면 → index 까지 노란별로 바꿔줌
+		                for (int j = 0; j < starLabels.length; j++) {
+		                    starLabels[j].setIcon(j <= index ? ystar : gstar);
+		                }
+		            }
+		        }
+		    });
 		}
 
         // 메모
         JTextArea note = new JTextArea("메모", 10, 60);
+        SwingUtilities.invokeLater(() -> getRootPane().requestFocusInWindow());
         note.setText(item.getNote() != null ? item.getNote() : "");
         note.setBounds(50, 350, 300, 160);
-        fr.add(note);
+        add(note);
+        
+        // 노트 기능
+        note.addFocusListener(new FocusListener() {
+            @Override
+            public void focusGained(FocusEvent e) {
+                if (note.getText().equals("메모")) {
+                	note.setText("");
+                }
+            }
+
+            @Override
+            public void focusLost(FocusEvent e) {
+                if (note.getText().isEmpty()) {
+                	note.setText("메모");
+                }
+            }
+        });
 
         // 저장버튼
-        JButton saveBtn = new JButton("저장");
-        saveBtn.setBounds(110, 550, 70, 50);
-        fr.add(saveBtn);
+        JButton save = new JButton("수정");
+        save.setFocusPainted(false);
+        save.setFocusPainted(false);
+        save.setBounds(110, 550, 70, 50);
+        add(save);
 
         // 저장 기능
-        saveBtn.addActionListener(e -> {
+        save.addActionListener(e -> {
             //할일 이름
             String workStr = txt.getText().trim();
             //날짜
@@ -144,25 +208,22 @@ public class todoModify {
             // 콜백으로 리스트 리렌더
             if (afterSave != null) afterSave.run();
 
-            fr.dispose();
+            dispose();
         });
          
-        //취소버튼
-        JButton cancelBtn = new JButton("취소");
-        cancelBtn.setBounds(200, 550, 70, 50);
-        fr.add(cancelBtn);
+        //닫기 버튼
+        JButton cancel = new JButton("닫기");
+        cancel.setFocusPainted(false);
+        cancel.setBounds(200, 550, 70, 50);
+        add(cancel);
         
-        //취소 기능
-        cancelBtn.addActionListener(e -> fr.dispose());
+        //닫기 기능
+        cancel.addActionListener(e -> dispose());
 
-        fr.setVisible(true);
+        setVisible(true);
     }
 		private BufferedImage createStarImage(int i, int j) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 }
-
-
-
-
