@@ -141,9 +141,6 @@ private void renderList() {
         fr.getContentPane().revalidate();
         fr.getContentPane().repaint();    
 	}
-
-	public static void main(String[] args) {
-		new todoMain();
-	}
 }
+
 
