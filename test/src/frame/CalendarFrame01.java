@@ -1,278 +1,413 @@
+// CalendarFrame01.java
 package frame;
 
 import javax.swing.*;
-import javax.swing.border.EmptyBorder;
-import javax.swing.border.MatteBorder;
-
-import GroupTest.CalenderGroupPage; //원래는 이 부분으로 이동했으나 경로 수정후 필요하지 않으니 삭제하셔도 됩니다. ->김현준 작성
-import GroupTest.MainFrame;
-import Settings.SettingsMenu;
-import lg.User;
-import todo.todoMain;
-
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.time.LocalDate;
-import java.time.format.TextStyle;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import javax.swing.border.Border;
+
+import GroupTest.CalenderGroupPage;
+import GroupTest.MainFrame;
+import Settings.SettingsMenu;
+
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+
+import lg.User; // User 클래스 임포트 추가
+import todo.todoMain;
 
 public class CalendarFrame01 extends JFrame {
 
-	private User user;
-	// Making this static allows TodoPageView and MonthlyCalendarView to access and
-	// modify the same data
-	public static Map<LocalDate, List<TodoEntry>> dailyTasks = new HashMap<>();
-	public static Map<LocalDate, String> dailyReviews = new HashMap<>(); // 하루 한줄평을 저장할 새로운 맵 추가
+    LocalDate currentDate;
+    private JLabel monthLabel;
+    private JButton[] dayButtons = new JButton[7];
+    private JPanel todoPanel;
+    private JProgressBar progressBar;
+    private int selectedButtonIndex = -1; // 선택된 버튼 인덱스 추가
 
-	public static class TodoEntry {
-		String title;
-		boolean completed;
-		Color color;
+    // 현재 로그인된 사용자를 저장할 필드 추가
+    private User currentUser;
+	private User user; 
 
-		public TodoEntry(String title, boolean completed, Color color) {
-			this.title = title;
-			this.completed = completed;
-			this.color = color;
-		}
-	}
+    // 할 일 데이터 및 한줄평 데이터를 모든 프레임에서 공유하기 위한 static 변수
+    public static Map<LocalDate, List<TodoEntry>> dailyTasks = new HashMap<>();
+    public static Map<LocalDate, String> dailyReviews = new HashMap<>();
 
-	public CalendarFrame01(User user) {
-		this.user = user;
-		initializeTasks();
-		initializeUI();
+    // 할 일 항목을 나타내는 내부 클래스
+    public static class TodoEntry {
+        public String title;
+        public boolean completed;
+        public Color color;
 
-		
-	}
-	
-	 private void initializeUI() {
-		 setTitle("9월 (주간 목록형)");
-			setSize(500, 800);
-			setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-			setLocationRelativeTo(null);
-			setResizable(false);
+        public TodoEntry(String title, boolean completed, Color color) {
+            this.title = title;
+            this.completed = completed;
+            this.color = color;
+        }
+    }
 
-			JPanel contentPane = new JPanel(new BorderLayout(0, 10));
-			contentPane.setBorder(new EmptyBorder(10, 10, 10, 10));
-			add(contentPane);
+    public CalendarFrame01() {
+        this(LocalDate.of(2025, 9, 1));
+    }
 
-			JButton monthButton = new JButton("9월");
-			monthButton.setFont(new Font("Malgun Gothic", Font.BOLD, 28));
-			monthButton.setBorderPainted(false);
-			monthButton.setContentAreaFilled(false);
-			monthButton.setFocusPainted(false);
-			monthButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
-			monthButton.addActionListener(e -> {
-				MonthlyCalendarView monthlyCalendarView = new MonthlyCalendarView();
-				monthlyCalendarView.setVisible(true);
-				dispose();
+    // User 객체를 인자로 받는 생성자 추가
+    public CalendarFrame01(User user) {
+        this(LocalDate.of(2025, 9, 1));
+        this.currentUser = user; // 전달받은 user 객체 저장
+        System.out.println("로그인한 사용자: " + currentUser.getName()); // 확인용 출력
+    }
 
-			});
-			contentPane.add(monthButton, BorderLayout.NORTH);
+    public CalendarFrame01(LocalDate date) {
+        this.currentDate = date;
 
-			JPanel calendarPanel = new JPanel();
-			calendarPanel.setLayout(new BoxLayout(calendarPanel, BoxLayout.Y_AXIS));
-			JScrollPane scrollPane = new JScrollPane(calendarPanel);
-			scrollPane.setBorder(null);
-			contentPane.add(scrollPane, BorderLayout.CENTER);
+        // --- 프레임 기본 설정 ---
+        setTitle("주간 플래너");
+        setSize(480, 800);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLayout(new BorderLayout());
+        setLocationRelativeTo(null);
 
-			LocalDate startDate = LocalDate.of(2025, 9, 15);
-			for (int i = 0; i < 7; i++) {
-				LocalDate date = startDate.plusDays(i);
-				calendarPanel.add(createDayPanel(date));
-			}
+        // 초기 샘플 데이터 생성
+        createSampleTasks();
 
-			JPanel bottomButtonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 10));
-			bottomButtonPanel.setBorder(new EmptyBorder(10, 0, 0, 0));
+        Font titleFont = new Font("SansSerif", Font.BOLD, 22);
+        Font buttonFont = new Font("SansSerif", Font.BOLD, 16);
 
-			JButton todoButton = createStyledButton("할일\n페이지\n버튼", new Color(255, 255, 204));
-			todoButton.addActionListener(e -> {
-				System.out.println("할일 페이지 버튼");
-				todoMain todomain = new todoMain();
-				// todomain.setVisible(true);
-				//dispose();
-			});
+        // --- 상단 패널 (월 이동 및 설정) ---
+        JPanel topPanel = new JPanel(new BorderLayout());
+        topPanel.setBackground(Color.decode("#D8BFD8"));
+        topPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 
-			JButton groupButton = createStyledButton("그룹\n페이지\n버튼", new Color(204, 255, 204));
-			groupButton.addActionListener(new ActionListener() {
+        JPanel monthControlPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        monthControlPanel.setOpaque(false);
 
-				// 그룹 페이지 담당자(김현준)가 변경해둠
-				@Override
-				public void actionPerformed(ActionEvent e) {
-					System.out.println("그룹 페이지 버튼");
+        JButton prevWeekButton = new JButton("◀");
+        monthLabel = new JLabel();
+        monthLabel.setFont(titleFont);
 
-					// CalenderGroupPage 실행 부분 삭제됨 ❌
-	                // CalenderGroupPage.main(new String[0]);
+        // '월' 라벨에 마우스 리스너 추가하여 MonthlyCalendarView로 이동
+        monthLabel.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        monthLabel.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                // 기존 CalendarFrame01 인스턴스를 MonthlyCalendarView에 전달
+                new MonthlyCalendarView(CalendarFrame01.this).setVisible(true);
+                dispose();
+            }
+        });
 
-	                // ✅ 바로 MainFrame 실행
-	                SwingUtilities.invokeLater(() -> new MainFrame("사용자")); // 기본 사용자명 전달
-					dispose();
+        JButton nextWeekButton = new JButton("▶");
 
-				}
-			});
+        setupArrowButton(prevWeekButton, titleFont);
+        setupArrowButton(nextWeekButton, titleFont);
 
-			JButton settingsButton = createStyledButton("설정\n페이지\n버튼", new Color(220, 220, 220));
-			settingsButton.addActionListener(e -> {
-			    new SettingsMenu(this.user).setVisible(true); // user 전달
-			    dispose();
-			});
+        monthControlPanel.add(prevWeekButton);
+        monthControlPanel.add(Box.createHorizontalStrut(10));
+        monthControlPanel.add(monthLabel);
+        monthControlPanel.add(Box.createHorizontalStrut(10));
+        monthControlPanel.add(nextWeekButton);
 
-			bottomButtonPanel.add(todoButton);
-			bottomButtonPanel.add(groupButton);
-			bottomButtonPanel.add(settingsButton);
-			contentPane.add(bottomButtonPanel, BorderLayout.SOUTH);
-	 }
+        topPanel.add(monthControlPanel, BorderLayout.WEST);
 
-	private void initializeTasks() {
-		if (dailyTasks.isEmpty()) {
-			// 더미 데이터 생성 시 LocalDate를 key로 사용
-			dailyTasks.put(LocalDate.of(2025, 9, 15),
-					new ArrayList<>(List.of(new TodoEntry("보고서 작성", false, new Color(204, 230, 255)),
-							new TodoEntry("아이디어 회의", false, new Color(255, 204, 204)),
-							new TodoEntry("기획안 제출", false, new Color(230, 204, 255)),
-							new TodoEntry("참고용", false, new Color(220, 220, 220)))));
-			dailyTasks.put(LocalDate.of(2025, 9, 16),
-					new ArrayList<>(List.of(new TodoEntry("개인 공부", false, new Color(204, 255, 204)))));
-			dailyTasks.put(LocalDate.of(2025, 9, 17),
-					new ArrayList<>(List.of(new TodoEntry("새 기능 구상", false, new Color(255, 255, 204)))));
-			dailyTasks.put(LocalDate.of(2025, 9, 18),
-					new ArrayList<>(List.of(new TodoEntry("최종 발표", false, new Color(255, 204, 204)),
-							new TodoEntry("리허설", false, new Color(230, 204, 255)))));
-			dailyTasks.put(LocalDate.of(2025, 9, 19),
-					new ArrayList<>(List.of(new TodoEntry("자료 정리", false, new Color(255, 255, 204)))));
-			dailyTasks.put(LocalDate.of(2025, 9, 20), new ArrayList<>());
-			dailyTasks.put(LocalDate.of(2025, 9, 21), new ArrayList<>());
+        // '월간 달력' 버튼을 '설정'으로 변경하고 기능 제거
+        JButton settingsViewButton = new JButton("설정");
+        settingsViewButton.setFont(buttonFont);
+        topPanel.add(settingsViewButton, BorderLayout.EAST);
+        settingsViewButton.addActionListener(e -> {
+            JOptionPane.showMessageDialog(this, "설정 화면으로 이동합니다.");
+            new SettingsMenu(this.user).setVisible(true);
+            dispose();
+        });
 
-			// 하루 한줄평 더미 데이터 초기화
-			dailyReviews.put(LocalDate.of(2025, 9, 15), "프로젝트 시작!");
-			dailyReviews.put(LocalDate.of(2025, 9, 16), "오늘도 열심히 공부했다.");
-		}
-	}
+        // --- 진행률 바 ---
+        progressBar = new JProgressBar(0, 100);
+        progressBar.setStringPainted(true);
+        progressBar.setFont(new Font("SansSerif", Font.BOLD, 18));
+        progressBar.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
+        progressBar.setForeground(Color.decode("#F5E6CC"));
+        
+        // --- 날짜 버튼 패널 ---
+        JPanel dayButtonsPanel = new JPanel(new GridLayout(1, 7, 5, 5));
+        dayButtonsPanel.setBorder(BorderFactory.createEmptyBorder(10, 5, 10, 5));
 
-	private JPanel createDayPanel(LocalDate date) {
-		JPanel dayPanel = new JPanel();
-		dayPanel.setLayout(new BorderLayout());
-		dayPanel.setBackground(Color.WHITE);
-		dayPanel.setBorder(new MatteBorder(0, 0, 1, 0, Color.LIGHT_GRAY));
-		dayPanel.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        for (int i = 0; i < 7; i++) {
+            dayButtons[i] = new JButton();
+            dayButtons[i].setFont(titleFont);
+            dayButtons[i].addActionListener(new DayButtonListener(i));
+            dayButtonsPanel.add(dayButtons[i]);
+        }
+        
+        JPanel headerPanel = new JPanel(new BorderLayout());
+        headerPanel.add(topPanel, BorderLayout.NORTH);
+        
+        // 새로운 패널에 진행률 바와 날짜 버튼 패널을 추가
+        JPanel progressAndDayPanel = new JPanel(new BorderLayout());
+        progressAndDayPanel.add(progressBar, BorderLayout.NORTH);
+        progressAndDayPanel.add(dayButtonsPanel, BorderLayout.CENTER);
+        
+        headerPanel.add(progressAndDayPanel, BorderLayout.CENTER);
+        add(headerPanel, BorderLayout.NORTH);
 
-		dayPanel.addMouseListener(new java.awt.event.MouseAdapter() {
-			public void mouseClicked(java.awt.event.MouseEvent evt) {
-				System.out.println(date.getMonthValue() + "월 " + date.getDayOfMonth() + "일 ("
-						+ date.getDayOfWeek().getDisplayName(TextStyle.SHORT, Locale.KOREA) + ") 클릭됨!");
-				TodoPageView todoPageView = new TodoPageView(date);
-				todoPageView.setVisible(true);
-			}
-		});
+        // --- 할일 목록 패널 (중앙) ---
+        todoPanel = new JPanel();
+        todoPanel.setLayout(new BoxLayout(todoPanel, BoxLayout.Y_AXIS)); // 세로 정렬을 위해 BoxLayout 사용
+        todoPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+        add(new JScrollPane(todoPanel), BorderLayout.CENTER);
 
-		JPanel dateInfoPanel = new JPanel();
-		dateInfoPanel.setOpaque(false);
-		dateInfoPanel.setLayout(new BoxLayout(dateInfoPanel, BoxLayout.Y_AXIS));
-		dateInfoPanel.setBorder(new EmptyBorder(5, 10, 5, 10));
+        // --- 하단 네비게이션 패널 ---
+        JPanel bottomPanel = new JPanel(new BorderLayout());
+        bottomPanel.setBackground(Color.decode("#D8BFD8"));
 
-		String dayOfWeek = date.getDayOfWeek().getDisplayName(TextStyle.SHORT, Locale.KOREA);
+        JPanel navPanel = new JPanel(new GridLayout(1, 3));
+        navPanel.setOpaque(false);
+        navPanel.setPreferredSize(new Dimension(0, 60));
 
-		JLabel dayLabel = new JLabel(dayOfWeek);
-		dayLabel.setFont(new Font("Malgun Gothic", Font.BOLD, 16));
-		dayLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        JButton homeButton = createNavButton("홈", buttonFont);
+        JButton todoButton = createNavButton("할일", buttonFont);
+        JButton groupButton = createNavButton("그룹", buttonFont);
 
-		JLabel dateLabel = new JLabel(date.getDayOfMonth() + "일");
-		dateLabel.setFont(new Font("Malgun Gothic", Font.BOLD, 22));
-		dateLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        homeButton.addActionListener(e -> {
+            // 현재 화면이 이미 홈이므로 메시지를 표시
+            JOptionPane.showMessageDialog(this, "이미 홈 화면입니다.");
+        });
 
-		dateInfoPanel.add(dayLabel);
-		dateInfoPanel.add(Box.createVerticalStrut(2));
-		dateInfoPanel.add(dateLabel);
+        todoButton.addActionListener(e -> {
+            
+        	JOptionPane.showMessageDialog(this, "할일 화면으로 이동합니다.");
+        	todoMain todomain = new todoMain();
+            //dispose();
+        });
 
-		dayPanel.add(dateInfoPanel, BorderLayout.WEST);
+        groupButton.addActionListener(e -> {
+            JOptionPane.showMessageDialog(this, "그룹 관리 화면으로 이동합니다.");
+            SwingUtilities.invokeLater(() -> new MainFrame("사용자")); // 기본 사용자명 전달
+			dispose();
+        });
+        
+        navPanel.add(homeButton);
+        navPanel.add(todoButton);
+        navPanel.add(groupButton);
 
-		JPanel tasksPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 0));
-		tasksPanel.setOpaque(false);
-		tasksPanel.setBorder(new EmptyBorder(0, 0, 5, 10));
+        bottomPanel.add(navPanel, BorderLayout.SOUTH);
 
-		JProgressBar progressBar = new JProgressBar(0, 100);
-		progressBar.setPreferredSize(new Dimension(10, 8));
-		progressBar.setStringPainted(true);
+        add(bottomPanel, BorderLayout.SOUTH);
 
-		// 날짜 객체(date)를 키로 사용하여 할 일 목록을 가져옵니다.
-		List<TodoEntry> todos = dailyTasks.getOrDefault(date, new ArrayList<>());
-		if (!todos.isEmpty()) {
-			for (TodoEntry todo : todos) {
-				JCheckBox checkBox = new JCheckBox(todo.title);
-				checkBox.setFont(new Font("Malgun Gothic", Font.PLAIN, 12));
-				checkBox.setOpaque(true);
-				checkBox.setBackground(todo.color);
-				checkBox.setBorder(BorderFactory.createLineBorder(todo.color.darker(), 1));
-				checkBox.setSelected(todo.completed);
-				checkBox.setForeground(Color.BLACK);
-				checkBox.setMargin(new Insets(2, 5, 2, 5));
+        prevWeekButton.addActionListener(e -> {
+            currentDate = currentDate.minusWeeks(1);
+            updateWeekView();
+        });
 
-				checkBox.addActionListener(e -> {
-					todo.completed = checkBox.isSelected();
-					updateProgressBar(progressBar, date);
-				});
-				tasksPanel.add(checkBox);
-			}
-		} else {
-			JLabel noTaskLabel = new JLabel("할 일 없음");
-			noTaskLabel.setFont(new Font("Malgun Gothic", Font.PLAIN, 12));
-			noTaskLabel.setForeground(Color.GRAY);
-			tasksPanel.add(noTaskLabel);
-		}
+        nextWeekButton.addActionListener(e -> {
+            currentDate = currentDate.plusWeeks(1);
+            updateWeekView();
+        });
 
-		dayPanel.add(tasksPanel, BorderLayout.CENTER);
-		dayPanel.add(progressBar, BorderLayout.SOUTH);
+        updateWeekView();
+    }
 
-		updateProgressBar(progressBar, date);
+    private JButton createNavButton(String text, Font font) {
+        JButton button = new JButton(text);
+        button.setFont(font);
+        button.setBackground(Color.WHITE);
+        button.setForeground(Color.BLACK);
+        button.setOpaque(true);
+        button.setBorderPainted(true);
+        return button;
+    }
 
-		return dayPanel;
-	}
+    private void setupArrowButton(JButton button, Font font) {
+        button.setFont(font);
+        button.setOpaque(false);
+        button.setContentAreaFilled(false);
+        button.setBorderPainted(false);
+        button.setCursor(new Cursor(Cursor.HAND_CURSOR));
+    }
 
-	public void updateProgressBar(JProgressBar progressBar, LocalDate date) {
-		List<TodoEntry> todos = dailyTasks.getOrDefault(date, new ArrayList<>());
-		if (todos.isEmpty()) {
-			progressBar.setValue(100);
-			progressBar.setString("할 일 없음");
-			progressBar.setForeground(Color.LIGHT_GRAY);
-			return;
-		}
+    void updateWeekView() {
+        // Calculate the week of the month
+        LocalDate firstDayOfMonth = LocalDate.of(currentDate.getYear(), currentDate.getMonth(), 1);
+        int weekNumber = ((currentDate.getDayOfYear() - firstDayOfMonth.getDayOfYear()) / 7) + 1;
 
-		long completedCount = todos.stream().filter(t -> t.completed).count();
-		double percentage = (double) completedCount / todos.size() * 100;
-		int intPercentage = (int) Math.round(percentage);
+        monthLabel.setText(currentDate.format(DateTimeFormatter.ofPattern("M월", Locale.KOREA)) + " " + weekNumber + "주차");
 
-		progressBar.setValue(intPercentage);
-		progressBar.setString(intPercentage + "%");
+        // 현재 주의 첫 번째 날짜를 구합니다.
+        LocalDate startOfWeek = currentDate.minusDays(currentDate.getDayOfWeek().getValue() % 7);
 
-		if (intPercentage < 30) {
-			progressBar.setForeground(new Color(255, 105, 97));
-		} else if (intPercentage < 70) {
-			progressBar.setForeground(new Color(255, 218, 128));
-		} else {
-			progressBar.setForeground(new Color(144, 238, 144));
-		}
-	}
+        for (int i = 0; i < 7; i++) {
+            LocalDate day = startOfWeek.plusDays(i);
+            dayButtons[i].setText(String.valueOf(day.getDayOfMonth()));
+        }
 
-	private JButton createStyledButton(String text, Color bgColor) {
-		JButton button = new JButton("<html><center>" + text.replace("\n", "<br>") + "</center></html>");
-		button.setFont(new Font("Malgun Gothic", Font.PLAIN, 12));
-		button.setBackground(bgColor);
-		button.setForeground(Color.BLACK);
-		button.setFocusPainted(false);
-		button.setBorder(BorderFactory.createLineBorder(Color.GRAY, 1));
-		button.setPreferredSize(new Dimension(80, 50));
-		return button;
-	}
+        // Reset old highlight and set a new one on initial view update
+        if (selectedButtonIndex != -1) {
+            dayButtons[selectedButtonIndex].setBorder(new JButton().getBorder());
+        }
+        
+        LocalDate today = LocalDate.of(2025, 9, 1); // 현재 날짜
+        LocalDate startOfThisWeek = today.minusDays(today.getDayOfWeek().getValue() % 7);
+        
+        if (startOfThisWeek.isEqual(startOfWeek)) { // 현재 주를 표시하고 있을 때만 강조
+            int todayIndex = (int) (today.getDayOfWeek().getValue() % 7);
+            if (todayIndex < 0) todayIndex += 7; // For Sunday
+            selectedButtonIndex = todayIndex;
+            dayButtons[selectedButtonIndex].setBorder(BorderFactory.createLineBorder(Color.decode("#FF5733"), 3));
+        } else {
+            selectedButtonIndex = -1; // 현재 주가 아니면 강조 해제
+        }
 
+        updateTodoPanel();
+        updateProgressBar();
+    }
+
+    public void updateTodoPanel() {
+        todoPanel.removeAll();
+
+        List<TodoEntry> tasks = dailyTasks.getOrDefault(currentDate, new ArrayList<>());
+        Font todoFont = new Font("SansSerif", Font.PLAIN, 20);
+
+        if (tasks.isEmpty()) {
+            JLabel noTaskLabel = new JLabel("예정된 할일이 없습니다.");
+            noTaskLabel.setFont(todoFont);
+            noTaskLabel.setForeground(Color.GRAY);
+            todoPanel.add(noTaskLabel);
+            todoPanel.add(Box.createVerticalGlue());
+        } else {
+            for (TodoEntry task : tasks) {
+                JLabel todoLabel = new JLabel();
+                todoLabel.setFont(todoFont);
+                // 체크박스 대신 •과 √를 사용하여 완료 상태를 표시
+                if (task.completed) {
+                    todoLabel.setText("√  " + task.title);
+                } else {
+                    todoLabel.setText("•  " + task.title);
+                }
+
+                // 할 일 항목에 마우스 리스너 추가
+                todoLabel.setCursor(new Cursor(Cursor.HAND_CURSOR));
+                todoLabel.addMouseListener(new MouseAdapter() {
+                    @Override
+                    public void mouseClicked(MouseEvent e) {
+                        // 할 일 클릭 시 TodoPageView 열기
+                        new TodoPageView(currentDate, CalendarFrame01.this).setVisible(true);
+                        dispose();
+                    }
+                });
+
+                todoPanel.add(todoLabel);
+                todoPanel.add(Box.createVerticalStrut(5));
+            }
+            todoPanel.add(Box.createVerticalGlue());
+        }
+
+        todoPanel.revalidate();
+        todoPanel.repaint();
+    }
+
+    public void updateProgressBar() {
+        List<TodoEntry> tasks = dailyTasks.getOrDefault(currentDate, new ArrayList<>());
+
+        if (tasks.isEmpty()) {
+            progressBar.setValue(100);
+            progressBar.setString("할 일 없음");
+            progressBar.setForeground(Color.LIGHT_GRAY);
+            return;
+        }
+
+        long completedCount = tasks.stream().filter(t -> t.completed).count();
+        int totalCount = tasks.size();
+
+        int progress = (int) Math.round(((double) completedCount / totalCount) * 100);
+        progressBar.setValue(progress);
+        progressBar.setString(progress + "%");
+        updateProgressBarColor();
+    }
+
+    private void updateProgressBarColor() {
+        int progress = progressBar.getValue();
+        if (progress < 30) {
+            progressBar.setForeground(new Color(255, 105, 97));
+        } else if (progress < 70) {
+            progressBar.setForeground(new Color(255, 218, 128));
+        } else {
+            progressBar.setForeground(new Color(144, 238, 144));
+        }
+    }
+
+    private class DayButtonListener implements ActionListener {
+        private int dayIndex;
+        private final Border originalBorder = new JButton().getBorder();
+
+        public DayButtonListener(int dayIndex) {
+            this.dayIndex = dayIndex;
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            // Reset the border of the previously selected button
+            if (selectedButtonIndex != -1) {
+                dayButtons[selectedButtonIndex].setBorder(originalBorder);
+            }
+
+            // Update the current date and set the new selected button
+            LocalDate startOfWeek = currentDate.minusDays(currentDate.getDayOfWeek().getValue() % 7);
+            currentDate = startOfWeek.plusDays(dayIndex);
+            selectedButtonIndex = dayIndex;
+
+            // Highlight the selected button with a distinct border
+            dayButtons[selectedButtonIndex].setBorder(BorderFactory.createLineBorder(Color.decode("#FF5733"), 3));
+
+            // Update the UI
+            updateTodoPanel(); 
+            updateProgressBar();
+        }
+    }
+
+    private void createSampleTasks() {
+        dailyTasks.put(LocalDate.of(2025, 9, 1),
+            new ArrayList<>(List.of(
+                new TodoEntry("자바 프로젝트 시작", false, new Color(255, 255, 204)),
+                new TodoEntry("UI 레이아웃 구상", false, new Color(255, 255, 204)),
+                new TodoEntry("깃허브 레포 생성", true, new Color(255, 255, 204))
+            ))
+        );
+        dailyTasks.put(LocalDate.of(2025, 9, 2),
+            new ArrayList<>(List.of(
+                new TodoEntry("알고리즘 문제 풀기", false, new Color(255, 255, 204)),
+                new TodoEntry("점심 약속 (홍대)", false, new Color(255, 255, 204))
+            ))
+        );
+        dailyTasks.put(LocalDate.of(2025, 9, 4),
+            new ArrayList<>(List.of(
+                new TodoEntry("마트 장보기", false, new Color(255, 255, 204)),
+                new TodoEntry("저녁 요리하기", false, new Color(255, 255, 204))
+            ))
+        );
+        dailyTasks.put(LocalDate.of(2025, 9, 5),
+            new ArrayList<>(List.of(
+                new TodoEntry("주말 계획 세우기", true, new Color(255, 255, 204)),
+                new TodoEntry("영화 보기: 코드 마스터", true, new Color(255, 255, 204))
+            ))
+        );
+        dailyTasks.put(LocalDate.of(2025, 9, 7),
+            new ArrayList<>(List.of(
+                new TodoEntry("주간 회고 작성", false, new Color(255, 255, 204)),
+                new TodoEntry("다음 주 계획", false, new Color(255, 255, 204))
+            ))
+        );
+        dailyTasks.put(LocalDate.of(2025, 9, 8),
+            new ArrayList<>(List.of(
+                new TodoEntry("새 기능 개발 착수", false, new Color(255, 255, 204)),
+                new TodoEntry("코드 리뷰", false, new Color(255, 255, 204)),
+                new TodoEntry("운동하기", false, new Color(255, 255, 204))
+            ))
+        );
+    }
 }
-
-
-
-
-
-
-
