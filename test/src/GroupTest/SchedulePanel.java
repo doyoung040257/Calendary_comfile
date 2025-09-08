@@ -158,7 +158,8 @@ public class SchedulePanel extends JPanel {
     }
 
     // ----------------- 일정 처리 메서드 -----------------
-    private void handleAddEvent() { /* 기존 addBtn 이벤트 내용  }
-    private void handleEditEvent() {  기존 editBtn 이벤트 내용  }
-    private void handleRangeEditEvent() {  기존 rangeEditBtn 이벤트 내용  }
+    private void handleAddEvent() {} // 기존 addBtn 이벤트 내용  
+    private void handleEditEvent() {} //  기존 editBtn 이벤트 내용  
+    private void handleRangeEditEvent() {} // 기존 rangeEditBtn 이벤트 내용  
 }
+
