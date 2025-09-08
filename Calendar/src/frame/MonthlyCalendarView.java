@@ -1,3 +1,4 @@
+// 지금 뭔가 큰 오류가 발생되어 고치는중
 package frame;
 
 import java.awt.BorderLayout;
@@ -199,3 +200,4 @@ public class MonthlyCalendarView extends JFrame {
         dateGridPanel.add(cell);
     }
 }
+
