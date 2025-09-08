@@ -2,10 +2,10 @@ package GroupTest;
 
 import javax.swing.*;
 import javax.swing.border.LineBorder;
+import frame.CalendarFrame01;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.List;
-import frame.CalendarFrame01;
 
 public class MemberPanel extends JPanel {
 
@@ -43,6 +43,7 @@ public class MemberPanel extends JPanel {
         Font buttonFont = new Font("맑은 고딕", Font.BOLD, 14);
         Dimension buttonSize = new Dimension(140, 40);
 
+        // 그룹 나가기 / 이전 화면 버튼
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 10));
         buttonPanel.setBackground(Color.WHITE);
         buttonPanel.setPreferredSize(new Dimension(0, 60));
@@ -76,7 +77,7 @@ public class MemberPanel extends JPanel {
 
         bottomPanel.add(buttonPanel, BorderLayout.NORTH);
 
-        // 동기화 버튼
+        // ----------------- 동기화 버튼 -----------------
         JPanel syncButtonPanel = new JPanel(new GridLayout(1, 3, 5, 0));
         syncButtonPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
         syncButtonPanel.setBackground(Color.WHITE);
@@ -98,7 +99,7 @@ public class MemberPanel extends JPanel {
                     "메인화면으로 돌아가시겠습니까?", "확인", JOptionPane.YES_NO_OPTION);
             if (confirm != JOptionPane.YES_OPTION) return;
             SwingUtilities.getWindowAncestor(this).dispose();
-            new CalendarFrame01().setVisible(true);
+            new CalendarFrame01(null).setVisible(true);
         });
 
         todoBtn.setFont(buttonFont);
@@ -119,6 +120,14 @@ public class MemberPanel extends JPanel {
         bottomPanel.add(syncButtonPanel, BorderLayout.SOUTH);
 
         add(bottomPanel, BorderLayout.SOUTH);
+
+        // ----------------- X 버튼 처리 -----------------
+        frame.getFrameWindow().addWindowListener(new java.awt.event.WindowAdapter() {
+            @Override
+            public void windowClosing(java.awt.event.WindowEvent e) {
+                frame.backTo("Main");
+            }
+        });
     }
 
     public void updateMemberList() {
@@ -126,9 +135,11 @@ public class MemberPanel extends JPanel {
         List<String> members = frame.groupMembers.get(groupName);
         if (members != null) {
             for (String m : members) {
-                JPanel row = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 5));
+                // 각 멤버마다 새로운 작은 박스 생성
+                JPanel row = new JPanel(new BorderLayout(10, 5));
                 row.setBackground(Color.WHITE);
                 row.setBorder(new LineBorder(Color.GRAY, 1, true));
+                row.setMaximumSize(new Dimension(Integer.MAX_VALUE, 40));
 
                 JLabel memberLabel = new JLabel(m);
                 memberLabel.setPreferredSize(new Dimension(150, 25));
@@ -139,14 +150,14 @@ public class MemberPanel extends JPanel {
                 scheduleBtn.setFocusPainted(false);
                 scheduleBtn.setPreferredSize(new Dimension(120, 30));
                 addHoverClickEffect(scheduleBtn, Color.WHITE);
-                scheduleBtn.addActionListener(e -> {
-                    frame.switchPanel("Schedule_" + groupName + "_" + m,
-                            new SchedulePanel(frame, groupName, m, false));
-                });
+                scheduleBtn.addActionListener(e -> frame.switchPanel("Schedule_" + groupName + "_" + m,
+                        new SchedulePanel(frame, groupName, m, false)));
 
-                row.add(memberLabel);
-                row.add(scheduleBtn);
+                row.add(memberLabel, BorderLayout.WEST);
+                row.add(scheduleBtn, BorderLayout.EAST);
+
                 memberPanel.add(row);
+                memberPanel.add(Box.createRigidArea(new Dimension(0, 5))); // 각 박스 사이 간격
             }
         }
         memberPanel.revalidate();
@@ -171,5 +182,4 @@ public class MemberPanel extends JPanel {
         titleLabel.setText(groupName + " - 멤버 목록");
         updateMemberList();
     }
-    
 }
