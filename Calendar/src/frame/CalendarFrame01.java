@@ -239,7 +239,7 @@ public class CalendarFrame01 extends JFrame {
             dayButtons[selectedButtonIndex].setBorder(new JButton().getBorder());
         }
         
-        LocalDate today = LocalDate.of(2025, 9, 8); // 현재 날짜
+        LocalDate today = LocalDate.of(2025, 9, 1); // 현재 날짜
         LocalDate startOfThisWeek = today.minusDays(today.getDayOfWeek().getValue() % 7);
         
         if (startOfThisWeek.isEqual(startOfWeek)) { // 현재 주를 표시하고 있을 때만 강조
@@ -399,3 +399,4 @@ public class CalendarFrame01 extends JFrame {
         );
     }
 }
+
