@@ -1,17 +1,18 @@
 package GroupTest;
 
 import javax.swing.*;
+
+import frame.CalendarFrame01;
+
 import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
 import java.util.List;
-import frame.CalendarFrame01;
 
 public class MainPanel extends JPanel {
 
-    private DefaultListModel<String> groupListModel;
-    private JList<String> groupList;
     private MainFrame frame;
+    private JPanel groupButtonContainer;  // 그룹 버튼들을 담을 패널
 
     public MainPanel(MainFrame frame) {
         this.frame = frame;
@@ -38,28 +39,13 @@ public class MainPanel extends JPanel {
 
         add(topPanel, BorderLayout.NORTH);
 
-        // ----------------- 그룹 리스트 -----------------
-        groupListModel = new DefaultListModel<>();
-        groupList = new JList<>(groupListModel);
-        groupList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        groupList.setFont(new Font("맑은 고딕", Font.PLAIN, 16));
-        JScrollPane listScroll = new JScrollPane(groupList);
-        listScroll.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-        add(listScroll, BorderLayout.CENTER);
-
-        groupList.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                if (e.getClickCount() == 2) {
-                    String selectedGroup = groupList.getSelectedValue();
-                    if (selectedGroup != null) {
-                        frame.myGroup = selectedGroup;
-                        frame.switchPanel("Member_" + selectedGroup,
-                                new MemberPanel(frame, selectedGroup));
-                    }
-                }
-            }
-        });
+        // ----------------- 그룹 버튼 컨테이너 -----------------
+        groupButtonContainer = new JPanel();
+        groupButtonContainer.setLayout(new BoxLayout(groupButtonContainer, BoxLayout.Y_AXIS));
+        groupButtonContainer.setBackground(Color.WHITE);
+        JScrollPane scrollPane = new JScrollPane(groupButtonContainer);
+        scrollPane.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+        add(scrollPane, BorderLayout.CENTER);
 
         // ----------------- 하단 버튼 -----------------
         JPanel bottomPanel = new JPanel(new BorderLayout());
@@ -110,7 +96,7 @@ public class MainPanel extends JPanel {
                     "메인화면으로 돌아가시겠습니까?", "확인", JOptionPane.YES_NO_OPTION);
             if (confirm != JOptionPane.YES_OPTION) return;
             SwingUtilities.getWindowAncestor(this).dispose();
-            new CalendarFrame01().setVisible(true);
+            new CalendarFrame01(null).setVisible(true);
         });
 
         JButton todoBtn = new JButton("할 일");
@@ -162,14 +148,14 @@ public class MainPanel extends JPanel {
                 }
 
                 frame.createGroup(groupNameText, members);
-                groupListModel.addElement(groupNameText);
+                addGroupButton(groupNameText);
                 JOptionPane.showMessageDialog(this, "그룹이 생성되었습니다.");
                 break;
             }
         });
 
         deleteBtn.addActionListener(e -> {
-            String selectedGroup = groupList.getSelectedValue();
+            String selectedGroup = getSelectedGroup();
             if (selectedGroup == null) {
                 JOptionPane.showMessageDialog(this, "삭제할 그룹을 선택해주세요.");
                 return;
@@ -178,12 +164,51 @@ public class MainPanel extends JPanel {
             if (confirm != JOptionPane.YES_OPTION) return;
 
             frame.deleteGroup(selectedGroup);
-            groupListModel.removeElement(selectedGroup);
+            removeGroupButton(selectedGroup);
             JOptionPane.showMessageDialog(this, "그룹이 삭제되었습니다.");
         });
     }
+    
+    
 
-    // ----------------- 버튼 호버 + 클릭 효과 -----------------
+    private void addGroupButton(String groupName) {
+        JButton btn = new JButton(groupName);
+        btn.setMaximumSize(new Dimension(Integer.MAX_VALUE, 50));
+        btn.setFont(new Font("맑은 고딕", Font.BOLD, 16));
+        btn.setBackground(new Color(200, 200, 255));
+        btn.setFocusPainted(false);
+        addHoverClickEffect(btn, new Color(200, 200, 255));
+        btn.addActionListener(e -> frame.switchPanel("Member_" + groupName, new MemberPanel(frame, groupName)));
+
+        groupButtonContainer.add(btn);
+        groupButtonContainer.revalidate();
+        groupButtonContainer.repaint();
+    }
+
+    private void removeGroupButton(String groupName) {
+        Component toRemove = null;
+        for (Component comp : groupButtonContainer.getComponents()) {
+            if (comp instanceof JButton && ((JButton) comp).getText().equals(groupName)) {
+                toRemove = comp;
+                break;
+            }
+        }
+        if (toRemove != null) {
+            groupButtonContainer.remove(toRemove);
+            groupButtonContainer.revalidate();
+            groupButtonContainer.repaint();
+        }
+    }
+
+    private String getSelectedGroup() {
+        for (Component comp : groupButtonContainer.getComponents()) {
+            if (comp instanceof JButton) {
+                if (((JButton) comp).getModel().isArmed()) return ((JButton) comp).getText();
+            }
+        }
+        return null;
+    }
+
     private void addHoverClickEffect(JButton button, Color original) {
         button.addMouseListener(new MouseAdapter() {
             @Override
@@ -198,6 +223,6 @@ public class MainPanel extends JPanel {
     }
 
     public void removeGroup(String groupName) {
-        groupListModel.removeElement(groupName);
+        removeGroupButton(groupName);
     }
 }
