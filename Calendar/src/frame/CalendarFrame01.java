@@ -1,4 +1,3 @@
-// CalendarFrame01.java
 package frame;
 
 import javax.swing.*;
@@ -15,10 +14,11 @@ import java.util.Map;
 import javax.swing.border.Border;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-
+import lg.User; // User 클래스를 사용하기 위해 import 추가
 
 public class CalendarFrame01 extends JFrame {
 
+    private User currentUser; // User 객체를 저장할 필드 추가
     LocalDate currentDate;
     private JLabel monthLabel;
     private JButton[] dayButtons = new JButton[7];
@@ -42,22 +42,20 @@ public class CalendarFrame01 extends JFrame {
         }
     }
 
-    public CalendarFrame01() {
-        this(LocalDate.of(2025, 9, 1));
-    }
-
+    // 기본 생성자 유지 (LocalDate 인자)
     public CalendarFrame01(LocalDate date) {
         this.currentDate = date;
 
-        // --- 프레임 기본 설정 ---
-        setTitle("주간 플래너");
-        setSize(480, 800);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLayout(new BorderLayout());
-        setLocationRelativeTo(null);
-
         // 초기 샘플 데이터 생성
         createSampleTasks();
+
+        // --- 프레임 기본 설정 ---
+        setTitle("주간 플래너");
+        setSize(480, 800); // 크기 고정
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLocationRelativeTo(null);
+        setResizable(false);
+        setLayout(new BorderLayout());
 
         Font titleFont = new Font("SansSerif", Font.BOLD, 22);
         Font buttonFont = new Font("SansSerif", Font.BOLD, 16);
@@ -184,6 +182,14 @@ public class CalendarFrame01 extends JFrame {
         });
 
         updateWeekView();
+    }
+
+    // 로그인한 User 객체를 받는 생성자 추가
+    public CalendarFrame01(User user) {
+        this(LocalDate.of(2025, 9, 1)); // 기존 생성자 호출
+        this.currentUser = user; // User 객체 저장
+        // 사용자 이름으로 프레임 타이틀을 설정하거나 다른 개인화 작업 수행
+        setTitle(user.getName() + "님의 주간 플래너");
     }
 
     private JButton createNavButton(String text, Font font) {
