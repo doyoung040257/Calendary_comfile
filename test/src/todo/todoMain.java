@@ -1,7 +1,10 @@
 package todo;
 
-import java.awt.*;
-import java.awt.event.*;
+import java.awt.Color;
+import java.awt.Label;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import javax.swing.JFrame;
 import javax.swing.*;
 
 public class todoMain{
@@ -20,7 +23,8 @@ public class todoMain{
 		fr = new JFrame();
 		fr.setTitle("할 일");
 		fr.setSize(500,800);
-		fr.setLayout(null); // 위치 직접 설정
+		fr.setLayout(null);// 위치 직접 설정
+		fr.setLocationRelativeTo(null);
 		fr.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		
 		
@@ -41,8 +45,10 @@ public class todoMain{
 		
 		//추가, 삭제
 		addition = new JButton("추가");
-		delete = new JButton("삭제");
+		addition.setFocusPainted(false);
 		addition.setBounds(100, 650, 150, 80); // 위치(가로), 위치(세로), 버큰 크기(가로), 버튼 크기(높이)
+		delete = new JButton("삭제");
+		delete.setFocusPainted(false);
 		delete.setBounds(250, 650, 150, 80);
 		fr.add(addition);
 		fr.add(delete);
@@ -92,7 +98,7 @@ private void renderList() {
         for (int i = 0; i < sharedList.getTodolist().size(); i++) {
             todoList t = sharedList.getTodolist().get(i);
 
-            JButton b = new JButton(t.getWork()); // 라벨을 work로
+            JButton b = new JButton(t.getWork());
             b.setBounds(10, y, 280, 40);
 
             JCheckBox cb = new JCheckBox();
@@ -116,19 +122,8 @@ private void renderList() {
         fr.getContentPane().revalidate();
         fr.getContentPane().repaint();    
 	}
+
+	public static void main(String[] args) {
+		new todoMain();
+	}
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
