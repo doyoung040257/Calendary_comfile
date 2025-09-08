@@ -1,8 +1,12 @@
 package todo;
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import java.awt.*;
-import java.awt.event.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseWheelEvent;
+import java.awt.event.MouseWheelListener;
 
 public class todoClock extends JFrame {
 
@@ -12,17 +16,17 @@ public class todoClock extends JFrame {
 	private JLabel minuteLab;
 	private todoClockListener listener;
 
-    //위치 지정 보류!!!
     public todoClock(todoClockListener listener) {
     	this.listener = listener;
     	
-        setSize(300, 200);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLayout(new FlowLayout());
+    	setUndecorated(true); // 타이틀바 제거
+    	getRootPane().setBorder(BorderFactory.createLineBorder(Color.BLACK, 1)); // 테두리
+        setSize(150, 100);
+        setLayout(new GridLayout(0,1));
+        setLocationRelativeTo(null);
         
         JPanel clock = new JPanel();
-        clock.setBackground(Color.gray);
-        add(clock, BorderLayout.CENTER);
+        add(clock);
         
         hourLab = new JLabel(String.format("%02d", hour));
         hourLab.setFont(new Font("맑은 고딕", Font.BOLD, 32));
@@ -37,9 +41,14 @@ public class todoClock extends JFrame {
         minuteLab = new JLabel(String.format("%02d", minute));
         minuteLab.setFont(new Font("맑은 고딕", Font.BOLD, 32));
         clock.add(minuteLab);
-
+        
+        JPanel btn = new JPanel();
         JButton confirm = new JButton("확인");
-        JButton cancle = new JButton("취소");
+        confirm.setBorder(new EmptyBorder(3,5,3,5)); //위 왼쪽 아래 오른쪽
+        confirm.setFocusPainted(false);
+        JButton cancel = new JButton("취소");
+        cancel.setBorder(new EmptyBorder(3,5,3,5));
+        cancel.setFocusPainted(false);
         
         hourLab.addMouseWheelListener(new MouseWheelListener() {
 			@Override
@@ -73,9 +82,11 @@ public class todoClock extends JFrame {
 			}
 		});
         
-        add(confirm, BorderLayout.SOUTH);
-        add(cancle, BorderLayout.SOUTH);
+        cancel.addActionListener(e -> dispose());
+        
+        add(btn);
+        btn.add(confirm);
+        btn.add(cancel);
         setVisible(true);        
     }
 }
-
