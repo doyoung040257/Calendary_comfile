@@ -5,8 +5,11 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoField;
+import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -35,7 +38,7 @@ public class CalendarFrame01 extends JFrame {
 
     // 현재 로그인된 사용자를 저장할 필드 추가
     private User currentUser;
-	private User user; 
+    private User user;
 
     // 할 일 데이터 및 한줄평 데이터를 모든 프레임에서 공유하기 위한 static 변수
     public static Map<LocalDate, List<TodoEntry>> dailyTasks = new HashMap<>();
@@ -133,7 +136,7 @@ public class CalendarFrame01 extends JFrame {
         progressBar.setFont(new Font("SansSerif", Font.BOLD, 18));
         progressBar.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
         progressBar.setForeground(Color.decode("#F5E6CC"));
-        
+
         // --- 날짜 버튼 패널 ---
         JPanel dayButtonsPanel = new JPanel(new GridLayout(1, 7, 5, 5));
         dayButtonsPanel.setBorder(BorderFactory.createEmptyBorder(10, 5, 10, 5));
@@ -144,15 +147,15 @@ public class CalendarFrame01 extends JFrame {
             dayButtons[i].addActionListener(new DayButtonListener(i));
             dayButtonsPanel.add(dayButtons[i]);
         }
-        
+
         JPanel headerPanel = new JPanel(new BorderLayout());
         headerPanel.add(topPanel, BorderLayout.NORTH);
-        
+
         // 새로운 패널에 진행률 바와 날짜 버튼 패널을 추가
         JPanel progressAndDayPanel = new JPanel(new BorderLayout());
         progressAndDayPanel.add(progressBar, BorderLayout.NORTH);
         progressAndDayPanel.add(dayButtonsPanel, BorderLayout.CENTER);
-        
+
         headerPanel.add(progressAndDayPanel, BorderLayout.CENTER);
         add(headerPanel, BorderLayout.NORTH);
 
@@ -160,6 +163,14 @@ public class CalendarFrame01 extends JFrame {
         todoPanel = new JPanel();
         todoPanel.setLayout(new BoxLayout(todoPanel, BoxLayout.Y_AXIS)); // 세로 정렬을 위해 BoxLayout 사용
         todoPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+        todoPanel.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        todoPanel.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                new TodoPageView(currentDate, CalendarFrame01.this).setVisible(true);
+                dispose();
+            }
+        });
         add(new JScrollPane(todoPanel), BorderLayout.CENTER);
 
         // --- 하단 네비게이션 패널 ---
@@ -180,18 +191,18 @@ public class CalendarFrame01 extends JFrame {
         });
 
         todoButton.addActionListener(e -> {
-            
-        	JOptionPane.showMessageDialog(this, "할일 화면으로 이동합니다.");
-        	todoMain todomain = new todoMain();
+
+            JOptionPane.showMessageDialog(this, "할일 화면으로 이동합니다.");
+            todoMain todomain = new todoMain();
             //dispose();
         });
 
         groupButton.addActionListener(e -> {
             JOptionPane.showMessageDialog(this, "그룹 관리 화면으로 이동합니다.");
             SwingUtilities.invokeLater(() -> new MainFrame("사용자")); // 기본 사용자명 전달
-			dispose();
+            dispose();
         });
-        
+
         navPanel.add(homeButton);
         navPanel.add(todoButton);
         navPanel.add(groupButton);
@@ -239,33 +250,26 @@ public class CalendarFrame01 extends JFrame {
         monthLabel.setText(currentDate.format(DateTimeFormatter.ofPattern("M월", Locale.KOREA)) + " " + weekNumber + "주차");
 
         // 현재 주의 첫 번째 날짜를 구합니다.
-        LocalDate startOfWeek = currentDate.minusDays(currentDate.getDayOfWeek().getValue() % 7);
+        LocalDate startOfWeek = currentDate.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
 
         for (int i = 0; i < 7; i++) {
             LocalDate day = startOfWeek.plusDays(i);
             dayButtons[i].setText(String.valueOf(day.getDayOfMonth()));
         }
 
-        // Reset old highlight and set a new one on initial view update
-        if (selectedButtonIndex != -1) {
-            dayButtons[selectedButtonIndex].setBorder(new JButton().getBorder());
+        // 모든 버튼의 테두리를 초기화합니다.
+        for (int i = 0; i < 7; i++) {
+            dayButtons[i].setBorder(new JButton().getBorder());
         }
-        
-        LocalDate today = LocalDate.of(2025, 9, 1); // 현재 날짜
-        LocalDate startOfThisWeek = today.minusDays(today.getDayOfWeek().getValue() % 7);
-        
-        if (startOfThisWeek.isEqual(startOfWeek)) { // 현재 주를 표시하고 있을 때만 강조
-            int todayIndex = (int) (today.getDayOfWeek().getValue() % 7);
-            if (todayIndex < 0) todayIndex += 7; // For Sunday
-            selectedButtonIndex = todayIndex;
-            dayButtons[selectedButtonIndex].setBorder(BorderFactory.createLineBorder(Color.decode("#FF5733"), 3));
-        } else {
-            selectedButtonIndex = -1; // 현재 주가 아니면 강조 해제
-        }
+
+        // 현재 날짜에 해당하는 버튼을 강조합니다.
+        int dayIndex = (currentDate.getDayOfWeek().getValue() - 1);
+        dayButtons[dayIndex].setBorder(BorderFactory.createLineBorder(Color.decode("#FF5733"), 3));
 
         updateTodoPanel();
         updateProgressBar();
     }
+
 
     public void updateTodoPanel() {
         todoPanel.removeAll();
@@ -289,18 +293,6 @@ public class CalendarFrame01 extends JFrame {
                 } else {
                     todoLabel.setText("•  " + task.title);
                 }
-
-                // 할 일 항목에 마우스 리스너 추가
-                todoLabel.setCursor(new Cursor(Cursor.HAND_CURSOR));
-                todoLabel.addMouseListener(new MouseAdapter() {
-                    @Override
-                    public void mouseClicked(MouseEvent e) {
-                        // 할 일 클릭 시 TodoPageView 열기
-                        new TodoPageView(currentDate, CalendarFrame01.this).setVisible(true);
-                        dispose();
-                    }
-                });
-
                 todoPanel.add(todoLabel);
                 todoPanel.add(Box.createVerticalStrut(5));
             }
@@ -351,22 +343,12 @@ public class CalendarFrame01 extends JFrame {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            // Reset the border of the previously selected button
-            if (selectedButtonIndex != -1) {
-                dayButtons[selectedButtonIndex].setBorder(originalBorder);
-            }
-
-            // Update the current date and set the new selected button
-            LocalDate startOfWeek = currentDate.minusDays(currentDate.getDayOfWeek().getValue() % 7);
+            // Update the current date
+            LocalDate startOfWeek = currentDate.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
             currentDate = startOfWeek.plusDays(dayIndex);
-            selectedButtonIndex = dayIndex;
-
-            // Highlight the selected button with a distinct border
-            dayButtons[selectedButtonIndex].setBorder(BorderFactory.createLineBorder(Color.decode("#FF5733"), 3));
-
+            
             // Update the UI
-            updateTodoPanel(); 
-            updateProgressBar();
+            updateWeekView();
         }
     }
 
