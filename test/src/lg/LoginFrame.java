@@ -87,6 +87,7 @@ public class LoginFrame extends JFrame {
                 JOptionPane.showMessageDialog(this, user.getName() + "님 환영합니다!");
                 CalendarFrame01 appFrame = new CalendarFrame01(user); // 수정: user 객체 전달
                 appFrame.setVisible(true);
+                dispose();
             } else {
                 JOptionPane.showMessageDialog(this, "비밀번호가 틀렸습니다.");
             }
@@ -95,6 +96,7 @@ public class LoginFrame extends JFrame {
         }
     }
 }
+
 
 
 
