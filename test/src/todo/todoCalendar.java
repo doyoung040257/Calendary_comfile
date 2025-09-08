@@ -1,48 +1,59 @@
 package todo;
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import java.awt.*;
-import java.awt.event.*;
-import java.time.*;
-
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.time.LocalDate;
+import java.time.YearMonth;
 
 public class todoCalendar extends JFrame {
 	
 	private YearMonth currentYM = YearMonth.now();
 	private todoCalendarListener listener;
-
 	
     public todoCalendar(todoCalendarListener listener) {
     	this.listener = listener;
 
-        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        setSize(400, 400);
+    	setUndecorated(true); // 타이틀바 제거
+    	getRootPane().setBorder(BorderFactory.createLineBorder(Color.BLACK, 1)); // 테두리
+        setSize(300, 300);
         setLocationRelativeTo(null); // 화면 정중앙 위치
         setLayout(new BorderLayout());
         
     	JPanel p_north = new JPanel(new FlowLayout(FlowLayout.CENTER));
+    	p_north.setBorder(new EmptyBorder(12,0,0,0));
+    	p_north.setBackground(Color.WHITE);
     	JButton bt_prev = new JButton("이전");
-    	JLabel lb_title = new JLabel("2025-09");
+    	bt_prev.setFocusPainted(false);
+    	JLabel lb_title = new JLabel();
 		JButton bt_next = new JButton("다음");
+		bt_next.setFocusPainted(false);
 		
 		p_north.add(bt_prev);
 		p_north.add(lb_title);
 		p_north.add(bt_next);
 
         // 버튼 이름이 들어있는 배열
-        String[] labels = {"Sun", "Mon", "Tue", "Wen", "Thur", "Fri", "Sat"};
+        String[] labels = {"Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"};
         JPanel panel = new JPanel(new GridLayout(0, 7, 8, 8)); // 행 자동, 열 7, 간격 8px
+        panel.setBorder(new EmptyBorder(5,5,5,5));
+        panel.setBackground(Color.WHITE);
 
         //요일 라벨 생성
         for (int i = 0; i < labels.length; i++) {
-        	Label l = new Label(labels[i], Label.CENTER);
+        	JLabel l = new JLabel(labels[i], SwingConstants.CENTER);
         	panel.add(l);
         }
         
         //날짜 버튼 생성
-        JButton[] buttons = new JButton[labels.length*5];
-        for (int i = 0; i < labels.length*5; i++) {
+        JButton[] buttons = new JButton[labels.length*6];
+        for (int i = 0; i < labels.length*6; i++) {
             buttons[i] = new JButton();
+            buttons[i].setFocusPainted(false);
+            buttons[i].setFont(new Font("맑은 고딕", Font.PLAIN, 10)); // 버튼 글자 크기 조정
+            buttons[i].setMargin(new Insets(0, 0, 0, 0)); // 여백 제거
             final int idx = i;
             buttons[i].addActionListener(new ActionListener() {
 				@Override
@@ -124,23 +135,8 @@ public class todoCalendar extends JFrame {
     }
     
     private String dayOfWeek(int i) {
-    	String dayofweek = "";
-    	if(i%7 == 0) {
-    		dayofweek = "Sun";
-    	}else if(i%7 == 1){
-    		dayofweek = "Mon";
-    	}else if(i%7 == 2){
-    		dayofweek = "Tue";
-    	}else if(i%7 == 3){
-    		dayofweek = "Wen";
-    	}else if(i%7 == 4){
-    		dayofweek = "Thu";
-    	}else if(i%7 == 5){
-    		dayofweek = "Fri";
-    	}else if(i%7 == 6){
-    		dayofweek = "Sat";
-    	}
-    	return dayofweek;
+        String[] w = {"Sun","Mon","Tue","Wed","Thu","Fri","Sat"};
+        return w[i % 7];
 	}
    
     // 한 자리 수이면 앞에 0 붙이기
@@ -149,6 +145,4 @@ public class todoCalendar extends JFrame {
     }
 
 }
-
-
 
