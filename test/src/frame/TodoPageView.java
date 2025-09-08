@@ -1,7 +1,7 @@
+// TodoPageView.java
 package frame;
 
 import javax.swing.*;
-import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import java.awt.*;
@@ -9,305 +9,336 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.time.format.TextStyle;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-// DocumentListener를 사용하기 위해 import 합니다.
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
 import Settings.SettingsMenu;
+import lg.User;
+import todo.todoMain;
 
 public class TodoPageView extends JFrame {
 
-    private JProgressBar progressBar;
-    private JPanel todoListPanel;
-    private LocalDate currentDate;
-    private JLabel dateLabel;
-    private JTextField newTodoTextField;
-    private JTextArea oneLineReviewArea; // 클래스 멤버 변수로 선언
+	private JProgressBar progressBar;
+	private JPanel todoListPanel;
+	private LocalDate currentDate;
+	private JLabel dateLabel;
+	private JTextArea oneLineReviewArea;
 
-    public TodoPageView(LocalDate date) {
-        currentDate = date;
+	// CalendarFrame01 인스턴스에 대한 참조를 유지
+	private CalendarFrame01 mainFrame;
+	private User user;
 
-        // --- 프레임 기본 설정 ---
-        setTitle("할 일 페이지");
-        setSize(500, 800);
-        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        setLocationRelativeTo(null);
-        setResizable(false);
+	// CalendarFrame01에서 호출할 때 사용될 생성자
+	public TodoPageView(LocalDate date, CalendarFrame01 mainFrame) {
+		this.currentDate = date;
+		this.mainFrame = mainFrame;
 
-        // --- 전체 컨텐츠 패널 설정 ---
-        JPanel contentPane = new JPanel(new BorderLayout(0, 10));
-        contentPane.setBorder(new EmptyBorder(10, 10, 10, 10));
-        add(contentPane);
+		// --- 프레임 기본 설정 ---
+		setTitle("할 일 페이지");
+		setSize(480, 800);
+		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		setLocationRelativeTo(null);
+		setResizable(false);
 
-        // --- 1. 상단 섹션 (날짜 이동, 진행률) ---
-        JPanel topSectionPanel = new JPanel();
-        topSectionPanel.setLayout(new BoxLayout(topSectionPanel, BoxLayout.Y_AXIS));
-        topSectionPanel.setBorder(new EmptyBorder(0, 0, 10, 0));
+		// --- 전체 컨텐츠 패널 설정 ---
+		JPanel contentPane = new JPanel(new BorderLayout(0, 10));
+		contentPane.setBorder(new EmptyBorder(10, 10, 10, 10));
+		add(contentPane);
 
-        // 1-1. 날짜 이동 패널
-        JPanel dateNavigationPanel = new JPanel(new BorderLayout());
-        JButton prevButton = new JButton("<<");
-        prevButton.addActionListener(e -> {
-            currentDate = currentDate.minusDays(1);
-            refreshDateDisplay();
-            loadTodoList();
-        });
+		// --- 1. 상단 섹션 (날짜 이동, 진행률) ---
+		JPanel topSectionPanel = new JPanel();
+		topSectionPanel.setLayout(new BoxLayout(topSectionPanel, BoxLayout.Y_AXIS));
+		topSectionPanel.setBorder(new EmptyBorder(0, 0, 10, 0));
 
-        dateLabel = new JLabel("", SwingConstants.CENTER);
-        dateLabel.setFont(new Font("Malgun Gothic", Font.BOLD, 18));
-        dateLabel.setBorder(new LineBorder(Color.BLACK, 2));
-        dateLabel.setPreferredSize(new Dimension(getWidth(), 40));
-        dateLabel.setOpaque(true);
-        dateLabel.setBackground(Color.WHITE);
+		// 1-1. 날짜 이동 패널
+		JPanel dateNavigationPanel = new JPanel(new BorderLayout());
 
-        JButton nextButton = new JButton(">>");
-        nextButton.addActionListener(e -> {
-            currentDate = currentDate.plusDays(1);
-            refreshDateDisplay();
-            loadTodoList();
-        });
+		// 왼쪽 버튼들을 담을 패널
+		JPanel leftPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 0));
+		leftPanel.setOpaque(false);
 
-        dateNavigationPanel.add(prevButton, BorderLayout.WEST);
-        dateNavigationPanel.add(dateLabel, BorderLayout.CENTER);
-        dateNavigationPanel.add(nextButton, BorderLayout.EAST);
-        topSectionPanel.add(dateNavigationPanel);
-        topSectionPanel.add(Box.createVerticalStrut(10));
-
-        // 1-2. 진행률 바
-        progressBar = new JProgressBar(0, 100);
-        progressBar.setPreferredSize(new Dimension(getWidth(), 30));
-        progressBar.setStringPainted(true);
-        JPanel progressBarPanel = new JPanel(new BorderLayout());
-        progressBarPanel.setBorder(new LineBorder(Color.RED, 2));
-        progressBarPanel.add(progressBar, BorderLayout.CENTER);
-        topSectionPanel.add(progressBarPanel);
-        topSectionPanel.add(Box.createVerticalStrut(10));
-
-        refreshDateDisplay();
-        contentPane.add(topSectionPanel, BorderLayout.NORTH);
-
-        // --- 2. 중앙 섹션 (할 일 목록, 하루 한줄평) ---
-        JPanel centerSectionPanel = new JPanel();
-        centerSectionPanel.setLayout(new BoxLayout(centerSectionPanel, BoxLayout.Y_AXIS));
-        centerSectionPanel.setBorder(new EmptyBorder(10, 0, 10, 0));
-
-        todoListPanel = new JPanel();
-        todoListPanel.setLayout(new BoxLayout(todoListPanel, BoxLayout.Y_AXIS));
-        todoListPanel.setOpaque(false);
-        JScrollPane todoListScrollPane = new JScrollPane(todoListPanel);
-        todoListScrollPane.setBorder(new EmptyBorder(0, 0, 0, 0));
-        todoListScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-
-        // 새로운 할 일 입력 필드와 추가 버튼 패널
-        JPanel newTodoPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 5, 0));
-        newTodoTextField = new JTextField(20);
-        newTodoTextField.setBorder(new LineBorder(Color.GRAY, 1));
-        
-        JButton addNewTodoButton = new JButton("추가");
-        addNewTodoButton.setFont(new Font("Malgun Gothic", Font.BOLD, 14));
-        addNewTodoButton.setFocusPainted(false);
-        addNewTodoButton.setBackground(new Color(255, 255, 204));
-        addNewTodoButton.setBorder(new LineBorder(Color.BLACK, 2));
-        addNewTodoButton.setPreferredSize(new Dimension(80, 40));
-
-        addNewTodoButton.addActionListener(e -> {
-            String newTitle = newTodoTextField.getText(); // 입력 필드에서 텍스트를 가져옵니다.
-            if (newTitle.trim().isEmpty()) {
-                JOptionPane.showMessageDialog(this, "할 일을 입력해주세요.", "경고", JOptionPane.WARNING_MESSAGE);
-                return;
-            }
-            
-            CalendarFrame01.TodoEntry newTodo = new CalendarFrame01.TodoEntry(newTitle, false, new Color(255, 255, 204));
-            
-            List<CalendarFrame01.TodoEntry> tasks = CalendarFrame01.dailyTasks.getOrDefault(currentDate, new ArrayList<>());
-            tasks.add(newTodo);
-            CalendarFrame01.dailyTasks.put(currentDate, tasks);
-            
-            newTodoTextField.setText(""); // 입력 필드 초기화
-            loadTodoList();
-        });
-
-		JButton groupButton = new JButton("달력 페이지");
-        groupButton.setFont(new Font("Malgun Gothic", Font.BOLD, 14));
-        groupButton.setPreferredSize(new Dimension(90, 30));
-        groupButton.setFocusPainted(false);
-        groupButton.setBackground(new Color(230, 204, 255));
-        groupButton.setBorder(new LineBorder(Color.BLACK, 2));
-        groupButton.addActionListener(e -> {
-
-        MonthlyCalendarView monthlyCalendarView = new MonthlyCalendarView();
-
-        monthlyCalendarView.setVisible(true);
-
-        });
-
-        newTodoPanel.add(newTodoTextField);
-        newTodoPanel.add(addNewTodoButton);
-		newTodoPanel.add(groupButton);
-        centerSectionPanel.add(newTodoPanel);
-        centerSectionPanel.add(Box.createVerticalStrut(10));
-        
-        centerSectionPanel.add(todoListScrollPane);
-
-        // 하루 한줄평 컴포넌트를 먼저 생성하고, 그 다음에 loadTodoList()를 호출하도록 순서를 변경했습니다.
-        String reviewText = CalendarFrame01.dailyReviews.getOrDefault(currentDate, "하루 한줄평");
-        oneLineReviewArea = new JTextArea(reviewText, 5, 25);
-        oneLineReviewArea.setBorder(new LineBorder(new Color(128, 0, 128), 2));
-        oneLineReviewArea.setLineWrap(true);
-        oneLineReviewArea.setWrapStyleWord(true);
-        
-        oneLineReviewArea.getDocument().addDocumentListener(new DocumentListener() {
-            @Override
-            public void insertUpdate(DocumentEvent e) {
-                saveReview();
-            }
-            @Override
-            public void removeUpdate(DocumentEvent e) {
-                saveReview();
-            }
-            @Override
-            public void changedUpdate(DocumentEvent e) {
-                saveReview();
-            }
-            private void saveReview() {
-                CalendarFrame01.dailyReviews.put(currentDate, oneLineReviewArea.getText());
-            }
-        });
-        
-        loadTodoList(); // 이제 oneLineReviewArea가 생성되었으므로 안전하게 호출할 수 있습니다.
-
-        JScrollPane scrollPane = new JScrollPane(oneLineReviewArea);
-        scrollPane.setPreferredSize(new Dimension(400, 150));
-
-        JPanel reviewPanelWrapper = new JPanel();
-        reviewPanelWrapper.setLayout(new BoxLayout(reviewPanelWrapper, BoxLayout.X_AXIS));
-        reviewPanelWrapper.add(Box.createHorizontalGlue());
-        reviewPanelWrapper.add(scrollPane);
-        reviewPanelWrapper.add(Box.createHorizontalGlue());
-
-        centerSectionPanel.add(reviewPanelWrapper);
-        contentPane.add(centerSectionPanel, BorderLayout.CENTER);
-
-        // --- 3. 하단 섹션 (메인 페이지, 설정 페이지 버튼) ---
-        JPanel bottomSectionPanel = new JPanel(new GridLayout(1, 2, 20, 0));
-        bottomSectionPanel.setBorder(new EmptyBorder(10, 0, 0, 0));
-
-        JButton mainPageButton = new JButton();
-        setupMultiLineButton(mainPageButton, "메인<br>페이지<br>버튼", Color.BLACK, 100, 80);
-        mainPageButton.addActionListener(e -> {
-            new CalendarFrame01(null).setVisible(true);
-
-        });
-
-        JButton settingsPageButton = new JButton();
-        setupMultiLineButton(settingsPageButton, "설정<br>페이지<br>버튼", Color.GRAY, 100, 80);
-        settingsPageButton.addActionListener(e -> {
-            JDialog settingsDialog = new JDialog(this, "설정", true);
-            new SettingsMenu(); // 설정 메뉴 창 띄우기
+		JButton calendarButton = new JButton("달력");
+		calendarButton.setPreferredSize(new Dimension(80, 40));
+		calendarButton.setFont(new Font("Malgun Gothic", Font.BOLD, 16));
+		calendarButton.addActionListener(e -> {
+			// CalendarFrame01이 아닌 MonthlyCalendarView를 호출하도록 변경
+			new MonthlyCalendarView(mainFrame).setVisible(true);
 			dispose();
-        });
+		});
 
-        bottomSectionPanel.add(mainPageButton);
-        bottomSectionPanel.add(settingsPageButton);
-        contentPane.add(bottomSectionPanel, BorderLayout.SOUTH);
-    }
-    
-    private void loadTodoList() {
-        todoListPanel.removeAll();
-        // LocalDate 객체를 키로 사용해서 할일 목록을 가져옵니다.
-        List<CalendarFrame01.TodoEntry> todoList = CalendarFrame01.dailyTasks.getOrDefault(currentDate, new ArrayList<>());
+		JButton prevButton = new JButton("<");
+		prevButton.setPreferredSize(new Dimension(50, 40));
+		prevButton.addActionListener(e -> {
+			currentDate = currentDate.minusDays(1);
+			refreshDateDisplay();
+			loadTodoList();
+		});
 
-        for (CalendarFrame01.TodoEntry todo : todoList) {
-            todoListPanel.add(createTodoItemPanel(todo, todoList));
-            todoListPanel.add(Box.createVerticalStrut(10));
-        }
-        updateProgressBar();
-        
-        // 하루 한줄평 텍스트 로드
-        oneLineReviewArea.setText(CalendarFrame01.dailyReviews.getOrDefault(currentDate, "하루 한줄평"));
+		leftPanel.add(calendarButton);
+		leftPanel.add(prevButton);
 
-        todoListPanel.revalidate();
-        todoListPanel.repaint();
-    }
+		dateLabel = new JLabel("", SwingConstants.CENTER);
+		dateLabel.setFont(new Font("Malgun Gothic", Font.BOLD, 18));
+		dateLabel.setOpaque(true);
+		dateLabel.setBackground(Color.decode("#F5E6CC"));
+		dateLabel.setBorder(new LineBorder(Color.BLACK, 2));
 
-    private JPanel createTodoItemPanel(CalendarFrame01.TodoEntry todo, List<CalendarFrame01.TodoEntry> todoList) {
-        JPanel todoItemPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 0));
-        todoItemPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
+		// 오른쪽 버튼들을 담을 패널
+		JPanel rightPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 5, 0));
+		rightPanel.setOpaque(false);
 
-        JCheckBox checkBox = new JCheckBox();
-        checkBox.setBorder(new EmptyBorder(0, 0, 0, 5));
-        checkBox.setSelected(todo.completed);
+		JButton nextButton = new JButton(">");
+		nextButton.setPreferredSize(new Dimension(50, 40));
+		nextButton.addActionListener(e -> {
+			currentDate = currentDate.plusDays(1);
+			refreshDateDisplay();
+			loadTodoList();
+		});
 
-        JTextField todoTextField = new JTextField(todo.title, 25);
-        todoTextField.setBorder(new LineBorder(Color.BLUE, 2));
-        todoTextField.setPreferredSize(new Dimension(todoTextField.getPreferredSize().width, 30));
+		JButton settingsButton = new JButton("설정");
+		settingsButton.setPreferredSize(new Dimension(80, 40));
+		settingsButton.setFont(new Font("Malgun Gothic", Font.BOLD, 16));
+		settingsButton.addActionListener(e -> {
+			JOptionPane.showMessageDialog(this, "설정 화면으로 이동합니다.");
+			new SettingsMenu(this.user).setVisible(true);
+			dispose();
+		});
 
-        JButton deleteButton = new JButton("삭제");
-        deleteButton.addActionListener(e -> {
-            todoList.remove(todo);
-            loadTodoList();
-            updateProgressBar();
-        });
+		rightPanel.add(nextButton);
+		rightPanel.add(settingsButton);
 
-        checkBox.addActionListener(e -> {
-            todo.completed = checkBox.isSelected();
-            updateProgressBar();
-        });
-        
-        todoItemPanel.add(checkBox);
-        todoItemPanel.add(todoTextField);
-        todoItemPanel.add(deleteButton);
+		dateNavigationPanel.add(leftPanel, BorderLayout.WEST);
+		dateNavigationPanel.add(dateLabel, BorderLayout.CENTER);
+		dateNavigationPanel.add(rightPanel, BorderLayout.EAST);
 
-        return todoItemPanel;
-    }
+		topSectionPanel.add(dateNavigationPanel);
+		topSectionPanel.add(Box.createVerticalStrut(10));
 
-    private void updateProgressBar() {
-        List<CalendarFrame01.TodoEntry> todoList = CalendarFrame01.dailyTasks.getOrDefault(currentDate, new ArrayList<>());
+		// 1-2. 진행률 바
+		progressBar = new JProgressBar(0, 100);
+		progressBar.setPreferredSize(new Dimension(getWidth(), 30));
+		progressBar.setStringPainted(true);
+		progressBar.setFont(new Font("Malgun Gothic", Font.BOLD, 18));
+		progressBar.setBorder(new LineBorder(Color.BLACK, 2));
+		progressBar.setForeground(Color.BLUE);
 
-        if (todoList.isEmpty()) {
-            progressBar.setValue(100);
-            progressBar.setString("할 일 없음");
-            progressBar.setForeground(Color.LIGHT_GRAY);
-            return;
-        }
+		JLabel progressLabel = new JLabel("진행도", SwingConstants.CENTER);
+		progressLabel.setFont(new Font("Malgun Gothic", Font.BOLD, 20));
 
-        long completedCount = todoList.stream().filter(t -> t.completed).count();
-        double percentage = (double) completedCount / todoList.size() * 100;
-        int intPercentage = (int) Math.round(percentage);
+		JPanel progressPanel = new JPanel(new BorderLayout());
+		progressPanel.add(progressBar, BorderLayout.CENTER);
+		progressPanel.add(progressLabel, BorderLayout.SOUTH);
+		progressPanel.add(Box.createVerticalStrut(10), BorderLayout.NORTH);
 
-        progressBar.setValue(intPercentage);
-        progressBar.setString(intPercentage + "%");
+		topSectionPanel.add(progressPanel);
+		contentPane.add(topSectionPanel, BorderLayout.NORTH);
+		refreshDateDisplay();
 
-        if (intPercentage < 30) {
-            progressBar.setForeground(new Color(255, 105, 97));
-        } else if (intPercentage < 70) {
-            progressBar.setForeground(new Color(255, 218, 128));
-        } else {
-            progressBar.setForeground(new Color(144, 238, 144));
-        }
-    }
+		// --- 2. 중앙 섹션 (할 일 목록, 버튼, 한줄평) ---
+		JPanel centerPanel = new JPanel(new BorderLayout());
 
-    private void refreshDateDisplay() {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("M월 dd일 E요일", Locale.KOREA);
-        dateLabel.setText(currentDate.format(formatter));
-    }
+		// 할 일 목록 패널
+		todoListPanel = new JPanel();
+		todoListPanel.setLayout(new BoxLayout(todoListPanel, BoxLayout.Y_AXIS));
+		todoListPanel.setOpaque(true);
+		todoListPanel.setBackground(Color.WHITE);
 
-    private void setupMultiLineButton(JButton button, String text, Color borderColor, int width, int height) {
-        button.setPreferredSize(new Dimension(width, height));
-        button.setBackground(UIManager.getColor("Panel.background"));
-        button.setFocusPainted(false);
-        button.setBorder(BorderFactory.createLineBorder(borderColor, 3));
-        button.setText("<html><center>" + text + "</center></html>");
-        button.setFont(new Font("Malgun Gothic", Font.BOLD, 14));
-    }
+		JScrollPane todoListScrollPane = new JScrollPane(todoListPanel);
+		todoListScrollPane.setPreferredSize(new Dimension(400, 400));
+		// todoListScrollPane.setBorder(new LineBorder(Color.BLACK, 2));
+		todoListScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+		centerPanel.add(todoListScrollPane, BorderLayout.NORTH);
+
+		// 추가, 삭제 버튼 패널
+		JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 10));
+		JButton addButton = new JButton("추가");
+		JButton deleteButton = new JButton("삭제");
+
+		addButton.setFont(new Font("Malgun Gothic", Font.BOLD, 16));
+		deleteButton.setFont(new Font("Malgun Gothic", Font.BOLD, 16));
+		addButton.setPreferredSize(new Dimension(100, 40));
+		deleteButton.setPreferredSize(new Dimension(100, 40));
+
+		addButton.addActionListener(e -> {
+			JOptionPane.showMessageDialog(this, "할일 화면으로 이동합니다.");
+			todoMain todomain = new todoMain();
+//            String newTitle = JOptionPane.showInputDialog(this, "새로운 할 일을 입력하세요:");
+//            if (newTitle != null && !newTitle.trim().isEmpty()) {
+//                CalendarFrame01.TodoEntry newTodo = new CalendarFrame01.TodoEntry(newTitle, false, Color.WHITE);
+//                List<CalendarFrame01.TodoEntry> tasks = CalendarFrame01.dailyTasks.getOrDefault(currentDate, new ArrayList<>());
+//                tasks.add(newTodo);
+//                CalendarFrame01.dailyTasks.put(currentDate, tasks);
+//                loadTodoList();
+//                mainFrame.updateTodoPanel();
+//                mainFrame.updateProgressBar();
+//            }
+		});
+
+		deleteButton.addActionListener(e -> {
+			if (JOptionPane.showConfirmDialog(this, "선택된 할 일을 모두 삭제하시겠습니까?", "삭제 확인",
+					JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+				List<CalendarFrame01.TodoEntry> tasks = CalendarFrame01.dailyTasks.getOrDefault(currentDate,
+						new ArrayList<>());
+				tasks.removeIf(task -> task.completed); // 완료된 할 일 삭제
+				loadTodoList();
+				mainFrame.updateTodoPanel();
+				mainFrame.updateProgressBar();
+			}
+		});
+
+		buttonPanel.add(addButton);
+		buttonPanel.add(deleteButton);
+		centerPanel.add(buttonPanel, BorderLayout.CENTER);
+
+		// 하루 한줄평 패널
+		JPanel reviewPanel = new JPanel(new BorderLayout());
+		oneLineReviewArea = new JTextArea(3, 25);
+		oneLineReviewArea.setBorder(new LineBorder(Color.BLACK, 2));
+		oneLineReviewArea.setLineWrap(true);
+		oneLineReviewArea.setWrapStyleWord(true);
+		oneLineReviewArea.setFont(new Font("Malgun Gothic", Font.PLAIN, 14));
+
+		oneLineReviewArea.getDocument().addDocumentListener(new DocumentListener() {
+			@Override
+			public void insertUpdate(DocumentEvent e) {
+				saveReview();
+			}
+
+			@Override
+			public void removeUpdate(DocumentEvent e) {
+				saveReview();
+			}
+
+			@Override
+			public void changedUpdate(DocumentEvent e) {
+				saveReview();
+			}
+
+			private void saveReview() {
+				CalendarFrame01.dailyReviews.put(currentDate, oneLineReviewArea.getText());
+			}
+		});
+
+		oneLineReviewArea.setText(CalendarFrame01.dailyReviews.getOrDefault(currentDate, "예시: 오늘 하루도 멋지게 완수!"));
+
+		reviewPanel.add(oneLineReviewArea, BorderLayout.CENTER);
+		reviewPanel.setBorder(new EmptyBorder(10, 0, 0, 0));
+
+		centerPanel.add(reviewPanel, BorderLayout.SOUTH);
+		contentPane.add(centerPanel, BorderLayout.CENTER);
+
+		// --- 3. 하단 섹션 (완료 버튼) ---
+		JPanel bottomPanel = new JPanel();
+		JButton completeButton = new JButton("완료");
+		completeButton.setFont(new Font("Malgun Gothic", Font.BOLD, 24));
+		completeButton.setPreferredSize(new Dimension(150, 60));
+		completeButton.setBackground(Color.WHITE);
+		completeButton.setForeground(Color.BLACK);
+		completeButton.setOpaque(true);
+		completeButton.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2));
+
+		completeButton.addActionListener(e -> {
+			mainFrame.setVisible(true);
+			mainFrame.updateWeekView();
+			dispose();
+		});
+
+		bottomPanel.add(completeButton);
+		contentPane.add(bottomPanel, BorderLayout.SOUTH);
+
+		// 초기 데이터 로드
+		loadTodoList();
+	}
+
+	private void loadTodoList() {
+		todoListPanel.removeAll();
+		List<CalendarFrame01.TodoEntry> todoList = CalendarFrame01.dailyTasks.getOrDefault(currentDate,
+				new ArrayList<>());
+
+		for (CalendarFrame01.TodoEntry todo : todoList) {
+			todoListPanel.add(createTodoItemPanel(todo));
+			todoListPanel.add(Box.createVerticalStrut(5));
+		}
+		updateProgressBar();
+
+		oneLineReviewArea.setText(CalendarFrame01.dailyReviews.getOrDefault(currentDate, "예시: 오늘 하루도 멋지게 완수!"));
+
+		todoListPanel.revalidate();
+		todoListPanel.repaint();
+	}
+
+	private JPanel createTodoItemPanel(CalendarFrame01.TodoEntry todo) {
+		JPanel todoItemPanel = new JPanel(new BorderLayout(5, 0));
+		todoItemPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
+		todoItemPanel.setMaximumSize(new Dimension(400, 50));
+		todoItemPanel.setBorder(new LineBorder(Color.BLACK, 2));
+		todoItemPanel.setBackground(Color.WHITE);
+
+		JLabel todoLabel = new JLabel(" " + todo.title);
+		todoLabel.setFont(new Font("Malgun Gothic", Font.PLAIN, 18));
+
+		JButton completeButton = new JButton("완료");
+		completeButton.setBackground(Color.WHITE);
+		completeButton.setForeground(Color.BLACK);
+		completeButton.setOpaque(true);
+		completeButton.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2));
+		completeButton.setPreferredSize(new Dimension(100, 40));
+		completeButton.setFont(new Font("Malgun Gothic", Font.BOLD, 18));
+		completeButton.setFocusPainted(false);
+
+		completeButton.addActionListener(e -> {
+			todo.completed = !todo.completed;
+			loadTodoList();
+			mainFrame.updateTodoPanel();
+			mainFrame.updateProgressBar();
+		});
+
+		if (todo.completed) {
+			todoLabel.setText("√ " + todo.title);
+		} else {
+			todoLabel.setText("• " + todo.title);
+		}
+
+		todoItemPanel.add(todoLabel, BorderLayout.CENTER);
+		todoItemPanel.add(completeButton, BorderLayout.EAST);
+
+		return todoItemPanel;
+	}
+
+	private void updateProgressBar() {
+		List<CalendarFrame01.TodoEntry> todoList = CalendarFrame01.dailyTasks.getOrDefault(currentDate,
+				new ArrayList<>());
+
+		if (todoList.isEmpty()) {
+			progressBar.setValue(100);
+			progressBar.setString("할 일 없음");
+			progressBar.setForeground(Color.LIGHT_GRAY);
+			return;
+		}
+
+		long completedCount = todoList.stream().filter(t -> t.completed).count();
+		double percentage = (double) completedCount / todoList.size() * 100;
+		int intPercentage = (int) Math.round(percentage);
+
+		progressBar.setValue(intPercentage);
+		progressBar.setString(intPercentage + "%");
+
+		if (intPercentage < 30) {
+			progressBar.setForeground(new Color(255, 105, 97));
+		} else if (intPercentage < 70) {
+			progressBar.setForeground(new Color(255, 218, 128));
+		} else {
+			progressBar.setForeground(new Color(144, 238, 144));
+		}
+	}
+
+	private void refreshDateDisplay() {
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("M월 d일 E요일", Locale.KOREA);
+		dateLabel.setText(currentDate.format(formatter));
+	}
 
 }
-
-
-
-
