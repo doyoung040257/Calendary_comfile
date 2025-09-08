@@ -88,7 +88,7 @@ public class SettingsMenu extends JFrame {
 
         JButton backButton = new JButton("뒤로가기");
         backButton.addActionListener(e -> {
-           new CalendarFrame01(null).setVisible(true);
+           new CalendarFrame01().setVisible(true);
             this.dispose();
         });
 
@@ -108,6 +108,7 @@ public class SettingsMenu extends JFrame {
 		setVisible(true);
 	}
 }
+
 
 
 
