@@ -11,9 +11,10 @@ public class App {
     public static void main(String[] args) {
         
             // frame 패키지에 있는 CalendarFrame 클래스의 객체(인스턴스)를 생성합니다.
-            CalendarFrame01 appFrame = new CalendarFrame01(null);
+            CalendarFrame01 appFrame = new CalendarFrame01();
             appFrame.setVisible(true);
     		
     }
 
 }
+
