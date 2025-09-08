@@ -19,6 +19,7 @@ import javax.swing.event.DocumentListener;
 import Settings.SettingsMenu;
 import lg.User;
 import todo.todoMain;
+import todo.todoAddition;
 
 public class TodoPageView extends JFrame {
 
@@ -164,18 +165,21 @@ public class TodoPageView extends JFrame {
 		deleteButton.setPreferredSize(new Dimension(100, 40));
 
 		addButton.addActionListener(e -> {
-			JOptionPane.showMessageDialog(this, "할일 화면으로 이동합니다.");
-			todoMain todomain = new todoMain();
-//            String newTitle = JOptionPane.showInputDialog(this, "새로운 할 일을 입력하세요:");
-//            if (newTitle != null && !newTitle.trim().isEmpty()) {
-//                CalendarFrame01.TodoEntry newTodo = new CalendarFrame01.TodoEntry(newTitle, false, Color.WHITE);
-//                List<CalendarFrame01.TodoEntry> tasks = CalendarFrame01.dailyTasks.getOrDefault(currentDate, new ArrayList<>());
-//                tasks.add(newTodo);
-//                CalendarFrame01.dailyTasks.put(currentDate, tasks);
-//                loadTodoList();
-//                mainFrame.updateTodoPanel();
-//                mainFrame.updateProgressBar();
-//            }
+			JOptionPane.showMessageDialog(this, "할 일 추가 화면으로 이동합니다.");
+
+			// todoMain.getSharedList()를 통해 공유 리스트에 접근
+			todo.todoListMake sharedList = todoMain.getSharedList();
+
+			// 할 일 추가 페이지가 닫힌 후 TodoPageView를 새로 고침하는 콜백
+			Runnable afterSaveCallback = () -> {
+				loadTodoList();
+				mainFrame.updateTodoPanel();
+				mainFrame.updateProgressBar();
+			};
+
+			// todoAddition 페이지를 열고 필요한 데이터와 콜백을 전달
+			todoAddition todoAddPage = new todoAddition(sharedList, afterSaveCallback);
+			todoAddPage.todo_addition_page();
 		});
 
 		deleteButton.addActionListener(e -> {
@@ -242,6 +246,8 @@ public class TodoPageView extends JFrame {
 		completeButton.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2));
 
 		completeButton.addActionListener(e -> {
+			// CalendarFrame01의 currentDate를 TodoPageView의 현재 날짜로 업데이트
+			mainFrame.currentDate = this.currentDate;
 			mainFrame.setVisible(true);
 			mainFrame.updateWeekView();
 			dispose();
@@ -340,5 +346,4 @@ public class TodoPageView extends JFrame {
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("M월 d일 E요일", Locale.KOREA);
 		dateLabel.setText(currentDate.format(formatter));
 	}
-
 }
