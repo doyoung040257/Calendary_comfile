@@ -7,8 +7,8 @@ public class todoListMake {
 
 	private List<todoList> todolist = new ArrayList<>();
 	
-	public void addTodo(String work, String day, String time, String note) {
-		todoList onetodo = new todoList(work, day, time, note);
+	public void addTodo(String work, String day, String time, String note, int importance) {
+		todoList onetodo = new todoList(work, day, time, note, importance);
 		todolist.add(onetodo);
 	}
 	
