@@ -20,7 +20,7 @@ public class CalenderGroupPage {
             // 취소 클릭 시 종료 -> 전체종료 되는거 때문에 수정
             if (loginUser == null) {
                 // 특정 페이지로 이동 (예: OtherPage)
-                SwingUtilities.invokeLater(() -> new CalendarFrame01(null));
+                SwingUtilities.invokeLater(() -> new CalendarFrame01());
                 break; // while 루프 종료
             }
 
@@ -43,6 +43,7 @@ public class CalenderGroupPage {
     // 외부에서 setVisible 호출해도 동작 없음
     public void setVisible(boolean b) {}
 }
+
 
 
 
