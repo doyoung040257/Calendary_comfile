@@ -2,7 +2,6 @@ package GroupTest;
 
 import javax.swing.*;
 import javax.swing.border.LineBorder;
-import frame.CalendarFrame01;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.List;
@@ -13,6 +12,8 @@ public class MemberPanel extends JPanel {
     private String groupName;
     private JPanel memberPanel;
     private JLabel titleLabel;
+
+    private final Color BUTTON_COLOR = new Color(180, 150, 200);
 
     public MemberPanel(MainFrame frame, String groupName) {
         this.frame = frame;
@@ -36,24 +37,25 @@ public class MemberPanel extends JPanel {
 
         updateMemberList();
 
-        // ----------------- 하단 -----------------
+        // ----------------- 하단 버튼 -----------------
         JPanel bottomPanel = new JPanel(new BorderLayout());
         bottomPanel.setBackground(Color.WHITE);
 
         Font buttonFont = new Font("맑은 고딕", Font.BOLD, 14);
         Dimension buttonSize = new Dimension(140, 40);
 
-        // 그룹 나가기 / 이전 화면 버튼
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 10));
         buttonPanel.setBackground(Color.WHITE);
         buttonPanel.setPreferredSize(new Dimension(0, 60));
 
+        // 그룹 나가기 버튼
         JButton leaveBtn = new JButton("그룹 나가기");
         leaveBtn.setFont(buttonFont);
-        leaveBtn.setBackground(Color.WHITE);
+        leaveBtn.setBackground(BUTTON_COLOR);
+        leaveBtn.setForeground(Color.WHITE);
         leaveBtn.setFocusPainted(false);
         leaveBtn.setPreferredSize(buttonSize);
-        addHoverClickEffect(leaveBtn, Color.WHITE);
+        addHoverClickEffect(leaveBtn, BUTTON_COLOR);
         leaveBtn.addActionListener(e -> {
             int confirm = JOptionPane.showConfirmDialog(this, "그룹에서 탈퇴하시겠습니까?", "확인", JOptionPane.YES_NO_OPTION);
             if (confirm != JOptionPane.YES_OPTION) return;
@@ -66,12 +68,14 @@ public class MemberPanel extends JPanel {
         });
         buttonPanel.add(leaveBtn);
 
+        // 이전 화면 버튼
         JButton backBtn = new JButton("이전 화면");
         backBtn.setFont(buttonFont);
-        backBtn.setBackground(Color.WHITE);
+        backBtn.setBackground(BUTTON_COLOR);
+        backBtn.setForeground(Color.WHITE);
         backBtn.setFocusPainted(false);
         backBtn.setPreferredSize(buttonSize);
-        addHoverClickEffect(backBtn, Color.WHITE);
+        addHoverClickEffect(backBtn, BUTTON_COLOR);
         backBtn.addActionListener(e -> frame.backTo("Main"));
         buttonPanel.add(backBtn);
 
@@ -95,11 +99,8 @@ public class MemberPanel extends JPanel {
         homeBtn.setFocusPainted(false);
         homeBtn.setPreferredSize(buttonSize);
         homeBtn.addActionListener(e -> {
-            int confirm = JOptionPane.showConfirmDialog(this,
-                    "메인화면으로 돌아가시겠습니까?", "확인", JOptionPane.YES_NO_OPTION);
-            if (confirm != JOptionPane.YES_OPTION) return;
             SwingUtilities.getWindowAncestor(this).dispose();
-            new CalendarFrame01().setVisible(true);
+            new frame.CalendarFrame01().setVisible(true);
         });
 
         todoBtn.setFont(buttonFont);
@@ -120,14 +121,6 @@ public class MemberPanel extends JPanel {
         bottomPanel.add(syncButtonPanel, BorderLayout.SOUTH);
 
         add(bottomPanel, BorderLayout.SOUTH);
-
-        // ----------------- X 버튼 처리 -----------------
-        frame.getFrameWindow().addWindowListener(new java.awt.event.WindowAdapter() {
-            @Override
-            public void windowClosing(java.awt.event.WindowEvent e) {
-                frame.backTo("Main");
-            }
-        });
     }
 
     public void updateMemberList() {
@@ -135,7 +128,6 @@ public class MemberPanel extends JPanel {
         List<String> members = frame.groupMembers.get(groupName);
         if (members != null) {
             for (String m : members) {
-                // 각 멤버마다 새로운 작은 박스 생성
                 JPanel row = new JPanel(new BorderLayout(10, 5));
                 row.setBackground(Color.WHITE);
                 row.setBorder(new LineBorder(Color.GRAY, 1, true));
@@ -146,10 +138,11 @@ public class MemberPanel extends JPanel {
 
                 JButton scheduleBtn = new JButton("일정 보기");
                 scheduleBtn.setFont(new Font("맑은 고딕", Font.BOLD, 14));
-                scheduleBtn.setBackground(Color.WHITE);
+                scheduleBtn.setBackground(BUTTON_COLOR);
+                scheduleBtn.setForeground(Color.WHITE);
                 scheduleBtn.setFocusPainted(false);
                 scheduleBtn.setPreferredSize(new Dimension(120, 30));
-                addHoverClickEffect(scheduleBtn, Color.WHITE);
+                addHoverClickEffect(scheduleBtn, BUTTON_COLOR);
                 scheduleBtn.addActionListener(e -> frame.switchPanel("Schedule_" + groupName + "_" + m,
                         new SchedulePanel(frame, groupName, m, false)));
 
@@ -157,7 +150,7 @@ public class MemberPanel extends JPanel {
                 row.add(scheduleBtn, BorderLayout.EAST);
 
                 memberPanel.add(row);
-                memberPanel.add(Box.createRigidArea(new Dimension(0, 5))); // 각 박스 사이 간격
+                memberPanel.add(Box.createRigidArea(new Dimension(0, 5)));
             }
         }
         memberPanel.revalidate();
@@ -166,14 +159,10 @@ public class MemberPanel extends JPanel {
 
     private void addHoverClickEffect(JButton button, Color original) {
         button.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseEntered(MouseEvent e) { button.setBackground(original.darker()); }
-            @Override
-            public void mouseExited(MouseEvent e) { button.setBackground(original); }
-            @Override
-            public void mousePressed(MouseEvent e) { button.setBackground(original.darker().darker()); }
-            @Override
-            public void mouseReleased(MouseEvent e) { button.setBackground(original.darker()); }
+            @Override public void mouseEntered(MouseEvent e) { button.setBackground(original.darker()); }
+            @Override public void mouseExited(MouseEvent e) { button.setBackground(original); }
+            @Override public void mousePressed(MouseEvent e) { button.setBackground(original.darker().darker()); }
+            @Override public void mouseReleased(MouseEvent e) { button.setBackground(original.darker()); }
         });
     }
 
@@ -182,5 +171,8 @@ public class MemberPanel extends JPanel {
         titleLabel.setText(groupName + " - 멤버 목록");
         updateMemberList();
     }
-}
 
+    public String getGroupName() {
+        return groupName;
+    }
+}
