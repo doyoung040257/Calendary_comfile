@@ -2,13 +2,15 @@ package todo;
 
 import java.awt.*;
 import java.awt.event.*;
-import java.time.LocalDate;
+import java.time.LocalDate; // import 추가
+import java.util.List;		// import 추가
 import javax.swing.*;
 import GroupTest.MainFrame;
 import Settings.SettingsMenu;
 import lg.User;
 import frame.CalendarFrame01; // 캘린더 데이터 접근을 위해 import
 import frame.DateParser;      // 날짜 파싱 유틸리티 import
+import GroupTest.MainPanel;   // ★ MainPanel 참조
 
 public class todoMain extends JFrame{
 
@@ -25,7 +27,21 @@ public class todoMain extends JFrame{
 	public JButton delete;
 	private JPanel list;
 	
-	public todoMain() {
+    // ★ MainPanel 참조
+    private MainPanel mainPanel;
+
+    // ★ MainPanel에서 열 때
+    public todoMain(MainPanel mainPanel) {
+        this.mainPanel = mainPanel; // 기존 MainPanel 참조 저장
+        initComponents();
+    }
+    
+    // 기존 생성자 (MainPanel 없을 때)
+    public todoMain() {
+        this(null);
+    }
+	
+    private void initComponents() {
 		
 		fr = new JFrame();
 		fr.setTitle("할 일");
@@ -150,11 +166,37 @@ public class todoMain extends JFrame{
             SwingUtilities.invokeLater(() -> new MainFrame("사용자")); // 기본 사용자명 전달
 			dispose();
         });
+        
+        // ★ 창 닫기 이벤트 처리 (조건부)
+        fr.addWindowListener(new java.awt.event.WindowAdapter() {
+            @Override
+            public void windowClosing(java.awt.event.WindowEvent e) {
+                if (mainPanel != null) { // MainPanel에서 열렸으면 기존 인스턴스로 복귀
+                    mainPanel.setVisible(true);
+                } else { // 기존 CalendarFrame01 로직 유지
+                    new CalendarFrame01().setVisible(true);
+                }
+            }
+        });
 
 		fr.setVisible(true);
 	}
 
-//sharedList 개수만큼 버튼 채우기(list 패널 내부에 생성)
+    //캘린더 데이터 삭제 헬퍼 메서드
+    private void removeFromCalendarTasks(todoList itemToDelete) {
+        if (itemToDelete == null) return;
+        
+        LocalDate todoDate = DateParser.parseDate(itemToDelete.getDay());
+        if (todoDate != null) {
+            List<CalendarFrame01.TodoEntry> tasksForDay = CalendarFrame01.dailyTasks.get(todoDate);
+            if (tasksForDay != null) {
+                // 할일 제목(work)이 같은 항목을 캘린더 목록에서 찾아 삭제
+                tasksForDay.removeIf(entry -> entry.title.equals(itemToDelete.getWork()));
+            }
+        }
+    }
+    
+    //sharedList 개수만큼 버튼 채우기(list 패널 내부에 생성)
 	private void renderList() {
         list.removeAll();
         
@@ -273,19 +315,7 @@ public class todoMain extends JFrame{
 	  	return panel;
     }
     
-    //캘린더 데이터 삭제 헬퍼 메서드
-    private void removeFromCalendarTasks(todoList itemToDelete) {
-        if (itemToDelete == null) return;
-        
-        LocalDate todoDate = DateParser.parseDate(itemToDelete.getDay());
-        if (todoDate != null) {
-            List<CalendarFrame01.TodoEntry> tasksForDay = CalendarFrame01.dailyTasks.get(todoDate);
-            if (tasksForDay != null) {
-                // 할일 제목(work)이 같은 항목을 캘린더 목록에서 찾아 삭제
-                tasksForDay.removeIf(entry -> entry.title.equals(itemToDelete.getWork()));
-            }
-        }
-    }
+
     
     public static void main(String[] args) {
 		new todoMain();
