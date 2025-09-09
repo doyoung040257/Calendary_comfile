@@ -2,12 +2,14 @@ package lg;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 import frame.CalendarFrame01;
 
 public class LoginFrame extends JFrame {
     private JTextField idField;
-    private JPasswordField passwordField;
+    private JPasswordField pwField;
 
     public LoginFrame() {
         setTitle("로그인");
@@ -15,78 +17,116 @@ public class LoginFrame extends JFrame {
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        // 전체 패널 (세로 BoxLayout)
-        JPanel mainPanel = new JPanel();
-        mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
-        mainPanel.setBorder(BorderFactory.createEmptyBorder(50, 50, 50, 50));
+        // ✅ root 패널에 직접 배경색 지정 (AliceBlue)
+        JPanel root = new JPanel(new GridBagLayout());
+        root.setBackground(new Color(240, 248, 255));
+        root.setOpaque(true);
 
-        // 상단 Glue (중앙 정렬용)
-        mainPanel.add(Box.createVerticalGlue());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.weightx = 1.0;
 
-        // 아이디
-        JLabel idLabel = new JLabel("아이디");
-        idLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-        mainPanel.add(idLabel);
-        mainPanel.add(Box.createRigidArea(new Dimension(0, 5)));
+        // 위쪽 스페이서 (아래로 내리기)
+        gbc.gridy = 0;
+        gbc.weighty = 0.8;
+        root.add(Box.createVerticalStrut(1), gbc);
 
-        idField = new JTextField(15);
-        idField.setMaximumSize(new Dimension(250, 30));
-        idField.setAlignmentX(Component.CENTER_ALIGNMENT);
-        mainPanel.add(idField);
-        mainPanel.add(Box.createRigidArea(new Dimension(0, 20)));
+        // 폼
+        gbc.gridy = 1;
+        gbc.weighty = 0;
+        root.add(buildForm(), gbc);
 
-        // 비밀번호
-        JLabel pwLabel = new JLabel("비밀번호");
-        pwLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-        mainPanel.add(pwLabel);
-        mainPanel.add(Box.createRigidArea(new Dimension(0, 5)));
+        // 아래쪽 스페이서
+        gbc.gridy = 2;
+        gbc.weighty = 0.2;
+        root.add(Box.createVerticalStrut(1), gbc);
 
-        passwordField = new JPasswordField(15);
-        passwordField.setMaximumSize(new Dimension(250, 30));
-        passwordField.setAlignmentX(Component.CENTER_ALIGNMENT);
-        mainPanel.add(passwordField);
-        mainPanel.add(Box.createRigidArea(new Dimension(0, 30)));
+        setContentPane(root);
+        setVisible(true);
+    }
 
-        // 버튼
-        JButton loginButton = new JButton("로그인");
-        JButton signupButton = new JButton("회원가입");
+    /** 아이콘+입력필드 2개와 버튼 행 */
+    private JPanel buildForm() {
+        JPanel form = new JPanel();
+        form.setOpaque(false); // 배경 투명
+        form.setLayout(new BoxLayout(form, BoxLayout.Y_AXIS));
+        form.setBorder(BorderFactory.createEmptyBorder(0, 40, 40, 40));
 
-        loginButton.setPreferredSize(new Dimension(100, 30));
-        signupButton.setPreferredSize(new Dimension(100, 30));
+        // 아이디/비밀번호 입력 박스
+        JPanel idPanel = createInputField("👤", "아이디", false);
+        idField = (JTextField) idPanel.getClientProperty("field");
 
-        JPanel buttonPanel = new JPanel();
-        buttonPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 15, 0));
-        buttonPanel.add(signupButton);
-        buttonPanel.add(loginButton);
-        buttonPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        JPanel pwPanel = createInputField("🔒", "비밀번호", true);
+        pwField = (JPasswordField) pwPanel.getClientProperty("field");
 
-        mainPanel.add(buttonPanel);
+        form.add(idPanel);
+        form.add(Box.createRigidArea(new Dimension(0, 12)));
+        form.add(pwPanel);
+        form.add(Box.createRigidArea(new Dimension(0, 18)));
 
-        // 하단 Glue (중앙 정렬용)
-        mainPanel.add(Box.createVerticalGlue());
+        // 버튼 행
+        GlassButton signupButton = new GlassButton("회원가입");
+        GlassButton loginButton = new GlassButton("로그인");
 
-        add(mainPanel);
+        JPanel btnRow = new JPanel(new FlowLayout(FlowLayout.CENTER, 14, 0));
+        btnRow.setOpaque(false);
+        btnRow.add(signupButton);
+        btnRow.add(loginButton);
+
+        form.add(btnRow);
 
         // 이벤트
-        loginButton.addActionListener(e -> login());
         signupButton.addActionListener(e -> {
             new SignupFrame();
             dispose();
         });
+        loginButton.addActionListener(e -> login());
 
-        setVisible(true);
+        return form;
+    }
+
+    /** 아이콘 + 텍스트필드 */
+    private JPanel createInputField(String iconText, String placeholder, boolean isPassword) {
+        JPanel panel = new JPanel(new BorderLayout()) {
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                Graphics2D g2 = (Graphics2D) g.create();
+                g2.setColor(new Color(255, 255, 255, 180)); // 반투명 흰색
+                g2.fillRoundRect(0, 0, getWidth(), getHeight(), 10, 10);
+                g2.dispose();
+            }
+        };
+        panel.setOpaque(false);
+        panel.setPreferredSize(new Dimension(320, 40));
+        panel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 40));
+        panel.setBorder(BorderFactory.createEmptyBorder(0, 6, 0, 6));
+
+        JLabel icon = new JLabel(iconText);
+        icon.setFont(icon.getFont().deriveFont(16f));
+        icon.setBorder(BorderFactory.createEmptyBorder(0, 3, 0, 8));
+        panel.add(icon, BorderLayout.WEST);
+
+        JTextField field = isPassword ? new JPasswordField() : new JTextField();
+        field.setBorder(BorderFactory.createEmptyBorder(8, 6, 8, 6));
+        field.setForeground(Color.BLACK);   // 입력 글씨 색
+        field.setCaretColor(Color.BLACK);   // 커서 색
+        panel.add(field, BorderLayout.CENTER);
+
+        panel.putClientProperty("field", field);
+        return panel;
     }
 
     private void login() {
-        String id = idField.getText();
-        String pw = new String(passwordField.getPassword());
+        String id = idField.getText().trim();
+        String pw = new String(pwField.getPassword());
 
         if (UserDatabase.userDatabase.containsKey(id)) {
             User user = UserDatabase.userDatabase.get(id);
             if (user.getPassword().equals(pw)) {
                 JOptionPane.showMessageDialog(this, user.getName() + "님 환영합니다!");
-                CalendarFrame01 appFrame = new CalendarFrame01(user); // 수정: user 객체 전달
-                appFrame.setVisible(true);
+                new CalendarFrame01(null).setVisible(true);
                 dispose();
             } else {
                 JOptionPane.showMessageDialog(this, "비밀번호가 틀렸습니다.");
@@ -95,8 +135,54 @@ public class LoginFrame extends JFrame {
             JOptionPane.showMessageDialog(this, "존재하지 않는 아이디입니다.");
         }
     }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(LoginFrame::new);
+    }
 }
 
+/** GlassButton 클래스 */
+class GlassButton extends JButton {
+    private boolean hover = false;
 
+    public GlassButton(String text) {
+        super(text);
+        setContentAreaFilled(false);
+        setFocusPainted(false);
+        setBorderPainted(false);
+        setForeground(Color.WHITE); // ✅ 버튼 글씨 흰색
+        setFont(getFont().deriveFont(Font.BOLD, 14f));
+        setOpaque(false);
 
+        addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                hover = true;
+                repaint();
+            }
+            @Override
+            public void mouseExited(MouseEvent e) {
+                hover = false;
+                repaint();
+            }
+        });
+    }
 
+    @Override
+    protected void paintComponent(Graphics g) {
+        Graphics2D g2 = (Graphics2D) g.create();
+        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+
+        Color glassColor = hover
+                ? new Color(200, 200, 255, 180)
+                : new Color(255, 255, 255, 150);
+        g2.setColor(glassColor);
+        g2.fillRoundRect(0, 0, getWidth(), getHeight(), 15, 15);
+
+        g2.setColor(new Color(180, 180, 180, 200));
+        g2.drawRoundRect(0, 0, getWidth() - 1, getHeight() - 1, 15, 15);
+
+        super.paintComponent(g2);
+        g2.dispose();
+    }
+}
