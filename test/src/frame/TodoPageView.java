@@ -194,7 +194,7 @@ public class TodoPageView extends JFrame {
 				tasks.removeIf(task -> {
 					if (task.completed) {
 						sharedList.getTodolist().removeIf(todoItem -> 
-							todoItem.getWork().equals(task.title) && DateParser.parseDate(todoItem.getDay()).equals(currentDate)
+							todoItem.getWork().equals(task.title) && todoItem.getId().equals(task.id)&& DateParser.parseDate(todoItem.getDay()).equals(currentDate)
 						);
 						return true;
 					}
@@ -363,3 +363,4 @@ public class TodoPageView extends JFrame {
 		dateLabel.setText(currentDate.format(formatter));
 	}
 }
+
