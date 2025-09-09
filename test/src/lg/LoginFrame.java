@@ -126,7 +126,7 @@ public class LoginFrame extends JFrame {
             User user = UserDatabase.userDatabase.get(id);
             if (user.getPassword().equals(pw)) {
                 JOptionPane.showMessageDialog(this, user.getName() + "님 환영합니다!");
-                new CalendarFrame01(null).setVisible(true);
+                new CalendarFrame01().setVisible(true);
                 dispose();
             } else {
                 JOptionPane.showMessageDialog(this, "비밀번호가 틀렸습니다.");
@@ -186,3 +186,4 @@ class GlassButton extends JButton {
         g2.dispose();
     }
 }
+
