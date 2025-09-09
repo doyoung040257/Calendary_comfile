@@ -227,3 +227,168 @@ public class todoModify extends JFrame {
 		return null;
 	}
 }
+
+//수정을 했는데 그냥 올리면 꼬일거 같아서 여기서 주석으로 올림
+/*
+// todoModify.java
+package todo;
+
+import java.awt.*;
+import java.awt.event.*;
+import java.awt.image.BufferedImage;
+import javax.swing.*;
+import javax.swing.border.LineBorder;
+
+public class todoModify extends JFrame {
+
+    private final todoListMake list;   
+    private final int index;       
+    private final Runnable afterSave; 
+    
+    // 별표 표시를 위한 변수
+    private JLabel[] starLabels = new JLabel[3];
+    private int selectedImportance = 0;
+
+    public todoModify(todoListMake list, int index, Runnable afterSave) {
+        this.list = list;
+        this.index = index;
+        this.afterSave = afterSave;
+    }
+
+    public void open() {
+        todoList item = list.getTodolist().get(index);
+        selectedImportance = item.getImportance();
+
+        setTitle("할 일 수정");
+        setSize(400, 700);
+        setLocationRelativeTo(null);
+        setLayout(null);
+
+        // 상단 제목
+        JPanel title = new JPanel();
+        title.setBounds(50, 25, 300, 80);
+        title.setBackground(Color.LIGHT_GRAY);
+        JLabel todo = new JLabel("할 일 수정하기", JLabel.CENTER);
+        title.add(todo);
+        add(title);
+        
+        // 할 일 - 이름
+        JLabel todoTitle = new JLabel("할 일", JLabel.CENTER);
+        todoTitle.setBounds(50, 150, 100, 30);
+        todoTitle.setBackground(Color.GRAY);
+        add(todoTitle);
+
+        JTextField txt = new JTextField(item.getWork());
+        txt.setBounds(150, 150, 150, 30);
+        txt.setBorder(new LineBorder(Color.BLACK, 1));
+        add(txt);
+
+        // 날짜
+        JLabel dateTitle = new JLabel("날짜", JLabel.CENTER);
+        dateTitle.setBounds(50, 200, 100, 30);
+        dateTitle.setBackground(Color.GRAY);
+        add(dateTitle);
+        
+        JButton datebtn = new JButton(item.getDay());
+        datebtn.setBounds(150, 200, 150, 30);
+        datebtn.setFocusPainted(false);
+        add(datebtn);
+
+        // 시간
+        JLabel timeTitle = new JLabel("시간", JLabel.CENTER);
+        timeTitle.setBounds(50, 250, 100, 30);
+        timeTitle.setBackground(Color.GRAY);
+        add(timeTitle);
+        
+        JButton timebtn = new JButton(item.getTime());
+        timebtn.setBounds(150, 250, 150, 30);
+        timebtn.setFocusPainted(false);
+        add(timebtn);
+
+        // 중요도
+        JLabel importanceTitle = new JLabel("중요도", JLabel.CENTER);
+        importanceTitle.setBounds(50, 300, 100, 30);
+        add(importanceTitle);
+
+        JPanel starPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 0));
+        starPanel.setBounds(150, 300, 150, 30);
+        starPanel.setOpaque(false);
+        add(starPanel);
+
+        // 별표 라벨 생성 및 리스너 추가
+        for (int i = 0; i < starLabels.length; i++) {
+            final int starIndex = i;
+            starLabels[i] = new JLabel("★"); // 별표 문자 사용
+            starLabels[i].setFont(new Font("Malgun Gothic", Font.BOLD, 20));
+            starLabels[i].setCursor(new Cursor(Cursor.HAND_CURSOR));
+            starLabels[i].addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    selectedImportance = starIndex + 1;
+                    updateStars();
+                }
+            });
+            starPanel.add(starLabels[i]);
+        }
+        updateStars(); // 초기 별표 상태 설정
+
+        // 메모
+        JLabel noteTitle = new JLabel("메모", JLabel.CENTER);
+        noteTitle.setBounds(50, 350, 100, 30);
+        noteTitle.setBackground(Color.GRAY);
+        add(noteTitle);
+
+        JTextArea note = new JTextArea(item.getNote());
+        note.setBounds(150, 350, 150, 100);
+        note.setBorder(new LineBorder(Color.BLACK, 1));
+        note.setLineWrap(true);
+        note.setWrapStyleWord(true);
+        add(note);
+        
+        // 저장버튼
+        JButton save = new JButton("수정");
+        save.setFocusPainted(false);
+        save.setBounds(110, 550, 70, 50);
+        add(save);
+
+        // 저장 기능
+        save.addActionListener(e -> {
+            String workStr = txt.getText().trim();
+            String dayStr = datebtn.getText();
+            String timeStr  = timebtn.getText();
+            String memoStr  = note.getText().trim();
+
+            item.setWork(workStr);
+            item.setDay(dayStr);
+            item.setTime(timeStr);
+            item.setNote(memoStr);
+            item.setImportance(selectedImportance); // 중요도 수정 반영
+
+            if (afterSave != null) afterSave.run();
+
+            dispose();
+        });
+         
+        //닫기 버튼
+        JButton cancel = new JButton("닫기");
+        cancel.setFocusPainted(false);
+        cancel.setBounds(200, 550, 70, 50);
+        add(cancel);
+        
+        cancel.addActionListener(e -> dispose());
+        
+        setVisible(true);
+    }
+    
+    // 별표 UI 업데이트 메소드
+    private void updateStars() {
+        for (int i = 0; i < starLabels.length; i++) {
+            if (i < selectedImportance) {
+                starLabels[i].setForeground(Color.decode("#FFD700")); // 노란색
+            } else {
+                starLabels[i].setForeground(Color.GRAY); // 회색
+            }
+        }
+    }
+}
+*/
