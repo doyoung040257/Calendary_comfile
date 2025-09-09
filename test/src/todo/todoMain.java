@@ -190,7 +190,7 @@ public class todoMain extends JFrame{
             List<CalendarFrame01.TodoEntry> tasksForDay = CalendarFrame01.dailyTasks.get(todoDate);
             if (tasksForDay != null) {
                 // 할일 제목(work)이 같은 항목을 캘린더 목록에서 찾아 삭제
-                tasksForDay.removeIf(entry -> entry.title.equals(itemToDelete.getWork()));
+            	tasksForDay.removeIf(entry -> entry.id.equals(itemToDelete.getId()));
             }
         }
     }
@@ -313,10 +313,8 @@ public class todoMain extends JFrame{
 	  	panel.setOpaque(false); // 네모난 기본 배경 칠하지 않도록
 	  	return panel;
     }
-	
+    
     public static todoListMake getSharedList() {
         return sharedList;
     }
 }
-
-
