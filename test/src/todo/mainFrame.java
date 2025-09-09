@@ -3,8 +3,6 @@ package todo;
 import java.awt.*;
 import javax.swing.*;
 
-import GroupTest.MainFrame;
-
 public class mainFrame extends JFrame {
 	
 	private JPanel currentPanel;
@@ -144,3 +142,4 @@ public class mainFrame extends JFrame {
 		new mainFrame();
 	}
 }
+
