@@ -6,13 +6,13 @@ import java.awt.Container;
 public class ThemeManager {
 
 	public static void applyTheme(Component component) {
-		if ("DEFAULT".equals(Settings.theme)) {
+		if ("DEFAULT".equals(Setting.theme)) {
 			applyDefaultTheme(component);
 			return;
 		}
 
-		Color bgColor = Settings.theme.equals("DARK") ? Color.DARK_GRAY : Color.WHITE;
-		Color fgColor = Settings.theme.equals("DARK") ? Color.WHITE : Color.BLACK;
+		Color bgColor = Setting.theme.equals("DARK") ? Color.DARK_GRAY : Color.WHITE;
+		Color fgColor = Setting.theme.equals("DARK") ? Color.WHITE : Color.BLACK;
 
 		applyThemeRecursive(component, bgColor, fgColor);
 	}
