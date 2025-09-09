@@ -165,18 +165,6 @@ public class todoMain extends JFrame{
             SwingUtilities.invokeLater(() -> new MainFrame("사용자")); // 기본 사용자명 전달
 			dispose();
         });
-        
-        // ★ 창 닫기 이벤트 처리 (조건부)
-        fr.addWindowListener(new java.awt.event.WindowAdapter() {
-            @Override
-            public void windowClosing(java.awt.event.WindowEvent e) {
-                if (mainPanel != null) { // MainPanel에서 열렸으면 기존 인스턴스로 복귀
-                    mainPanel.setVisible(true);
-                } else { // 기존 CalendarFrame01 로직 유지
-                    new CalendarFrame01().setVisible(true);
-                }
-            }
-        });
 
 		fr.setVisible(true);
 	}
@@ -318,3 +306,4 @@ public class todoMain extends JFrame{
         return sharedList;
     }
 }
+
