@@ -9,6 +9,7 @@ public class User implements Serializable {
     private String birth;
     private String gender;
     private String email;
+    private todoListMake todolist = new todoListMake();
 
     public User(String id, String password, String name, String birth, String gender, String email) {
         this.id = id;
