@@ -6,18 +6,22 @@ import java.awt.*;
 import java.awt.event.*;
 import java.util.List;
 
+import todo.todoMain; // ★ todoMain import
+
 public class MemberPanel extends JPanel {
 
     private MainFrame frame;
     private String groupName;
+    private MainPanel mainPanel; // ★ MainPanel 참조
     private JPanel memberPanel;
     private JLabel titleLabel;
 
     private final Color BUTTON_COLOR = new Color(180, 150, 200);
 
-    public MemberPanel(MainFrame frame, String groupName) {
+    public MemberPanel(MainFrame frame, String groupName, MainPanel mainPanel) { // ★ 생성자 수정
         this.frame = frame;
         this.groupName = groupName;
+        this.mainPanel = mainPanel; // ★ MainPanel 저장
 
         setLayout(new BorderLayout(10, 10));
         setBackground(Color.WHITE);
@@ -103,11 +107,21 @@ public class MemberPanel extends JPanel {
             new frame.CalendarFrame01().setVisible(true);
         });
 
+        // ★ todoMain 버튼 수정: MainPanel에서 호출된 경우 복귀
         todoBtn.setFont(buttonFont);
         todoBtn.setBackground(Color.WHITE);
         todoBtn.setFocusPainted(false);
         todoBtn.setPreferredSize(buttonSize);
-        todoBtn.addActionListener(e -> JOptionPane.showMessageDialog(this, "할 일 기능은 준비 중입니다."));
+        todoBtn.addActionListener(e -> {
+            this.setVisible(false); // MemberPanel 숨기기
+            todoMain todoPage;
+            if (mainPanel != null) {
+                todoPage = new todoMain(mainPanel); // MainPanel에서 호출 시 기존 인스턴스 유지
+            } else {
+                todoPage = new todoMain(); // CalendarFrame01 등에서 호출 시 기본 동작
+            }
+            todoPage.fr.setVisible(true);
+        });
 
         groupBtn.setFont(buttonFont);
         groupBtn.setBackground(Color.WHITE);
@@ -176,3 +190,4 @@ public class MemberPanel extends JPanel {
         return groupName;
     }
 }
+
