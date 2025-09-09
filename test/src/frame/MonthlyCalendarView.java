@@ -27,6 +27,10 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
+import Settings.SettingsMenu;
+import Settings.ThemeManager;
+import lg.User;
+
 
 public class MonthlyCalendarView extends JFrame {
 
@@ -34,7 +38,8 @@ public class MonthlyCalendarView extends JFrame {
     private JLabel monthLabel;
     private JPanel dateGridPanel;
     private CalendarFrame01 mainFrame;
-
+	private User user;
+    
     public MonthlyCalendarView() {
         this(new CalendarFrame01());
     }
@@ -56,9 +61,15 @@ public class MonthlyCalendarView extends JFrame {
 
         // --- 상단 (NORTH): 월 이동 및 표시 섹션 ---
         JPanel topPanel = new JPanel(new BorderLayout());
-        topPanel.setBackground(Color.decode("#D8BFD8"));
+//        topPanel.setBackground(Color.decode("#D8BFD8"));
         topPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-
+        
+        JPanel monthControlPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        monthControlPanel.setOpaque(false);
+        topPanel.add(monthControlPanel, BorderLayout.WEST);
+     // 테마 적용
+        ThemeManager.applyTheme(topPanel);
+        
         // 레이아웃을 왼쪽 정렬로 변경
         JPanel monthNavPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 1, 0)); // 가로 간격을 1로 수정
         monthNavPanel.setOpaque(false);
@@ -134,7 +145,9 @@ public class MonthlyCalendarView extends JFrame {
         settingsButton.setFont(new Font("Malgun Gothic", Font.BOLD, 16));
         
         settingsButton.addActionListener(e -> {
-             JOptionPane.showMessageDialog(this, "설정 화면은 아직 준비중입니다.");
+             JOptionPane.showMessageDialog(this, "설정 화면은 으로 이동합니다.");
+             new SettingsMenu(this.user).setVisible(true);
+             dispose();
         });
         
         buttonPanel.add(mainButton);
