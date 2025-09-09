@@ -2,121 +2,122 @@ package Settings;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+
+import Settings.*;
 import frame.CalendarFrame01;
+import lg.LoginFrame;
 import lg.User;
-import GroupTest.MainPanel; // ★ 추가됨: MainPanel 참조 
 
 public class SettingsMenu extends JFrame {
 
-    private User user;
+	private User user;
 
-    // ★ 추가됨: 기존 MainPanel 인스턴스 참조
-    private MainPanel mainPanel;
+	// User를 받는 생성자
+	public SettingsMenu(User currentUser) {
+//		if (currentUser == null)
+//			throw new IllegalArgumentException("User cannot be null");
+		this.user = currentUser;
+		initComponents();
+	}
 
-    // ① MainPanel에서 열 때
-    public SettingsMenu(User user, MainPanel mainPanel) {
-        this.user = user;
-        this.mainPanel = mainPanel; // ★ MainPanel 참조 저장
-        initComponents();
-    }
+	// ② 기존 생성자 (User 없이도 열리게)
+	public SettingsMenu() {
+		this(null);
+	}
 
-    // ② CalendarFrame 등에서 열 때
-    public SettingsMenu(User user) {
-        this(user, null); // ★ mainPanel null
-    }
+	public void initComponents() {
+		setTitle("설정 메뉴");
+		setSize(450, 350);
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setLocationRelativeTo(null);
+		setLayout(new FlowLayout());
 
-    // ③ User 없이 열리는 생성자 (기존 유지)
-    public SettingsMenu() {
-        this(null, null); // ★ mainPanel null
-    }
+		JPanel panel = new JPanel();
+		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+		panel.setBorder(BorderFactory.createEmptyBorder(30, 50, 30, 50));
 
-    public void initComponents() {
-        setTitle("설정 메뉴");
-        setSize(400, 300);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLocationRelativeTo(null);
-        setLayout(new FlowLayout());
+		// 버튼들
+		JButton themeBtn = new JButton("테마 설정");
+		JButton infoBtn = new JButton("개인정보 설정");
+		JButton notificationBtn = new JButton("알림 설정");
+		JButton fontBtn = new JButton("글꼴 변경");
+		JButton logoutBtn = new JButton("로그아웃");
+		
 
-        JPanel panel = new JPanel();
-        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-        panel.setBorder(BorderFactory.createEmptyBorder(30, 50, 30, 50));
-
-        // 버튼들
-        JButton themeBtn = new JButton("테마 설정");
-        JButton infoBtn = new JButton("개인정보 설정");
-        JButton notificationBtn = new JButton("알림 설정");
-        JButton fontBtn = new JButton("글꼴 변경");
-
-        // 테마 설정 페이지
-        themeBtn.addActionListener(e -> {
-            this.setVisible(false);
-            LightMode lightMode = new LightMode();
-            lightMode.addWindowListener(new java.awt.event.WindowAdapter() {
-                public void windowClosed(java.awt.event.WindowEvent e) {
-                    setVisible(true); // 다시 설정 메뉴로
-                }
-            });
+		// 테마 설정 페이지
+		themeBtn.addActionListener(e -> {
+            this.dispose(); // 기존 메뉴 닫기
+            new LightMode(user); // 새 창만 열기
         });
 
-        // 개인정보 설정 페이지
-        infoBtn.addActionListener(e -> {
+		// 개인정보 설정 페이지
+		infoBtn.addActionListener(e -> {
             if (user == null) {
                 JOptionPane.showMessageDialog(this, "로그인된 사용자 정보가 없습니다.");
                 return;
             }
-            this.setVisible(false);
-            PersonalInfoPage infoPage = new PersonalInfoPage(user);
-            infoPage.addWindowListener(new java.awt.event.WindowAdapter() {
-                public void windowClosed(java.awt.event.WindowEvent e) {
-                    setVisible(true);
-                }
-            });
+            this.dispose();
+            new PersonalInfoPage(user); // 새 창만 열기
         });
 
-        // 알림 설정 페이지
-        notificationBtn.addActionListener(e -> {
-            this.setVisible(false);
-            Notificationsetting notifyPage = new Notificationsetting();
-            notifyPage.addWindowListener(new java.awt.event.WindowAdapter() {
-                public void windowClosed(java.awt.event.WindowEvent e) {
-                    setVisible(true);
-                }
-            });
+		// 알림 설정 페이지
+		notificationBtn.addActionListener(e -> {
+            this.dispose();
+            new Notificationsetting(user); // 새 창만 열기
         });
 
-        // 글꼴 변경 페이지
-        fontBtn.addActionListener(e -> {
-            this.setVisible(false);
-            new FontSettingPage(this).setVisible(true);
+
+		// 글꼴 변경 버튼 클릭
+		fontBtn.addActionListener(e -> {
+			this.setVisible(false); // 메뉴 숨기기
+			FontSettingPage fontPage = new FontSettingPage(this); // parentMenu 전달
+			fontPage.setVisible(true); // 창 띄우기!
+		});
+		
+		// 로그아웃 버튼 페이지
+		logoutBtn.addActionListener(e -> {
+			int result = JOptionPane.showConfirmDialog(
+		            this,
+		            "로그아웃 하시겠습니까?",
+		            "로그아웃 확인",
+		            JOptionPane.YES_NO_OPTION,
+		            JOptionPane.QUESTION_MESSAGE
+		    );
+
+		    if (result == JOptionPane.YES_OPTION) {
+		        // 로그아웃 처리 (필요 시 user 초기화)
+		        this.dispose();                 // 설정 메뉴 닫기
+		        new LoginFrame().setVisible(true); // 로그인 페이지 열기
+		    }
         });
+		
 
-        // ---------------- 뒤로가기 버튼 ----------------
-        JButton backButton = new JButton("뒤로가기");
-        backButton.addActionListener(e -> {
-            // ★ 변경됨: MainPanel이 존재하면 기존 인스턴스로 복귀
-            if (mainPanel != null) {
-                this.dispose();           // SettingsMenu 닫기
-                mainPanel.setVisible(true); // 기존 MainPanel 보여주기
-            } else {
-                // ★ 기존 동작 유지: CalendarFrame01로 이동
-                new CalendarFrame01().setVisible(true);
-                this.dispose();
-            }
-        });
+		JButton backButton = new JButton("뒤로가기");
+		backButton.addActionListener(e -> {
+		    new CalendarFrame01(user).setVisible(true); // null 말고 로그인한 user 넘기기
+		    dispose();
+		});
 
-        // 버튼 추가
-        panel.add(themeBtn);
-        panel.add(Box.createVerticalStrut(15));
-        panel.add(infoBtn);
-        panel.add(Box.createVerticalStrut(15));
-        panel.add(notificationBtn);
-        panel.add(Box.createVerticalStrut(15));
-        panel.add(fontBtn);
-        panel.add(Box.createVerticalStrut(15));
-        panel.add(backButton);
+		// 버튼 추가
+		panel.add(themeBtn);
+		panel.add(Box.createVerticalStrut(15));
+		panel.add(infoBtn);
+		panel.add(Box.createVerticalStrut(15));
+		panel.add(notificationBtn);
+		panel.add(Box.createVerticalStrut(15));
+		panel.add(fontBtn); // 글꼴 변경 버튼 추가
+		panel.add(Box.createVerticalStrut(15));
+		panel.add(logoutBtn);
+		panel.add(Box.createVerticalStrut(15));
+		panel.add(backButton);
+		panel.add(Box.createVerticalStrut(15));
+		
+		ThemeManager.applyTheme(this);
+		add(panel);
+		setVisible(true);
+	}
 
-        ThemeManager.applyTheme(this);
-        add(panel);
-        setVisible(true);
-    }
+
 }
