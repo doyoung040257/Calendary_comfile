@@ -81,8 +81,8 @@ public class PersonalInfoPage extends JFrame {
 	}
 
 	private void applyTheme() {
-		Color bgColor = Settings.theme.equals("DARK") ? Color.DARK_GRAY : Color.WHITE;
-		Color fgColor = Settings.theme.equals("DARK") ? Color.WHITE : Color.BLACK;
+		Color bgColor = Setting.theme.equals("DARK") ? Color.DARK_GRAY : Color.WHITE;
+		Color fgColor = Setting.theme.equals("DARK") ? Color.WHITE : Color.BLACK;
 
 		panel.setBackground(bgColor);
 
