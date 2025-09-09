@@ -5,6 +5,8 @@ import java.awt.*;
 import java.util.*;
 import java.util.List;
 
+import frame.CalendarFrame01;
+
 public class MainFrame extends JFrame {
 
     CardLayout cardLayout;
@@ -22,7 +24,7 @@ public class MainFrame extends JFrame {
         this.currentUser = currentUser;
         setTitle("그룹 캘린더");
         setSize(600, 800);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE); // 직접 처리
         setLocationRelativeTo(null);
 
         cardLayout = new CardLayout();
@@ -32,11 +34,37 @@ public class MainFrame extends JFrame {
         mainPage = new MainPanel(this);
         mainPanel.add(mainPage, "Main");
 
+        // ----------------- 창 닫기 버튼 처리 -----------------
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            @Override
+            public void windowClosing(java.awt.event.WindowEvent e) {
+                Component visible = getVisiblePanel();
+                if (visible instanceof MainPanel) {
+                    // MainPanel -> CalenderFrame01
+                    dispose();
+                    new CalendarFrame01().setVisible(true);
+                } else if (visible instanceof MemberPanel) {
+                    // MemberPanel -> MainPanel
+                    backTo("Main");
+                } else if (visible instanceof SchedulePanel) {
+                    // SchedulePanel -> MemberPanel
+                    SchedulePanel sp = (SchedulePanel) visible;
+                    backTo("Member_" + sp.getGroupName());
+                } else {
+                    backTo("Main");
+                }
+            }
+        });
+
         setVisible(true);
     }
 
-    public JFrame getFrameWindow() {
-        return this;  // WindowListener용
+    // 현재 보이는 패널 반환
+    private Component getVisiblePanel() {
+        for (Component comp : mainPanel.getComponents()) {
+            if (comp.isVisible()) return comp;
+        }
+        return null;
     }
 
     public void switchPanel(String name, JPanel panel) {
@@ -78,4 +106,3 @@ public class MainFrame extends JFrame {
         if (mainPage != null) cardLayout.show(mainPanel, "Main");
     }
 }
-
