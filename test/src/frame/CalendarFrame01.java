@@ -15,13 +15,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.UUID;
-
 import javax.swing.border.Border;
 
 import GroupTest.CalenderGroupPage;
 import GroupTest.MainFrame;
 import Settings.SettingsMenu;
+import Settings.ThemeManager;
 
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -48,14 +47,12 @@ public class CalendarFrame01 extends JFrame {
 
     // 할 일 항목을 나타내는 내부 클래스
     public static class TodoEntry {
-    	public String id;
         public String title;
         public boolean completed;
         public Color color;
 
-        public TodoEntry(String id, String title, boolean completed, Color color) {
-            this.id = id;
-        	this.title = title;
+        public TodoEntry(String title, boolean completed, Color color) {
+            this.title = title;
             this.completed = completed;
             this.color = color;
         }
@@ -68,8 +65,12 @@ public class CalendarFrame01 extends JFrame {
     // User 객체를 인자로 받는 생성자 추가
     public CalendarFrame01(User user) {
         this(LocalDate.of(2025, 9, 1));
-        this.currentUser = user; // 전달받은 user 객체 저장
-        System.out.println("로그인한 사용자: " + currentUser.getName()); // 확인용 출력
+        this.user = user; // 전달받은 user 객체 저장
+        if (user != null) {
+            System.out.println("로그인한 사용자: " + user.getName());
+        } else {
+            System.out.println("로그인한 사용자 정보 없음");
+        }
     }
 
     public CalendarFrame01(LocalDate date) {
@@ -90,11 +91,16 @@ public class CalendarFrame01 extends JFrame {
 
         // --- 상단 패널 (월 이동 및 설정) ---
         JPanel topPanel = new JPanel(new BorderLayout());
-        topPanel.setBackground(Color.decode("#D8BFD8"));
+        //topPanel.setBackground(Color.decode("#D8BFD8"));
         topPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 
         JPanel monthControlPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         monthControlPanel.setOpaque(false);
+     
+        topPanel.add(monthControlPanel, BorderLayout.WEST);
+
+        // 테마 적용
+        ThemeManager.applyTheme(topPanel);
 
         JButton prevWeekButton = new JButton("◀");
         monthLabel = new JLabel();
@@ -198,7 +204,7 @@ public class CalendarFrame01 extends JFrame {
 
             JOptionPane.showMessageDialog(this, "할일 화면으로 이동합니다.");
             todoMain todomain = new todoMain();
-            //dispose();
+            dispose();
         });
 
         groupButton.addActionListener(e -> {
@@ -359,40 +365,40 @@ public class CalendarFrame01 extends JFrame {
     private void createSampleTasks() {
         dailyTasks.put(LocalDate.of(2025, 9, 1),
             new ArrayList<>(List.of(
-                new TodoEntry(UUID.randomUUID().toString(), "자바 프로젝트 시작", false, new Color(255, 255, 204)),
-                new TodoEntry(UUID.randomUUID().toString(), "UI 레이아웃 구상", false, new Color(255, 255, 204)),
-                new TodoEntry(UUID.randomUUID().toString(), "깃허브 레포 생성", true, new Color(255, 255, 204))
+                new TodoEntry("자바 프로젝트 시작", false, new Color(255, 255, 204)),
+                new TodoEntry("UI 레이아웃 구상", false, new Color(255, 255, 204)),
+                new TodoEntry("깃허브 레포 생성", true, new Color(255, 255, 204))
             ))
         );
         dailyTasks.put(LocalDate.of(2025, 9, 2),
             new ArrayList<>(List.of(
-                new TodoEntry(UUID.randomUUID().toString(), "알고리즘 문제 풀기", false, new Color(255, 255, 204)),
-                new TodoEntry(UUID.randomUUID().toString(), "점심 약속 (홍대)", false, new Color(255, 255, 204))
+                new TodoEntry("알고리즘 문제 풀기", false, new Color(255, 255, 204)),
+                new TodoEntry("점심 약속 (홍대)", false, new Color(255, 255, 204))
             ))
         );
         dailyTasks.put(LocalDate.of(2025, 9, 4),
             new ArrayList<>(List.of(
-                new TodoEntry(UUID.randomUUID().toString(), "마트 장보기", false, new Color(255, 255, 204)),
-                new TodoEntry(UUID.randomUUID().toString(), "저녁 요리하기", false, new Color(255, 255, 204))
+                new TodoEntry("마트 장보기", false, new Color(255, 255, 204)),
+                new TodoEntry("저녁 요리하기", false, new Color(255, 255, 204))
             ))
         );
         dailyTasks.put(LocalDate.of(2025, 9, 5),
             new ArrayList<>(List.of(
-                new TodoEntry(UUID.randomUUID().toString(), "주말 계획 세우기", true, new Color(255, 255, 204)),
-                new TodoEntry(UUID.randomUUID().toString(), "영화 보기: 코드 마스터", true, new Color(255, 255, 204))
+                new TodoEntry("주말 계획 세우기", true, new Color(255, 255, 204)),
+                new TodoEntry("영화 보기: 코드 마스터", true, new Color(255, 255, 204))
             ))
         );
         dailyTasks.put(LocalDate.of(2025, 9, 7),
             new ArrayList<>(List.of(
-                new TodoEntry(UUID.randomUUID().toString(), "주간 회고 작성", false, new Color(255, 255, 204)),
-                new TodoEntry(UUID.randomUUID().toString(), "다음 주 계획", false, new Color(255, 255, 204))
+                new TodoEntry("주간 회고 작성", false, new Color(255, 255, 204)),
+                new TodoEntry("다음 주 계획", false, new Color(255, 255, 204))
             ))
         );
         dailyTasks.put(LocalDate.of(2025, 9, 8),
             new ArrayList<>(List.of(
-                new TodoEntry(UUID.randomUUID().toString(), "새 기능 개발 착수", false, new Color(255, 255, 204)),
-                new TodoEntry(UUID.randomUUID().toString(), "코드 리뷰", false, new Color(255, 255, 204)),
-                new TodoEntry(UUID.randomUUID().toString(), "운동하기", false, new Color(255, 255, 204))
+                new TodoEntry("새 기능 개발 착수", false, new Color(255, 255, 204)),
+                new TodoEntry("코드 리뷰", false, new Color(255, 255, 204)),
+                new TodoEntry("운동하기", false, new Color(255, 255, 204))
             ))
         );
     }
