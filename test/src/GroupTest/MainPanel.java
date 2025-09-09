@@ -36,7 +36,11 @@ public class MainPanel extends JPanel {
         settingBtn.setForeground(Color.WHITE);
         settingBtn.setFocusPainted(false);
         settingBtn.setFont(new Font("맑은 고딕", Font.BOLD, 12));
-        settingBtn.addActionListener(e -> new SettingsMenu(currentUser).setVisible(true));
+        / ★ 수정됨: MainPanel 인스턴스를 전달
+        settingBtn.addActionListener(e -> {
+            this.setVisible(false); // ★ MainPanel 숨기기
+            new SettingsMenu(currentUser, this).setVisible(true); // ★ MainPanel 전달
+        });
         addHoverClickEffect(settingBtn, new Color(100, 149, 237));
         topPanel.add(settingBtn, BorderLayout.EAST);
 
@@ -269,4 +273,5 @@ public class MainPanel extends JPanel {
         removeGroupButton(groupName);
     }
 }
+
 
