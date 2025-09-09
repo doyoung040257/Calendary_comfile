@@ -2,6 +2,8 @@ package lg;
 
 import java.io.Serializable;
 
+import todo.todoListMake;
+
 public class User implements Serializable {
     private String id;
     private String password;
@@ -27,4 +29,5 @@ public class User implements Serializable {
     public String getGender() { return gender; }
     public String getEmail() { return email; }
 }
+
 
