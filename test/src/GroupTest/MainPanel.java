@@ -8,6 +8,7 @@ import java.util.List;
 
 import Settings.SettingsMenu;
 import lg.User;
+import todo.todoMain;			// import 추가
 import frame.CalendarFrame01;
 
 public class MainPanel extends JPanel {
@@ -36,11 +37,15 @@ public class MainPanel extends JPanel {
         settingBtn.setForeground(Color.WHITE);
         settingBtn.setFocusPainted(false);
         settingBtn.setFont(new Font("맑은 고딕", Font.BOLD, 12));
-        / ★ 수정됨: MainPanel 인스턴스를 전달
+        /*변경 진행
+        settingBtn.addActionListener(e -> new SettingsMenu(currentUser).setVisible(true));
+        */
+     // ★ 수정됨: MainPanel 인스턴스를 전달
         settingBtn.addActionListener(e -> {
             this.setVisible(false); // ★ MainPanel 숨기기
             new SettingsMenu(currentUser, this).setVisible(true); // ★ MainPanel 전달
         });
+        
         addHoverClickEffect(settingBtn, new Color(100, 149, 237));
         topPanel.add(settingBtn, BorderLayout.EAST);
 
@@ -106,11 +111,13 @@ public class MainPanel extends JPanel {
         homeBtn.setPreferredSize(mainButtonSize);
         homeBtn.addActionListener(e -> disposeAndOpenCalendar());
 
-        todoBtn.setFont(buttonFont);
-        todoBtn.setBackground(Color.WHITE);
-        todoBtn.setFocusPainted(false);
-        todoBtn.setPreferredSize(mainButtonSize);
-        todoBtn.addActionListener(e -> JOptionPane.showMessageDialog(this, "할 일 기능은 준비 중입니다."));
+        // ★ 수정됨: MainPanel 인스턴스를 전달
+        todoBtn.addActionListener(e -> {
+            // MainPanel 인스턴스를 전달하여 기존 창으로 복귀 가능하도록
+            this.setVisible(false);                  // MainPanel 숨기기
+            todoMain todoPage = new todoMain(this);  // MainPanel 인스턴스 전달
+            todoPage.fr.setVisible(true);            // 할 일 페이지 표시
+        });
 
         groupBtn.setFont(buttonFont);
         groupBtn.setBackground(Color.WHITE);
@@ -273,5 +280,4 @@ public class MainPanel extends JPanel {
         removeGroupButton(groupName);
     }
 }
-
 
