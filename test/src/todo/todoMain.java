@@ -314,11 +314,9 @@ public class todoMain extends JFrame{
 	  	panel.setOpaque(false); // 네모난 기본 배경 칠하지 않도록
 	  	return panel;
     }
-    
-
-    
-    public static void main(String[] args) {
-		new todoMain();
-		
-	}
+	
+    public static todoListMake getSharedList() {
+        return sharedList;
+    }
 }
+
