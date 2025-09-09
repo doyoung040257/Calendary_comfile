@@ -151,14 +151,13 @@ public class todoMain extends JFrame{
 	    
 	    homeButton.addActionListener(e -> {
 	          // 현재 화면이 이미 홈이므로 메시지를 표시
-	    	JOptionPane.showMessageDialog(this, "이미 홈 화면입니다.");
+	    	JOptionPane.showMessageDialog(this, "홈 화면으로 이동합니다.");
+	    	CalendarFrame01 calendarframe01 = new CalendarFrame01();
+	    	dispose();
 	    });
 	
 	    todoButton.addActionListener(e -> {
-	          
-	    	JOptionPane.showMessageDialog(this, "할일 화면으로 이동합니다.");
-	      	todoMain todomain = new todoMain();
-	      	dispose();
+	    	JOptionPane.showMessageDialog(this, "이미 할 일 화면입니다.");
 	    });
 
         groupButton.addActionListener(e -> {
@@ -319,4 +318,5 @@ public class todoMain extends JFrame{
         return sharedList;
     }
 }
+
 
