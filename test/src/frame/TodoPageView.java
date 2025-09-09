@@ -168,26 +168,15 @@ public class TodoPageView extends JFrame {
 			JOptionPane.showMessageDialog(this, "할 일 추가 화면으로 이동합니다.");
 
 			todo.todoListMake sharedList = todoMain.getSharedList();
-			int initialSize = sharedList.getTodolist().size();
 
+			// 할일 추가 후 실행될 콜백 함수를 정의합니다.
 			Runnable afterSaveCallback = () -> {
-				if (sharedList.getTodolist().size() > initialSize) {
-					todo.todoList newTodoItem = sharedList.getTodolist().get(sharedList.getTodolist().size() - 1);
-					LocalDate todoDate = parseDateFromTodoString(newTodoItem.getDay());
-
-					if (todoDate != null) {
-						List<CalendarFrame01.TodoEntry> tasksForDay =
-							CalendarFrame01.dailyTasks.computeIfAbsent(todoDate, k -> new ArrayList<>());
-						CalendarFrame01.TodoEntry newEntry = new CalendarFrame01.TodoEntry(
-							newTodoItem.getWork(), false, new Color(255, 255, 204)
-						);
-						tasksForDay.add(newEntry);
-					}
-				}
+				// 데이터가 추가되었으므로 할 일 목록을 다시 불러오고 주간 캘린더를 업데이트합니다.
 				loadTodoList();
 				mainFrame.updateWeekView();
 			};
 
+			// todoAddition 클래스에 콜백 함수를 전달하여 할 일 추가 페이지를 엽니다.
 			todoAddition todoAddPage = new todoAddition(sharedList, afterSaveCallback);
 			todoAddPage.todo_addition_page();
 		});
@@ -197,7 +186,21 @@ public class TodoPageView extends JFrame {
 					JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
 				List<CalendarFrame01.TodoEntry> tasks = CalendarFrame01.dailyTasks.getOrDefault(currentDate,
 						new ArrayList<>());
-				tasks.removeIf(task -> task.completed);
+
+				// todoMain의 sharedList에서 할 일 제거
+				todo.todoListMake sharedList = todo.todoMain.getSharedList();
+				
+				// CalendarFrame01.dailyTasks에서 삭제될 항목과 동일한 항목을 sharedList에서 찾아 삭제
+				tasks.removeIf(task -> {
+					if (task.completed) {
+						sharedList.getTodolist().removeIf(todoItem -> 
+							todoItem.getWork().equals(task.title) && DateParser.parseDate(todoItem.getDay()).equals(currentDate)
+						);
+						return true;
+					}
+					return false;
+				});
+
 				loadTodoList();
 				mainFrame.updateTodoPanel();
 				mainFrame.updateProgressBar();
