@@ -142,17 +142,16 @@ public class todoAddition extends JFrame {
 
                 // 1. 기존 todoListMake에 추가
                 list.addTodo(workStr, dayStr, timeStr, memoStr, importance);
-
-                // =================================================================
+                String uuid = list.getTodolist().get(list.getTodolist().size()-1).getId();
+                
                 // ============[추가된 부분] 캘린더 데이터 동기화=====================
-                // =================================================================
                 LocalDate todoDate = DateParser.parseDate(dayStr);
                 if (todoDate != null) {
                     List<CalendarFrame01.TodoEntry> tasksForDay =
                         CalendarFrame01.dailyTasks.computeIfAbsent(todoDate, k -> new ArrayList<>());
                     
                     CalendarFrame01.TodoEntry newEntry = new CalendarFrame01.TodoEntry(
-                        workStr, false, new Color(255, 255, 204)
+                        uuid ,workStr, false, new Color(255, 255, 204)
                     );
                     tasksForDay.add(newEntry);
                 }
