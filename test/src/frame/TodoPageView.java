@@ -8,6 +8,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.time.LocalDate;
+import java.time.MonthDay;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
@@ -150,7 +151,6 @@ public class TodoPageView extends JFrame {
 
 		JScrollPane todoListScrollPane = new JScrollPane(todoListPanel);
 		todoListScrollPane.setPreferredSize(new Dimension(400, 400));
-		// todoListScrollPane.setBorder(new LineBorder(Color.BLACK, 2));
 		todoListScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		centerPanel.add(todoListScrollPane, BorderLayout.NORTH);
 
@@ -163,21 +163,31 @@ public class TodoPageView extends JFrame {
 		deleteButton.setFont(new Font("Malgun Gothic", Font.BOLD, 16));
 		addButton.setPreferredSize(new Dimension(100, 40));
 		deleteButton.setPreferredSize(new Dimension(100, 40));
-
+        
 		addButton.addActionListener(e -> {
 			JOptionPane.showMessageDialog(this, "할 일 추가 화면으로 이동합니다.");
 
-			// todoMain.getSharedList()를 통해 공유 리스트에 접근
 			todo.todoListMake sharedList = todoMain.getSharedList();
+			int initialSize = sharedList.getTodolist().size();
 
-			// 할 일 추가 페이지가 닫힌 후 TodoPageView를 새로 고침하는 콜백
 			Runnable afterSaveCallback = () -> {
+				if (sharedList.getTodolist().size() > initialSize) {
+					todo.todoList newTodoItem = sharedList.getTodolist().get(sharedList.getTodolist().size() - 1);
+					LocalDate todoDate = parseDateFromTodoString(newTodoItem.getDay());
+
+					if (todoDate != null) {
+						List<CalendarFrame01.TodoEntry> tasksForDay =
+							CalendarFrame01.dailyTasks.computeIfAbsent(todoDate, k -> new ArrayList<>());
+						CalendarFrame01.TodoEntry newEntry = new CalendarFrame01.TodoEntry(
+							newTodoItem.getWork(), false, new Color(255, 255, 204)
+						);
+						tasksForDay.add(newEntry);
+					}
+				}
 				loadTodoList();
-				mainFrame.updateTodoPanel();
-				mainFrame.updateProgressBar();
+				mainFrame.updateWeekView();
 			};
 
-			// todoAddition 페이지를 열고 필요한 데이터와 콜백을 전달
 			todoAddition todoAddPage = new todoAddition(sharedList, afterSaveCallback);
 			todoAddPage.todo_addition_page();
 		});
@@ -187,7 +197,7 @@ public class TodoPageView extends JFrame {
 					JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
 				List<CalendarFrame01.TodoEntry> tasks = CalendarFrame01.dailyTasks.getOrDefault(currentDate,
 						new ArrayList<>());
-				tasks.removeIf(task -> task.completed); // 완료된 할 일 삭제
+				tasks.removeIf(task -> task.completed);
 				loadTodoList();
 				mainFrame.updateTodoPanel();
 				mainFrame.updateProgressBar();
@@ -207,21 +217,9 @@ public class TodoPageView extends JFrame {
 		oneLineReviewArea.setFont(new Font("Malgun Gothic", Font.PLAIN, 14));
 
 		oneLineReviewArea.getDocument().addDocumentListener(new DocumentListener() {
-			@Override
-			public void insertUpdate(DocumentEvent e) {
-				saveReview();
-			}
-
-			@Override
-			public void removeUpdate(DocumentEvent e) {
-				saveReview();
-			}
-
-			@Override
-			public void changedUpdate(DocumentEvent e) {
-				saveReview();
-			}
-
+			@Override public void insertUpdate(DocumentEvent e) { saveReview(); }
+			@Override public void removeUpdate(DocumentEvent e) { saveReview(); }
+			@Override public void changedUpdate(DocumentEvent e) { saveReview(); }
 			private void saveReview() {
 				CalendarFrame01.dailyReviews.put(currentDate, oneLineReviewArea.getText());
 			}
@@ -246,7 +244,6 @@ public class TodoPageView extends JFrame {
 		completeButton.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2));
 
 		completeButton.addActionListener(e -> {
-			// CalendarFrame01의 currentDate를 TodoPageView의 현재 날짜로 업데이트
 			mainFrame.currentDate = this.currentDate;
 			mainFrame.setVisible(true);
 			mainFrame.updateWeekView();
@@ -255,24 +252,42 @@ public class TodoPageView extends JFrame {
 
 		bottomPanel.add(completeButton);
 		contentPane.add(bottomPanel, BorderLayout.SOUTH);
-
-		// 초기 데이터 로드
 		loadTodoList();
+	}
+    
+    // =================================================================
+    // ============[수정된 부분] 날짜 파싱 헬퍼 메서드=====================
+    // =================================================================
+	private LocalDate parseDateFromTodoString(String dateStr) {
+		try {
+			if (dateStr.contains("[")) {
+				// "2025-9-8[Mon]" 형식 처리
+				String datePart = dateStr.substring(0, dateStr.indexOf('['));
+				DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-M-d");
+				return LocalDate.parse(datePart, formatter);
+			} else {
+				// "09월 09일" 형식 처리 (연도는 현재 연도로 자동 설정)
+				DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM월 dd일", Locale.KOREAN);
+				MonthDay monthDay = MonthDay.parse(dateStr, formatter);
+				return monthDay.atYear(LocalDate.now().getYear());
+			}
+		} catch (Exception e) {
+			System.err.println("날짜 형식 파싱 오류: " + dateStr);
+			e.printStackTrace();
+			return null;
+		}
 	}
 
 	private void loadTodoList() {
 		todoListPanel.removeAll();
-		List<CalendarFrame01.TodoEntry> todoList = CalendarFrame01.dailyTasks.getOrDefault(currentDate,
-				new ArrayList<>());
+		List<CalendarFrame01.TodoEntry> todoList = CalendarFrame01.dailyTasks.getOrDefault(currentDate, new ArrayList<>());
 
 		for (CalendarFrame01.TodoEntry todo : todoList) {
 			todoListPanel.add(createTodoItemPanel(todo));
 			todoListPanel.add(Box.createVerticalStrut(5));
 		}
 		updateProgressBar();
-
 		oneLineReviewArea.setText(CalendarFrame01.dailyReviews.getOrDefault(currentDate, "예시: 오늘 하루도 멋지게 완수!"));
-
 		todoListPanel.revalidate();
 		todoListPanel.repaint();
 	}
@@ -311,13 +326,11 @@ public class TodoPageView extends JFrame {
 
 		todoItemPanel.add(todoLabel, BorderLayout.CENTER);
 		todoItemPanel.add(completeButton, BorderLayout.EAST);
-
 		return todoItemPanel;
 	}
 
 	private void updateProgressBar() {
-		List<CalendarFrame01.TodoEntry> todoList = CalendarFrame01.dailyTasks.getOrDefault(currentDate,
-				new ArrayList<>());
+		List<CalendarFrame01.TodoEntry> todoList = CalendarFrame01.dailyTasks.getOrDefault(currentDate, new ArrayList<>());
 
 		if (todoList.isEmpty()) {
 			progressBar.setValue(100);
