@@ -169,7 +169,7 @@ public class TodoPageView extends JFrame {
         deleteButton.addActionListener(e -> {
             if (!isDeleteMode) {
                 isDeleteMode = true;
-                deleteButton.setText("삭제");
+                deleteButton.setText("선택 삭제");
                 loadTodoList();
             } else {
                 List<String> idsToDelete = new ArrayList<>();
@@ -323,15 +323,15 @@ public class TodoPageView extends JFrame {
             stars += "★";
         }
         if (!stars.isEmpty()) {
-            stars += " ";
+            stars = " " + stars;
         }
 
         // 완료 여부에 따라 텍스트 스타일 변경
         if (todo.completed) {
-            todoLabel.setText("<html><strike>" + stars + todo.title + "</strike></html>");
+            todoLabel.setText("<html><strike>" + todo.title + stars + "</strike></html>");
             todoLabel.setForeground(Color.GRAY);
         } else {
-            todoLabel.setText(stars + todo.title);
+            todoLabel.setText(todo.title + stars);
             todoLabel.setForeground(Color.BLACK);
         }
 
