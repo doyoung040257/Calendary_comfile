@@ -1,9 +1,10 @@
 package todo;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class todoListMake {
+public class todoListMake implements Serializable {
 
 	private List<todoList> todolist = new ArrayList<>();
 	
