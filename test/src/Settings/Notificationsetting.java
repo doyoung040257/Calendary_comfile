@@ -65,6 +65,7 @@ public class Notificationsetting extends JFrame {
 			if (onRadio.isSelected()) {
 				Setting.notificationsEnabled = true;
 				JOptionPane.showMessageDialog(this, "알림이 켜졌습니다");
+				
 			} else {
 				Setting.notificationsEnabled = false;
 				JOptionPane.showMessageDialog(this, "알림이 꺼졌습니다");
@@ -75,17 +76,12 @@ public class Notificationsetting extends JFrame {
 			// 테마 적용
 			ThemeManager.applyTheme(this);
 
-			// 모든 창 순회
-			for (Window w : Window.getWindows()) {
-				if (w instanceof CalendarFrame01) {
-					// 캘린더 창은 그대로
-					continue;
-				}
-				// 현재 Notificationsetting 포함 나머지 창 닫기
-				w.dispose();
-			}
-			// 현재 Notificationsetting 창 닫기
-			this.dispose();
+			 // 현재 알림 설정 창 닫기
+		    this.dispose();
+
+		    // 메인 캘린더 화면으로 돌아가기
+		    new CalendarFrame01(user).setVisible(true);
+			
 		});
 
 		// 뒤로가기 버튼
