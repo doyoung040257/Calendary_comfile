@@ -16,6 +16,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
+import javax.swing.ButtonGroup;
 
 import frame.CalendarFrame01;
 import Settings.*;
@@ -33,7 +34,10 @@ public class PersonalInfoPage extends JFrame {
 	private JTextField birthField;
 	private JTextField genderField;
 	private JTextField emailField;
-
+	private JRadioButton maleBtn;
+	private JRadioButton femaleBtn;
+	private ButtonGroup genderGroup;
+	
 	public PersonalInfoPage(User user) { // User 객체를 생성자로 받음
 		if (user == null)
 			throw new IllegalArgumentException("User cannot be null");
@@ -59,8 +63,51 @@ public class PersonalInfoPage extends JFrame {
 
 		// 성별
 		panel.add(new JLabel("성별:"));
-		genderField = new JTextField(user.getGender());
-		panel.add(genderField);
+		maleBtn = new JRadioButton("남자");
+		femaleBtn = new JRadioButton("여자");
+
+		// 로그인된 User 객체에 따라 선택 초기화
+		if ("남자".equals(user.getGender())) {
+		    maleBtn.setSelected(true);
+		} else {
+		    femaleBtn.setSelected(true);
+		}
+		// 그룹 지정
+		genderGroup = new ButtonGroup();
+		genderGroup.add(maleBtn);
+		genderGroup.add(femaleBtn);
+
+		// 성별 버튼을 담은 패널 생성
+		JPanel genderPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+		genderPanel.add(maleBtn);
+		genderPanel.add(femaleBtn);
+		
+		// 패널 색상 적용
+		Color bgColor, fgColor;
+		switch (Setting.theme) {
+		    case "DARK":
+		        bgColor = Color.BLACK;
+		        fgColor = Color.WHITE;
+		        break;
+		    case "PASTEL":
+		        bgColor = new Color(255, 228, 225);
+		        fgColor = Color.BLACK;
+		        break;
+		    default:
+		        bgColor = new Color(0xD8BFD8);
+		        fgColor = Color.BLACK;
+		}
+
+		// genderPanel 배경
+		genderPanel.setBackground(bgColor);
+
+		// JRadioButton 배경 적용
+		maleBtn.setBackground(bgColor);
+		maleBtn.setForeground(fgColor);
+		femaleBtn.setBackground(bgColor);
+		femaleBtn.setForeground(fgColor);
+
+		panel.add(genderPanel);
 
 		// 이메일
 		panel.add(new JLabel("이메일:"));
@@ -72,7 +119,11 @@ public class PersonalInfoPage extends JFrame {
 			// User 객체에 값 반영 (User 클래스에 setter가 있어야 함)
 			user.setName(nameField.getText());
 			user.setBirth(birthField.getText());
-			user.setGender(genderField.getText());
+			if (maleBtn.isSelected()) {
+		        user.setGender("남자");
+		    } else if (femaleBtn.isSelected()) {
+		        user.setGender("여자");
+		    }
 			user.setEmail(emailField.getText());
 
 			JOptionPane.showMessageDialog(this, "정보가 성공적으로 저장되었습니다.");
