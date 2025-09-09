@@ -28,6 +28,13 @@ public class User implements Serializable {
     public String getBirth() { return birth; }
     public String getGender() { return gender; }
     public String getEmail() { return email; }
+
+    // Setter
+    public void setName(String name) { this.name = name; }
+    public void setBirth(String birth) { this.birth = birth; }
+    public void setGender(String gender) { this.gender = gender; }
+    public void setEmail(String email) { this.email = email; }
 }
+
 
 
