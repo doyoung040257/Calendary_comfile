@@ -162,18 +162,8 @@ public class FontSettingPage extends JFrame {
 
 		// 모든 컴포넌트 반복 적용
 		for (Component comp : getContentPane().getComponents()) {
-			applyThemeRecursive(comp, bgColor, fgColor);
-		}
-	}
+			ThemeManager.applyTheme(this); //테마 적용
 
-	private void applyThemeRecursive(Component comp, Color bg, Color fg) {
-		comp.setBackground(bg);
-		comp.setForeground(fg);
-
-		if (comp instanceof Container) {
-			for (Component child : ((Container) comp).getComponents()) {
-				applyThemeRecursive(child, bg, fg);
-			}
 		}
 	}
 
