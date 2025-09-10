@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import todo.todoListMake;
 import frame.CalendarFrame01;
+import GroupTest.GroupList; // ★ MODIFIED: GroupList import
 
 public class User implements Serializable {
     private String id;
@@ -16,12 +17,16 @@ public class User implements Serializable {
     private String gender;
     private String email;
     private todoListMake todolist;
+
     private Map<LocalDate, List<CalendarFrame01.TodoEntry>> dailyTasks = new HashMap<>();
     private Map<LocalDate, String> dailyReviews = new HashMap<>();
 
     private boolean notificationsEnabled = true; // ✅ 추가
-    
-	public User(String id, String password, String name, String birth, String gender, String email) {
+
+    // ★ MODIFIED: User의 그룹 관리 필드 추가
+    private GroupList groupList; 
+
+    public User(String id, String password, String name, String birth, String gender, String email) {
         this.id = id;
         this.password = password;
         this.name = name;
@@ -29,9 +34,8 @@ public class User implements Serializable {
         this.gender = gender;
         this.email = email;
         this.todolist = new todoListMake();
+        this.groupList = null; // ★ MODIFIED 초기값 null
     }
-	
-	
 
     public String getId() { return id; }
     public String getPassword() { return password; }
@@ -41,25 +45,21 @@ public class User implements Serializable {
     public String getEmail() { return email; }
     public todoListMake getTodolist() { return todolist; }
     public Map<LocalDate, List<CalendarFrame01.TodoEntry>> getDailyTasks() {
-    	return dailyTasks;
+        return dailyTasks;
     }
-    
 
     public boolean isNotificationsEnabled() { return notificationsEnabled; }  // ✅ 추가
     public void setNotificationsEnabled(boolean enabled) { this.notificationsEnabled = enabled; } // ✅ 추가
 
+    // ★ MODIFIED: GroupList getter/setter 추가
+    public GroupList getGroupList() { return groupList; }
+    public void setGroupList(GroupList groupList) { this.groupList = groupList; }
 
     // Setter
     public void setName(String name) { this.name = name; }
     public void setBirth(String birth) { this.birth = birth; }
     public void setGender(String gender) { this.gender = gender; }
     public void setEmail(String email) { this.email = email; }
-	public void setTodolist(todoListMake todolist) { this.todolist = todolist; }
-	public Map<LocalDate, String> getDailyReviews() {
-	    return dailyReviews;
-	}
-
-
+    public void setTodolist(todoListMake todolist) { this.todolist = todolist; }
+    public Map<LocalDate, String> getDailyReviews() { return dailyReviews; }
 }
-
-
