@@ -26,6 +26,12 @@ public class MemberPanel extends JPanel {
         this.groupName = groupName;
         this.mainPanel = mainPanel;
         this.currentUser = currentUser;
+    }
+    
+    public MemberPanel(MainFrame frame, String groupName, MainPanel mainPanel) {
+        this.frame = frame;
+        this.groupName = groupName;
+        this.mainPanel = mainPanel;
 
         setLayout(new BorderLayout(10, 10));
         setBackground(Color.WHITE);
@@ -209,5 +215,6 @@ public class MemberPanel extends JPanel {
         button.setContentAreaFilled(true);
     }
 }
+
 
 
