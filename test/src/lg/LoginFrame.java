@@ -4,8 +4,11 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
 
 import frame.CalendarFrame01;
+import todo.todoList;
+import todo.todoListMake;
 
 public class LoginFrame extends JFrame {
     private JTextField idField;
@@ -126,8 +129,32 @@ public class LoginFrame extends JFrame {
             User user = UserDatabase.userDatabase.get(id);
             if (user.getPassword().equals(pw)) {
                 JOptionPane.showMessageDialog(this, user.getName() + "님 환영합니다!");
-                new CalendarFrame01().setVisible(true);
+                
+                System.out.println("아이디: " + user.getId());
+                System.out.println("이름: " + user.getName());
+                System.out.println("이메일: " + user.getEmail());
+
+                todoListMake sharedList = new todoListMake();
+                sharedList.setTodolist(user.getTodolist().getTodolist());
+                
+                // ✅ 할 일 목록 불러오기
+                if (user.getTodolist() != null && !user.getTodolist().getTodolist().isEmpty()) {
+                    System.out.println("할 일 목록:");
+                    for (todoList t : user.getTodolist().getTodolist()) {
+                        System.out.println(" - " + t.toString());
+                    }
+                } else {
+                    System.out.println("저장된 할 일이 없습니다.");
+                }
+                
+                SessionManager.login(user);
+                
+//                new CalendarFrame01().setVisible(true);
+//                dispose();
+                
+                new CalendarFrame01(user).setVisible(true);
                 dispose();
+                
             } else {
                 JOptionPane.showMessageDialog(this, "비밀번호가 틀렸습니다.");
             }
