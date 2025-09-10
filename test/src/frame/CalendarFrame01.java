@@ -32,7 +32,8 @@ import todo.todoMain;
 
 public class CalendarFrame01 extends JFrame {
 
-    LocalDate currentDate;
+//    protected static Object dailyTasks;
+	LocalDate currentDate;
     private JLabel monthLabel;
     private JButton[] dayButtons = new JButton[7];
     private JPanel todoPanel;
@@ -44,11 +45,13 @@ public class CalendarFrame01 extends JFrame {
     private User user;
 
     // 할 일 데이터 및 한줄평 데이터를 모든 프레임에서 공유하기 위한 static 변수
-    public static Map<LocalDate, List<TodoEntry>> dailyTasks = new HashMap<>();
-    public static Map<LocalDate, String> dailyReviews = new HashMap<>();
+//    public Map<LocalDate, List<TodoEntry>> dailyTasks = new HashMap<>();
+//    public Map<LocalDate, String> dailyReviews = new HashMap<>();
 
     // 할 일 항목을 나타내는 내부 클래스
-    public static class TodoEntry {
+    public static class TodoEntry implements java.io.Serializable {
+    	private static final long serialVersionUID = 1L;
+    	
     	public String id;
         public String title;
         public boolean completed;
@@ -82,6 +85,7 @@ public class CalendarFrame01 extends JFrame {
 
     public CalendarFrame01(LocalDate date) {
         this.currentDate = date;
+        this.user = lg.SessionManager.getCurrentUser();
 
         // --- 프레임 기본 설정 ---
         setTitle("주간 플래너");
@@ -91,7 +95,7 @@ public class CalendarFrame01 extends JFrame {
         setLocationRelativeTo(null);
 
         // 초기 샘플 데이터 생성
-        createSampleTasks();
+//        createSampleTasks();
 
         Font titleFont = new Font("SansSerif", Font.BOLD, 22);
         Font buttonFont = new Font("SansSerif", Font.BOLD, 16);
@@ -210,7 +214,7 @@ public class CalendarFrame01 extends JFrame {
         todoButton.addActionListener(e -> {
 
             JOptionPane.showMessageDialog(this, "할일 화면으로 이동합니다.");
-            todoMain todomain = new todoMain();
+            todoMain todomain = new todoMain(user);
             //dispose();
         });
 
@@ -291,7 +295,9 @@ public class CalendarFrame01 extends JFrame {
     public void updateTodoPanel() {
         todoPanel.removeAll();
 
-        List<TodoEntry> tasks = dailyTasks.getOrDefault(currentDate, new ArrayList<>());
+        List<TodoEntry> tasks =(user != null) 
+        		? user.getDailyTasks().getOrDefault(currentDate, new ArrayList<>())
+				: new ArrayList<>();
         Font todoFont = new Font("SansSerif", Font.PLAIN, 20);
 
         if (tasks.isEmpty()) {
@@ -321,7 +327,9 @@ public class CalendarFrame01 extends JFrame {
     }
 
     public void updateProgressBar() {
-        List<TodoEntry> tasks = dailyTasks.getOrDefault(currentDate, new ArrayList<>());
+        List<TodoEntry> tasks = (user != null)
+                ? user.getDailyTasks().getOrDefault(currentDate, new ArrayList<>())
+                : new ArrayList<>();
 
         if (tasks.isEmpty()) {
             progressBar.setValue(100);
@@ -369,44 +377,44 @@ public class CalendarFrame01 extends JFrame {
         }
     }
 
-    private void createSampleTasks() {
-        dailyTasks.put(LocalDate.of(2025, 9, 1),
-            new ArrayList<>(List.of(
-                new TodoEntry(UUID.randomUUID().toString(), "자바 프로젝트 시작", false, new Color(255, 255, 204)),
-                new TodoEntry(UUID.randomUUID().toString(), "UI 레이아웃 구상", false, new Color(255, 255, 204)),
-                new TodoEntry(UUID.randomUUID().toString(), "깃허브 레포 생성", true, new Color(255, 255, 204))
-            ))
-        );
-        dailyTasks.put(LocalDate.of(2025, 9, 2),
-            new ArrayList<>(List.of(
-                new TodoEntry(UUID.randomUUID().toString(), "알고리즘 문제 풀기", false, new Color(255, 255, 204)),
-                new TodoEntry(UUID.randomUUID().toString(), "점심 약속 (홍대)", false, new Color(255, 255, 204))
-            ))
-        );
-        dailyTasks.put(LocalDate.of(2025, 9, 4),
-            new ArrayList<>(List.of(
-                new TodoEntry(UUID.randomUUID().toString(), "마트 장보기", false, new Color(255, 255, 204)),
-                new TodoEntry(UUID.randomUUID().toString(), "저녁 요리하기", false, new Color(255, 255, 204))
-            ))
-        );
-        dailyTasks.put(LocalDate.of(2025, 9, 5),
-            new ArrayList<>(List.of(
-                new TodoEntry(UUID.randomUUID().toString(), "주말 계획 세우기", true, new Color(255, 255, 204)),
-                new TodoEntry(UUID.randomUUID().toString(), "영화 보기: 코드 마스터", true, new Color(255, 255, 204))
-            ))
-        );
-        dailyTasks.put(LocalDate.of(2025, 9, 7),
-            new ArrayList<>(List.of(
-                new TodoEntry(UUID.randomUUID().toString(), "주간 회고 작성", false, new Color(255, 255, 204)),
-                new TodoEntry(UUID.randomUUID().toString(), "다음 주 계획", false, new Color(255, 255, 204))
-            ))
-        );
-        dailyTasks.put(LocalDate.of(2025, 9, 8),
-            new ArrayList<>(List.of(
-                new TodoEntry(UUID.randomUUID().toString(), "새 기능 개발 착수", false, new Color(255, 255, 204)),
-                new TodoEntry(UUID.randomUUID().toString(), "코드 리뷰", false, new Color(255, 255, 204)),
-                new TodoEntry(UUID.randomUUID().toString(), "운동하기", false, new Color(255, 255, 204))
-            ))
-        );
-    }
+//    private void createSampleTasks() {
+//    	user.getDailyTasks().put(LocalDate.of(2025, 9, 1),
+//            new ArrayList<>(List.of(
+//                new TodoEntry(UUID.randomUUID().toString(), "자바 프로젝트 시작", false, new Color(255, 255, 204)),
+//                new TodoEntry(UUID.randomUUID().toString(), "UI 레이아웃 구상", false, new Color(255, 255, 204)),
+//                new TodoEntry(UUID.randomUUID().toString(), "깃허브 레포 생성", true, new Color(255, 255, 204))
+//            ))
+//        );
+//        dailyTasks.put(LocalDate.of(2025, 9, 2),
+//            new ArrayList<>(List.of(
+//                new TodoEntry(UUID.randomUUID().toString(), "알고리즘 문제 풀기", false, new Color(255, 255, 204)),
+//                new TodoEntry(UUID.randomUUID().toString(), "점심 약속 (홍대)", false, new Color(255, 255, 204))
+//            ))
+//        );
+//        dailyTasks.put(LocalDate.of(2025, 9, 4),
+//            new ArrayList<>(List.of(
+//                new TodoEntry(UUID.randomUUID().toString(), "마트 장보기", false, new Color(255, 255, 204)),
+//                new TodoEntry(UUID.randomUUID().toString(), "저녁 요리하기", false, new Color(255, 255, 204))
+//            ))
+//        );
+//        dailyTasks.put(LocalDate.of(2025, 9, 5),
+//            new ArrayList<>(List.of(
+//                new TodoEntry(UUID.randomUUID().toString(), "주말 계획 세우기", true, new Color(255, 255, 204)),
+//                new TodoEntry(UUID.randomUUID().toString(), "영화 보기: 코드 마스터", true, new Color(255, 255, 204))
+//            ))
+//        );
+//        dailyTasks.put(LocalDate.of(2025, 9, 7),
+//            new ArrayList<>(List.of(
+//                new TodoEntry(UUID.randomUUID().toString(), "주간 회고 작성", false, new Color(255, 255, 204)),
+//                new TodoEntry(UUID.randomUUID().toString(), "다음 주 계획", false, new Color(255, 255, 204))
+//            ))
+//        );
+//        dailyTasks.put(LocalDate.of(2025, 9, 8),
+//            new ArrayList<>(List.of(
+//                new TodoEntry(UUID.randomUUID().toString(), "새 기능 개발 착수", false, new Color(255, 255, 204)),
+//                new TodoEntry(UUID.randomUUID().toString(), "코드 리뷰", false, new Color(255, 255, 204)),
+//                new TodoEntry(UUID.randomUUID().toString(), "운동하기", false, new Color(255, 255, 204))
+//            ))
+//        );
+//    }
 }
