@@ -136,6 +136,11 @@ public class todoMain extends JFrame{
                 } else {
                 	showCheckboxes = false;
                 	renderList();
+					
+					 // 🔔 알림 표시 추가
+                    if (SessionManager.getCurrentUser().isNotificationsEnabled()) {
+                        JOptionPane.showMessageDialog(todoMain.this, "선택한 할 일이 삭제되었습니다!");
+                    }
                 }
             }
         });
@@ -310,6 +315,7 @@ public class todoMain extends JFrame{
         return userList;
     }
 }
+
 
 
 
