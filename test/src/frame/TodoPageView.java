@@ -21,6 +21,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import Settings.SettingsMenu;
+import Settings.ThemeManager;
 import lg.SessionManager;
 import lg.User;
 import todo.todoMain;
@@ -441,4 +442,3 @@ public class TodoPageView extends JFrame {
         }
     }
 }
-
