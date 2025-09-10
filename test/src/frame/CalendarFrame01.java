@@ -220,7 +220,7 @@ public class CalendarFrame01 extends JFrame {
 
         groupButton.addActionListener(e -> {
             JOptionPane.showMessageDialog(this, "그룹 관리 화면으로 이동합니다.");
-            SwingUtilities.invokeLater(() -> new MainFrame(user)); // ★ 문자열 -> User 객체
+            SwingUtilities.invokeLater(() -> new MainFrame("사용자")); // ★ 문자열 -> User 객체
             dispose();
         });
 
@@ -418,5 +418,6 @@ public class CalendarFrame01 extends JFrame {
 //        );
 //    }
 }
+
 
 
