@@ -21,6 +21,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import Settings.SettingsMenu;
+import lg.SessionManager;
 import lg.User;
 import todo.todoMain;
 import todo.todoAddition;
@@ -158,7 +159,7 @@ public class TodoPageView extends JFrame {
         deleteButton.setPreferredSize(new Dimension(100, 40));
 
         addButton.addActionListener(e -> {
-            new todoAddition(todoMain.getSharedList(), () -> {
+            new todoAddition(SessionManager.getCurrentUser().getTodolist(), () -> {
                 isDeleteMode = false;
                 loadTodoList();
                 mainFrame.updateTodoPanel();
@@ -175,15 +176,15 @@ public class TodoPageView extends JFrame {
                 List<String> idsToDelete = new ArrayList<>();
                 for (int i = 0; i < deleteCheckboxes.size(); i++) {
                     if (deleteCheckboxes.get(i).isSelected()) {
-                        CalendarFrame01.TodoEntry todo = CalendarFrame01.dailyTasks.getOrDefault(currentDate, new ArrayList<>()).get(i);
+                        CalendarFrame01.TodoEntry todo = SessionManager.getCurrentUser().getDailyTasks().getOrDefault(currentDate, new ArrayList<>()).get(i);
                         idsToDelete.add(todo.id);
                     }
                 }
 
                 if (!idsToDelete.isEmpty()) {
-                    CalendarFrame01.dailyTasks.get(currentDate).removeIf(todo -> idsToDelete.contains(todo.id));
+                	SessionManager.getCurrentUser().getDailyTasks().get(currentDate).removeIf(todo -> idsToDelete.contains(todo.id));
                     
-                    todoMain.getSharedList().getTodolist().removeIf(todo -> {
+                    SessionManager.getCurrentUser().getTodolist().getTodolist().removeIf(todo -> {
                         LocalDate todoDate = DateParser.parseDate(todo.getDay());
                         return idsToDelete.contains(todo.getId()) && currentDate.isEqual(todoDate);
                     });
@@ -220,7 +221,7 @@ public class TodoPageView extends JFrame {
             @Override
             public void changedUpdate(DocumentEvent e) { saveReview(); }
             private void saveReview() {
-                CalendarFrame01.dailyReviews.put(currentDate, oneLineReviewArea.getText());
+            	SessionManager.getCurrentUser().getDailyReviews().put(currentDate, oneLineReviewArea.getText());
             }
         });
 
@@ -235,7 +236,7 @@ public class TodoPageView extends JFrame {
             }
         });
 
-        oneLineReviewArea.setText(CalendarFrame01.dailyReviews.getOrDefault(currentDate, ""));
+        oneLineReviewArea.setText(SessionManager.getCurrentUser().getDailyReviews().getOrDefault(currentDate, ""));
         reviewPanel.add(oneLineReviewArea, BorderLayout.CENTER);
         reviewPanel.setBorder(new EmptyBorder(10, 0, 0, 0));
         centerPanel.add(reviewPanel, BorderLayout.SOUTH);
@@ -263,7 +264,7 @@ public class TodoPageView extends JFrame {
     }
 
     private void saveReview() {
-        CalendarFrame01.dailyReviews.put(currentDate, oneLineReviewArea.getText());
+    	SessionManager.getCurrentUser().getDailyReviews().put(currentDate, oneLineReviewArea.getText());
         mainFrame.updateTodoPanel();
     }
 
@@ -275,14 +276,14 @@ public class TodoPageView extends JFrame {
     public void loadTodoList() {
         todoListPanel.removeAll();
         deleteCheckboxes.clear();
-        List<CalendarFrame01.TodoEntry> todoList = CalendarFrame01.dailyTasks.getOrDefault(currentDate, new ArrayList<>());
+        List<CalendarFrame01.TodoEntry> todoList = SessionManager.getCurrentUser().getDailyTasks().getOrDefault(currentDate, new ArrayList<>());
 
         for (CalendarFrame01.TodoEntry todo : todoList) {
             todoListPanel.add(createTodoItemPanel(todo));
             todoListPanel.add(Box.createVerticalStrut(5));
         }
         updateProgressBar();
-        oneLineReviewArea.setText(CalendarFrame01.dailyReviews.getOrDefault(currentDate, "예시: 오늘 하루도 멋지게 완수!"));
+        oneLineReviewArea.setText(SessionManager.getCurrentUser().getDailyReviews().getOrDefault(currentDate, "예시: 오늘 하루도 멋지게 완수!"));
         todoListPanel.revalidate();
         todoListPanel.repaint();
     }
@@ -308,7 +309,7 @@ public class TodoPageView extends JFrame {
         // 중요도에 따라 별표를 표시하는 로직
         int importance = 0;
         todoList foundTodo = null;
-        for (todoList t : todoMain.getSharedList().getTodolist()) {
+        for (todoList t : SessionManager.getCurrentUser().getTodolist().getTodolist()) {
             if (t.getId().equals(todo.id)) {
                 foundTodo = t;
                 break;
@@ -365,7 +366,7 @@ public class TodoPageView extends JFrame {
     }
 
     private void openModifyWindow(String uuid) {
-        List<todoList> allTodos = todoMain.getSharedList().getTodolist();
+        List<todoList> allTodos = SessionManager.getCurrentUser().getTodolist().getTodolist();
         int foundIndex = -1;
         for (int i = 0; i < allTodos.size(); i++) {
             if (allTodos.get(i).getId().equals(uuid)) {
@@ -375,9 +376,9 @@ public class TodoPageView extends JFrame {
         }
         
         if (foundIndex != -1) {
-            new todoModify(todoMain.getSharedList(), foundIndex, () -> {
+            new todoModify(SessionManager.getCurrentUser().getTodolist(), foundIndex, () -> {
                 todoList updatedItem = null;
-                for (todoList item : todoMain.getSharedList().getTodolist()) {
+                for (todoList item : SessionManager.getCurrentUser().getTodolist().getTodolist()) {
                     if (item.getId().equals(uuid)) {
                         updatedItem = item;
                         break;
@@ -387,7 +388,7 @@ public class TodoPageView extends JFrame {
                 if (updatedItem != null) {
                     LocalDate todoDate = DateParser.parseDate(updatedItem.getDay());
                     if (todoDate != null) {
-                        List<CalendarFrame01.TodoEntry> tasksForDay = CalendarFrame01.dailyTasks.get(todoDate);
+                        List<CalendarFrame01.TodoEntry> tasksForDay = SessionManager.getCurrentUser().getDailyTasks().get(todoDate);
                         if (tasksForDay != null) {
                             for (CalendarFrame01.TodoEntry entry : tasksForDay) {
                                 if (entry.id.equals(uuid)) {
@@ -407,7 +408,7 @@ public class TodoPageView extends JFrame {
     }
 
     private void updateProgressBar() {
-        List<CalendarFrame01.TodoEntry> todoList = CalendarFrame01.dailyTasks.getOrDefault(currentDate, new ArrayList<>());
+        List<CalendarFrame01.TodoEntry> todoList = SessionManager.getCurrentUser().getDailyTasks().getOrDefault(currentDate, new ArrayList<>());
         if (todoList.isEmpty()) {
             progressBar.setValue(100);
             progressBar.setString("할 일 없음");
