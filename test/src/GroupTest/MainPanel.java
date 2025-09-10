@@ -119,8 +119,10 @@ public class MainPanel extends JPanel {
         todoBtn.setPreferredSize(mainButtonSize);
         todoBtn.addActionListener(e -> {
             this.setVisible(false);
-            todoMain todoPage = new todoMain(this);
-            todoPage.fr.setVisible(true);
+            User currentUser = lg.SessionManager.getCurrentUser();
+            if (currentUser != null) {
+                new todoMain(currentUser, this).setVisible(true);
+            }
         });
 
         groupBtn.setFont(buttonFont);
@@ -287,3 +289,4 @@ public class MainPanel extends JPanel {
     }
 
 }
+
