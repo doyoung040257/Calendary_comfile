@@ -181,7 +181,12 @@ public class todoAddition extends JFrame {
                     lg.UserDatabase.userDatabase.put(currentUser.getId(), currentUser);
                     lg.UserDatabase.saveUsers();
                 }
-                
+
+				// ✅ 추가
+				 if (SessionManager.getCurrentUser().isNotificationsEnabled()) {
+                    JOptionPane.showMessageDialog(todoAddition.this, "할 일이 추가되었습니다!");
+                }
+				
                 if (afterSave != null) afterSave.run();
                 dispose();
             }
@@ -196,3 +201,4 @@ public class todoAddition extends JFrame {
         setVisible(true);
     }
 }
+
