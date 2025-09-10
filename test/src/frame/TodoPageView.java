@@ -164,6 +164,10 @@ public class TodoPageView extends JFrame {
                 loadTodoList();
                 mainFrame.updateTodoPanel();
                 mainFrame.updateProgressBar();
+                if (SessionManager.getCurrentUser().isNotificationsEnabled()) {
+                    JOptionPane.showMessageDialog(this, "할 일이 추가되었습니다!");
+                }
+                
             }).todo_addition_page();
         });
 
@@ -189,9 +193,13 @@ public class TodoPageView extends JFrame {
                         return idsToDelete.contains(todo.getId()) && currentDate.isEqual(todoDate);
                     });
 
-                    JOptionPane.showMessageDialog(this, "선택된 할 일이 삭제되었습니다.");
+                    if (SessionManager.getCurrentUser().isNotificationsEnabled()) {
+                        JOptionPane.showMessageDialog(this, "선택된 할 일이 삭제되었습니다.");
+                    }
                 } else {
-                     JOptionPane.showMessageDialog(this, "삭제할 할 일을 선택해주세요.");
+                    if (SessionManager.getCurrentUser().isNotificationsEnabled()) {
+                        JOptionPane.showMessageDialog(this, "삭제할 할 일을 선택해주세요.");
+                    }
                 }
 
                 isDeleteMode = false;
