@@ -4,11 +4,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.ArrayList;
 
 import frame.CalendarFrame01;
-import todo.todoList;
-import todo.todoListMake;
 
 public class LoginFrame extends JFrame {
     private JTextField idField;
@@ -20,7 +17,7 @@ public class LoginFrame extends JFrame {
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        // ✅ root 패널에 직접 배경색 지정 (AliceBlue)
+        // ✅ root 패널 배경색 (AliceBlue)
         JPanel root = new JPanel(new GridBagLayout());
         root.setBackground(new Color(240, 248, 255));
         root.setOpaque(true);
@@ -30,7 +27,7 @@ public class LoginFrame extends JFrame {
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.weightx = 1.0;
 
-        // 위쪽 스페이서 (아래로 내리기)
+        // 위쪽 스페이서
         gbc.gridy = 0;
         gbc.weighty = 0.8;
         root.add(Box.createVerticalStrut(1), gbc);
@@ -52,7 +49,7 @@ public class LoginFrame extends JFrame {
     /** 아이콘+입력필드 2개와 버튼 행 */
     private JPanel buildForm() {
         JPanel form = new JPanel();
-        form.setOpaque(false); // 배경 투명
+        form.setOpaque(false);
         form.setLayout(new BoxLayout(form, BoxLayout.Y_AXIS));
         form.setBorder(BorderFactory.createEmptyBorder(0, 40, 40, 40));
 
@@ -129,32 +126,8 @@ public class LoginFrame extends JFrame {
             User user = UserDatabase.userDatabase.get(id);
             if (user.getPassword().equals(pw)) {
                 JOptionPane.showMessageDialog(this, user.getName() + "님 환영합니다!");
-                
-                System.out.println("아이디: " + user.getId());
-                System.out.println("이름: " + user.getName());
-                System.out.println("이메일: " + user.getEmail());
-
-                todoListMake sharedList = new todoListMake();
-                sharedList.setTodolist(user.getTodolist().getTodolist());
-                
-                // ✅ 할 일 목록 불러오기
-                if (user.getTodolist() != null && !user.getTodolist().getTodolist().isEmpty()) {
-                    System.out.println("할 일 목록:");
-                    for (todoList t : user.getTodolist().getTodolist()) {
-                        System.out.println(" - " + t.toString());
-                    }
-                } else {
-                    System.out.println("저장된 할 일이 없습니다.");
-                }
-                
-                SessionManager.login(user);
-                
-//                new CalendarFrame01().setVisible(true);
-//                dispose();
-                
-                new CalendarFrame01(user).setVisible(true);
+                new CalendarFrame01(null).setVisible(true);
                 dispose();
-                
             } else {
                 JOptionPane.showMessageDialog(this, "비밀번호가 틀렸습니다.");
             }
@@ -168,7 +141,7 @@ public class LoginFrame extends JFrame {
     }
 }
 
-/** GlassButton 클래스 */
+/** 🎨 GlassButton 클래스 (연보라 버튼) */
 class GlassButton extends JButton {
     private boolean hover = false;
 
@@ -177,8 +150,8 @@ class GlassButton extends JButton {
         setContentAreaFilled(false);
         setFocusPainted(false);
         setBorderPainted(false);
-        setForeground(Color.WHITE); // ✅ 버튼 글씨 흰색
-        setFont(getFont().deriveFont(Font.BOLD, 14f));
+        setForeground(Color.WHITE); // 글씨 흰색
+        setFont(new Font("Inconsolata", Font.BOLD, 14)); 
         setOpaque(false);
 
         addMouseListener(new MouseAdapter() {
@@ -200,17 +173,19 @@ class GlassButton extends JButton {
         Graphics2D g2 = (Graphics2D) g.create();
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
+        // ✅ 연보라 계열 색상 (불투명)
         Color glassColor = hover
-                ? new Color(200, 200, 255, 180)
-                : new Color(255, 255, 255, 150);
+                ? new Color(119, 136, 153)   // hover 시 (진한 연보라)
+                : new Color(173, 216, 230);  // 기본 (연한 연보라)
+
         g2.setColor(glassColor);
         g2.fillRoundRect(0, 0, getWidth(), getHeight(), 15, 15);
 
-        g2.setColor(new Color(180, 180, 180, 200));
+        // 테두리 (어두운 보라색)
+        g2.setColor(new Color(176, 196, 222));
         g2.drawRoundRect(0, 0, getWidth() - 1, getHeight() - 1, 15, 15);
 
         super.paintComponent(g2);
         g2.dispose();
     }
 }
-
