@@ -88,7 +88,6 @@ public class FontSettingPage extends JFrame {
 		        for (Window w : Window.getWindows()) {
 		            if (w instanceof JFrame) {
 		                JFrame frame = (JFrame) w; // 명시적 캐스팅
-		                ThemeManager.applyFontSettingPage(frame.getContentPane(), appliedFont);
 		            }
 		        }
 
@@ -168,3 +167,4 @@ public class FontSettingPage extends JFrame {
 	}
 
 }
+
