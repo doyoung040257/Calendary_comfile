@@ -63,7 +63,8 @@ public class todoMain extends JFrame{
 		topPanel.setLayout(new BorderLayout());
 		topPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5)); 
 		topPanel.setBounds(10, 10, 450, 50);
-		topPanel.setBackground(Color.decode("#D8BFD8")); 
+		//topPanel.setBackground(Color.decode("#D8BFD8")); 
+		ThemeManager.applyTheme(topPanel); // 테마 변경 설정 적용
 		fr.add(topPanel);
 		
 		JLabel todo = new JLabel("할 일 작성하기", JLabel.CENTER);
@@ -142,7 +143,8 @@ public class todoMain extends JFrame{
         bottomPanel.setLayout(new GridLayout(1, 3, 10, 0));
         bottomPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5)); 
         bottomPanel.setBounds(10, 690, 450, 60);
-	    bottomPanel.setBackground(Color.decode("#D8BFD8"));
+	    //bottomPanel.setBackground(Color.decode("#D8BFD8"));
+        ThemeManager.applyTheme(bottomPanel); // 테마 변경 설정 적용
 	    fr.add(bottomPanel);
 	
 		JButton homeButton = createNavButton("홈", buttonFont);
@@ -307,5 +309,6 @@ public class todoMain extends JFrame{
         return userList;
     }
 }
+
 
 
