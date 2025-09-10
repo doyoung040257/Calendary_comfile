@@ -57,19 +57,4 @@ public class ThemeManager {
 			}
 		}
 	}
-
-	public static void applyFontSettingPage(Container container, Font font) {
-		applyFontRecursive(container, font);
-		container.revalidate();
-		container.repaint();
-	}
-
-	private static void applyFontRecursive(Component comp, Font font) {
-		comp.setFont(font);
-		if (comp instanceof Container) {
-			for (Component child : ((Container) comp).getComponents()) {
-				applyFontRecursive(child, font);
-			}
-		}
-	}
 }
