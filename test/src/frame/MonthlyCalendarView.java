@@ -220,7 +220,10 @@ public class MonthlyCalendarView extends JFrame {
         eventsPanel.setLayout(new BoxLayout(eventsPanel, BoxLayout.Y_AXIS));
         eventsPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
 
-        List<CalendarFrame01.TodoEntry> todos = CalendarFrame01.dailyTasks.getOrDefault(date, new ArrayList<>());
+        lg.User currentUser = lg.SessionManager.getCurrentUser();
+        List<CalendarFrame01.TodoEntry> todos =(currentUser != null)
+        		? currentUser.getDailyTasks().getOrDefault(date, new ArrayList<>())
+	    	    : new ArrayList<>();
         for (CalendarFrame01.TodoEntry todo : todos) {
             JLabel todoLabel = new JLabel(todo.title);
             todoLabel.setOpaque(true);
@@ -248,3 +251,4 @@ public class MonthlyCalendarView extends JFrame {
         button.setCursor(new Cursor(Cursor.HAND_CURSOR));
     }
 }
+
