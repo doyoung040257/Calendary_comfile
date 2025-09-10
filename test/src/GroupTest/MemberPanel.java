@@ -1,5 +1,6 @@
 package GroupTest;
 import GroupTest.RoundedButton;
+import lg.User;
 
 import javax.swing.*;
 import javax.swing.border.LineBorder;
@@ -16,13 +17,15 @@ public class MemberPanel extends JPanel {
     private MainPanel mainPanel;
     private JPanel memberPanel;
     private JLabel titleLabel;
+    private User currentUser;
 
     private final Color BUTTON_COLOR = new Color(180, 150, 200);
 
-    public MemberPanel(MainFrame frame, String groupName, MainPanel mainPanel) {
+    public MemberPanel(MainFrame frame, String groupName, MainPanel mainPanel, User currentUser) {
         this.frame = frame;
         this.groupName = groupName;
         this.mainPanel = mainPanel;
+        this.currentUser = currentUser;
 
         setLayout(new BorderLayout(10, 10));
         setBackground(Color.WHITE);
@@ -124,13 +127,9 @@ public class MemberPanel extends JPanel {
         todoBtn.setPreferredSize(buttonSize);
         todoBtn.addActionListener(e -> {
             this.setVisible(false);
-            todoMain todoPage;
-            if (mainPanel != null) {
-                todoPage = new todoMain(mainPanel);
-            } else {
-                todoPage = new todoMain();
+            if (currentUser != null) {
+                new todoMain(currentUser, mainPanel).setVisible(true); 
             }
-            todoPage.fr.setVisible(true);
         });
 
         groupBtn.setFont(buttonFont);
@@ -210,4 +209,5 @@ public class MemberPanel extends JPanel {
         button.setContentAreaFilled(true);
     }
 }
+
 
