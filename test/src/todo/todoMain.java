@@ -153,9 +153,8 @@ public class todoMain extends JFrame{
 		bottomPanel.add(groupButton);
 	    
 	    homeButton.addActionListener(e -> {
-	          // 현재 화면이 이미 홈이므로 메시지를 표시
 	    	JOptionPane.showMessageDialog(homeButton, "홈 화면으로 이동합니다.");
-	    	CalendarFrame01 calendarframe01 = new CalendarFrame01(user);
+	    	new CalendarFrame01(user).setVisible(true); // 홈 화면 이동하기(수정함)
 	    	dispose();
 	    });
 	
@@ -308,4 +307,5 @@ public class todoMain extends JFrame{
         return userList;
     }
 }
+
 
