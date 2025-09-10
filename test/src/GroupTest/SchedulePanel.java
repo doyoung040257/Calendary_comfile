@@ -36,22 +36,22 @@ public class SchedulePanel extends JPanel {
         RoundedButton searchBtn = new RoundedButton("검색", 20);
         styleButton(searchBtn, highlightColor);
 
+        /*
         topPanel.add(new JLabel("검색: "));
         topPanel.add(searchField);
         topPanel.add(searchBtn);
-
+*/
         RoundedButton addBtn = new RoundedButton("일정 추가", 20);
         RoundedButton editBtn = new RoundedButton("일정 수정/삭제", 20);
-        RoundedButton rangeEditBtn = new RoundedButton("선택 범위 수정/삭제", 20);
-
+        
         styleButton(addBtn, highlightColor);
         styleButton(editBtn, highlightColor);
-        styleButton(rangeEditBtn, highlightColor);
+       
 
         if (!isGroup) {
             topPanel.add(addBtn);
             topPanel.add(editBtn);
-            topPanel.add(rangeEditBtn);
+           
         }
 
         add(topPanel, BorderLayout.NORTH);
@@ -115,10 +115,10 @@ public class SchedulePanel extends JPanel {
         if (!isGroup) {
             addBtn.addActionListener(e -> addEventAction());
             editBtn.addActionListener(e -> editOrDeleteAction());
-            rangeEditBtn.addActionListener(e -> rangeEditOrDeleteAction());
         }
 
         // ----------------- 검색 기능 -----------------
+       /*
         searchBtn.addActionListener(e -> {
             String keyword = searchField.getText().trim().toLowerCase();
             for (int i = 0; i < 24; i++) {
@@ -134,7 +134,7 @@ public class SchedulePanel extends JPanel {
                 table.setValueAt(cell, i, 1);
             }
         });
-
+*/
         // ----------------- 하단 이전 화면 버튼 -----------------
         JPanel bottomPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 10));
         RoundedButton backBtn = new RoundedButton("이전 화면", 20);
