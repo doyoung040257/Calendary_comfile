@@ -215,7 +215,7 @@ public class CalendarFrame01 extends JFrame {
 
             JOptionPane.showMessageDialog(this, "할일 화면으로 이동합니다.");
             todoMain todomain = new todoMain(user);
-            //dispose();
+            dispose();
         });
 
         groupButton.addActionListener(e -> {
@@ -418,3 +418,4 @@ public class CalendarFrame01 extends JFrame {
 //        );
 //    }
 }
+
