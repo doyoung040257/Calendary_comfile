@@ -6,25 +6,32 @@ import java.util.*;
 import java.util.List;
 
 import frame.CalendarFrame01;
+import lg.User;
 
 public class MainFrame extends JFrame {
 
     CardLayout cardLayout;
     JPanel mainPanel;
 
-    String currentUser;
+    String currentUserName;
     String myGroup;
     Map<String, List<String>> groupMembers = new HashMap<>();
     Map<String, List<String>> schedules = new HashMap<>();
     Map<String, List<String>> groupSchedules = new HashMap<>();
 
     private MainPanel mainPage;
+    private User currentUser; // ★ MODIFIED: User 객체 추가
 
-    public MainFrame(String currentUser) {
-        this.currentUser = currentUser;
+    // ★ MODIFIED: 열린 MemberPanel 관리
+    private Map<String, MemberPanel> memberPanels = new HashMap<>();
+
+    public MainFrame(User currentUser) { // ★ MODIFIED: String -> User 객체
+        this.currentUser = currentUser; // ★ MODIFIED
+        this.currentUserName = currentUser.getId(); // ★ MODIFIED
+
         setTitle("그룹 캘린더");
         setSize(600, 800);
-        setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE); // 직접 처리
+        setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE); 
         setLocationRelativeTo(null);
 
         cardLayout = new CardLayout();
@@ -40,14 +47,11 @@ public class MainFrame extends JFrame {
             public void windowClosing(java.awt.event.WindowEvent e) {
                 Component visible = getVisiblePanel();
                 if (visible instanceof MainPanel) {
-                    // MainPanel -> CalenderFrame01
                     dispose();
                     new CalendarFrame01().setVisible(true);
                 } else if (visible instanceof MemberPanel) {
-                    // MemberPanel -> MainPanel
                     backTo("Main");
                 } else if (visible instanceof SchedulePanel) {
-                    // SchedulePanel -> MemberPanel
                     SchedulePanel sp = (SchedulePanel) visible;
                     backTo("Member_" + sp.getGroupName());
                 } else {
@@ -59,7 +63,6 @@ public class MainFrame extends JFrame {
         setVisible(true);
     }
 
-    // 현재 보이는 패널 반환
     private Component getVisiblePanel() {
         for (Component comp : mainPanel.getComponents()) {
             if (comp.isVisible()) return comp;
@@ -67,9 +70,13 @@ public class MainFrame extends JFrame {
         return null;
     }
 
+    // ----------------- 패널 전환 -----------------
     public void switchPanel(String name, JPanel panel) {
         mainPanel.add(panel, name);
         cardLayout.show(mainPanel, name);
+
+        // ★ MODIFIED: MemberPanel 관리
+        if(panel instanceof MemberPanel) memberPanels.put(name, (MemberPanel) panel);
     }
 
     public void backTo(String name) {
@@ -79,30 +86,74 @@ public class MainFrame extends JFrame {
     public Map<String, List<String>> getSchedules() { return schedules; }
     public Map<String, List<String>> getGroupSchedules() { return groupSchedules; }
 
+    // ----------------- 그룹 생성 -----------------
     public void createGroup(String groupName, List<String> members) {
         groupMembers.put(groupName, members);
         groupSchedules.put(groupName, new ArrayList<>());
-        for (String member : members) schedules.put(member, new ArrayList<>());
+        for (String member : members) schedules.putIfAbsent(member, new ArrayList<>());
         myGroup = groupName;
+
+        // ★ MODIFIED: User의 GroupList에도 반영
+        if(currentUser.getGroupList() == null) currentUser.setGroupList(new GroupList());
+        Group newGroup = new Group(groupName);
+        for(String member : members) newGroup.addMember(member);
+        currentUser.getGroupList().addGroup(newGroup);
+
+        // ★ MODIFIED: 이미 열린 MemberPanel이 있다면 갱신
+        MemberPanel mp = getCurrentMemberPanel(groupName);
+        if(mp != null) mp.updateMemberList();
     }
 
+    // ----------------- 그룹 삭제 -----------------
     public void deleteGroup(String groupName) {
         groupMembers.remove(groupName);
         groupSchedules.remove(groupName);
         myGroup = null;
+
+        // ★ MODIFIED: User GroupList에서도 삭제
+        if(currentUser.getGroupList() != null) {
+            Group g = currentUser.getGroupList().getGroups().stream()
+                    .filter(gr -> gr.getName().equals(groupName))
+                    .findFirst().orElse(null);
+            if(g != null) currentUser.getGroupList().getGroups().remove(g);
+        }
+
+        // ★ MODIFIED: MemberPanel이 열려있으면 제거
+        removeMemberPanel(groupName);
     }
 
     public void leaveGroup(String groupName) {
         if (!groupMembers.containsKey(groupName)) return;
-        groupMembers.get(groupName).remove(currentUser);
-        schedules.remove(currentUser);
+        groupMembers.get(groupName).remove(currentUserName);
+        schedules.remove(currentUserName);
         if (groupMembers.get(groupName).isEmpty()) deleteGroup(groupName);
         if (groupName.equals(myGroup)) myGroup = null;
+
+        // ★ MODIFIED: GroupList에서도 탈퇴
+        if(currentUser.getGroupList() != null) {
+            Group g = currentUser.getGroupList().getGroupByName(groupName);
+            if(g != null) g.getMembers().remove(currentUserName);
+        }
+
+        // ★ MODIFIED: MemberPanel이 열려있으면 갱신
+        MemberPanel mp = getCurrentMemberPanel(groupName);
+        if(mp != null) mp.updateMemberList();
     }
 
     public MainPanel getMainPanel() { return mainPage; }
 
     public void showMainPanel() {
         if (mainPage != null) cardLayout.show(mainPanel, "Main");
+    }
+
+    public User getCurrentUser() { return currentUser; } // ★ MODIFIED
+
+    // ================= MemberPanel 관리 메서드 =================
+    public MemberPanel getCurrentMemberPanel(String groupName) { // ★ MODIFIED
+        return memberPanels.get("Member_" + groupName);
+    }
+
+    public void removeMemberPanel(String groupName) { // ★ MODIFIED
+        memberPanels.remove("Member_" + groupName);
     }
 }
