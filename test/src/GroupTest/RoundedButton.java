@@ -1,4 +1,3 @@
-
 package GroupTest;
 
 import javax.swing.*;
