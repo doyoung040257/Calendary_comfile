@@ -1,4 +1,6 @@
+
 package GroupTest;
+
 import GroupTest.RoundedButton;
 import lg.User;
 
@@ -26,13 +28,17 @@ public class MemberPanel extends JPanel {
         this.groupName = groupName;
         this.mainPanel = mainPanel;
         this.currentUser = currentUser;
+        initialize();
     }
-    
+
     public MemberPanel(MainFrame frame, String groupName, MainPanel mainPanel) {
         this.frame = frame;
         this.groupName = groupName;
         this.mainPanel = mainPanel;
+        initialize();
+    }
 
+    private void initialize() {
         setLayout(new BorderLayout(10, 10));
         setBackground(Color.WHITE);
 
@@ -102,18 +108,14 @@ public class MemberPanel extends JPanel {
         syncButtonPanel.setPreferredSize(new Dimension(0, 60));
 
         JButton homeBtn = new RoundedButton("홈", 30);
-      //검정색 테두리 추가
         ((RoundedButton) homeBtn).setRoundedBorder(Color.BLACK, 2);
-        
+
         JButton todoBtn = new RoundedButton("할 일", 30);
-        //검정색 테두리 추가
         ((RoundedButton) todoBtn).setRoundedBorder(Color.BLACK, 2);
-        
+
         JButton groupBtn = new RoundedButton("그룹", 30);
-        //검정색 테두리 추가
         ((RoundedButton) groupBtn).setRoundedBorder(Color.BLACK, 2);
-        
-    
+
         addHoverClickEffect(homeBtn, Color.WHITE);
         addHoverClickEffect(todoBtn, Color.WHITE);
         addHoverClickEffect(groupBtn, Color.WHITE);
@@ -134,7 +136,7 @@ public class MemberPanel extends JPanel {
         todoBtn.addActionListener(e -> {
             this.setVisible(false);
             if (currentUser != null) {
-                new todoMain(currentUser, mainPanel).setVisible(true); 
+                new todoMain(currentUser, mainPanel).setVisible(true);
             }
         });
 
@@ -201,20 +203,5 @@ public class MemberPanel extends JPanel {
         updateMemberList();
     }
 
-    public String getGroupName() {
-        return groupName;
-    }
-    
-    // 둥근 버튼 스타일 메서드
-    private void styleRoundedButton(JButton button, Font font, Dimension size, Color bgColor, Color borderColor) {
-        button.setFont(font);
-        button.setBackground(bgColor);
-        button.setFocusPainted(false);
-        button.setPreferredSize(size);
-        button.setBorder(new javax.swing.border.LineBorder(borderColor, 1, true)); // ★ 둥근 테두리
-        button.setContentAreaFilled(true);
-    }
+    public String getGroupName() { return groupName; }
 }
-
-
-
