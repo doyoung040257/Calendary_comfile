@@ -86,10 +86,12 @@ public class FontSettingPage extends JFrame {
 
 		        // 2. 현재 열려있는 모든 프레임에 글꼴 적용
 		        for (Window w : Window.getWindows()) {
-		            if (w instanceof JFrame frame) {
+		            if (w instanceof JFrame) {
+		                JFrame frame = (JFrame) w; // 명시적 캐스팅
 		                ThemeManager.applyFontSettingPage(frame.getContentPane(), appliedFont);
 		            }
 		        }
+
 		    }
 			parentMenu.setVisible(true);
 			this.dispose();
