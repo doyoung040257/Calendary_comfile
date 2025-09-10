@@ -7,6 +7,7 @@ import java.util.List;		// import 추가
 import javax.swing.*;
 import GroupTest.MainFrame;
 import Settings.SettingsMenu;
+import Settings.ThemeManager;
 import lg.User;
 import frame.CalendarFrame01; // 캘린더 데이터 접근을 위해 import
 import frame.DateParser;      // 날짜 파싱 유틸리티 import
@@ -309,6 +310,7 @@ public class todoMain extends JFrame{
         return userList;
     }
 }
+
 
 
 
