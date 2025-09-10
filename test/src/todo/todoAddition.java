@@ -145,15 +145,41 @@ public class todoAddition extends JFrame {
                 String uuid = list.getTodolist().get(list.getTodolist().size()-1).getId();
                 
                 // ============[추가된 부분] 캘린더 데이터 동기화=====================
-                LocalDate todoDate = DateParser.parseDate(dayStr);
-                if (todoDate != null) {
+//                LocalDate todoDate = DateParser.parseDate(dayStr);
+//                if (todoDate != null) {
+//                    List<CalendarFrame01.TodoEntry> tasksForDay =
+//                        CalendarFrame01.currentUser.getDailyTasks().computeIfAbsent(todoDate, k -> new ArrayList<>());
+//                    
+//                    CalendarFrame01.TodoEntry newEntry = new CalendarFrame01.TodoEntry(
+//                        uuid ,workStr, false, new Color(255, 255, 204)
+//                    );
+//                    tasksForDay.add(newEntry);
+//                }
+//                
+//             // ✅ 3. UserDatabase에 저장 (중요!)
+//                lg.User currentUser = lg.SessionManager.getCurrentUser();
+//                if (currentUser != null) {
+//                    currentUser.setTodolist(list);
+//                    lg.UserDatabase.userDatabase.put(currentUser.getId(), currentUser);
+//                    lg.UserDatabase.saveUsers();
+//                }
+                
+                LocalDate todoDate = frame.DateParser.parseDate(dayStr);
+                
+                lg.User currentUser = lg.SessionManager.getCurrentUser();
+                if (currentUser != null) {
                     List<CalendarFrame01.TodoEntry> tasksForDay =
-                        CalendarFrame01.dailyTasks.computeIfAbsent(todoDate, k -> new ArrayList<>());
-                    
+                        currentUser.getDailyTasks().computeIfAbsent(todoDate, k -> new ArrayList<>());
+
                     CalendarFrame01.TodoEntry newEntry = new CalendarFrame01.TodoEntry(
-                        uuid ,workStr, false, new Color(255, 255, 204)
+                        uuid, workStr, false, new Color(255, 255, 204)
                     );
                     tasksForDay.add(newEntry);
+
+                    // UserDatabase 갱신
+                    currentUser.setTodolist(list);
+                    lg.UserDatabase.userDatabase.put(currentUser.getId(), currentUser);
+                    lg.UserDatabase.saveUsers();
                 }
                 
                 if (afterSave != null) afterSave.run();
