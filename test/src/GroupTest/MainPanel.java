@@ -1,5 +1,5 @@
+
 package GroupTest;
-import GroupTest.RoundedButton;
 
 import javax.swing.*;
 import java.awt.*;
@@ -17,10 +17,11 @@ public class MainPanel extends JPanel {
     private MainFrame frame;
     private JPanel groupButtonContainer;
     private User currentUser;
-    private boolean deleteMode = false; // 체크박스 표시 모드 여부
+    private boolean deleteMode = false;
 
     public MainPanel(MainFrame frame) {
         this.frame = frame;
+        this.currentUser = frame.getCurrentUser();
         setLayout(new BorderLayout(10, 10));
         setBackground(Color.WHITE);
 
@@ -33,7 +34,6 @@ public class MainPanel extends JPanel {
         title.setFont(new Font("맑은 고딕", Font.BOLD, 24));
         topPanel.add(title, BorderLayout.PAGE_END);
 
-        // 설정 버튼 (기존 네모난 버튼 유지)
         JButton settingBtn = new JButton("설정");
         settingBtn.setBackground(new Color(100, 149, 237));
         settingBtn.setForeground(Color.WHITE);
@@ -41,11 +41,10 @@ public class MainPanel extends JPanel {
         settingBtn.setFont(new Font("맑은 고딕", Font.BOLD, 12));
         settingBtn.addActionListener(e -> {
             this.setVisible(false);
-           new SettingsMenu(currentUser, "group", frame).setVisible(true); // ★ MainPanel 전달
+            new SettingsMenu(currentUser, "group", frame).setVisible(true); // ★ MainPanel 전달
         });
         addHoverClickEffect(settingBtn, new Color(100, 149, 237));
         topPanel.add(settingBtn, BorderLayout.EAST);
-
         add(topPanel, BorderLayout.NORTH);
 
         // ----------------- 그룹 버튼 컨테이너 -----------------
@@ -63,12 +62,11 @@ public class MainPanel extends JPanel {
         Font buttonFont = new Font("맑은 고딕", Font.BOLD, 14);
         Dimension mainButtonSize = new Dimension(140, 40);
 
-        // 그룹 만들기/삭제 버튼
-        JPanel groupButtonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 10)); // MemberPanel에서 버튼 위치 동일
+        JPanel groupButtonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 10));
         groupButtonPanel.setBackground(Color.WHITE);
         groupButtonPanel.setPreferredSize(new Dimension(0, 60));
 
-        RoundedButton createBtn = new RoundedButton("그룹 만들기", 20); 
+        RoundedButton createBtn = new RoundedButton("그룹 만들기", 20);
         createBtn.setFont(buttonFont);
         createBtn.setBackground(new Color(180, 150, 200));
         createBtn.setForeground(Color.WHITE);
@@ -86,29 +84,25 @@ public class MainPanel extends JPanel {
         groupButtonPanel.add(deleteBtn);
         bottomPanel.add(groupButtonPanel, BorderLayout.NORTH);
 
-        // 동기화 버튼 (홈, 할 일, 그룹)
+        // ----------------- 동기화 버튼 -----------------
         JPanel syncButtonPanel = new JPanel(new GridLayout(1, 3, 5, 0));
         syncButtonPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
         syncButtonPanel.setBackground(Color.WHITE);
         syncButtonPanel.setPreferredSize(new Dimension(0, 60));
 
         RoundedButton homeBtn = new RoundedButton("홈", 30);
-      //검정색 테두리 추가
         ((RoundedButton) homeBtn).setRoundedBorder(Color.BLACK, 2);
-        
+
         RoundedButton todoBtn = new RoundedButton("할 일", 30);
-      //검정색 테두리 추가
         ((RoundedButton) todoBtn).setRoundedBorder(Color.BLACK, 2);
-        
-        
+
         RoundedButton groupBtn = new RoundedButton("그룹", 30);
-      //검정색 테두리 추가
         ((RoundedButton) groupBtn).setRoundedBorder(Color.BLACK, 2);
 
         addHoverClickEffect(homeBtn, Color.WHITE);
         addHoverClickEffect(todoBtn, Color.WHITE);
         addHoverClickEffect(groupBtn, Color.WHITE);
-        
+
         homeBtn.setFont(buttonFont);
         homeBtn.setBackground(Color.WHITE);
         homeBtn.setPreferredSize(mainButtonSize);
@@ -119,7 +113,6 @@ public class MainPanel extends JPanel {
         todoBtn.setPreferredSize(mainButtonSize);
         todoBtn.addActionListener(e -> {
             this.setVisible(false);
-            User currentUser = lg.SessionManager.getCurrentUser();
             if (currentUser != null) {
                 new todoMain(currentUser, this).setVisible(true);
             }
@@ -140,6 +133,8 @@ public class MainPanel extends JPanel {
         // ----------------- 이벤트 처리 -----------------
         createBtn.addActionListener(e -> createGroupAction());
         deleteBtn.addActionListener(e -> toggleDeleteMode());
+
+        loadExistingGroups(); // ★ MODIFIED: 초기 로드
     }
 
     // ----------------- 그룹 생성 -----------------
@@ -163,18 +158,20 @@ public class MainPanel extends JPanel {
 
             String[] memberArray = membersText.split(",");
             List<String> members = new ArrayList<>();
-            for (String m : memberArray) {
-                if (!m.trim().isEmpty()) members.add(m.trim());
-            }
+            for (String m : memberArray) if (!m.trim().isEmpty()) members.add(m.trim());
 
             frame.createGroup(groupNameText, members);
-            addGroupButton(groupNameText);
+            loadExistingGroups(); // ★ MODIFIED: 그룹 버튼 갱신
+
+            // ★ MODIFIED: 멤버 패널이 이미 열려있으면 업데이트
+            MemberPanel mp = frame.getCurrentMemberPanel(groupNameText);
+            if(mp != null) mp.updateMemberList();
+
             JOptionPane.showMessageDialog(this, "그룹이 생성되었습니다.");
             break;
         }
     }
 
-    // ----------------- 그룹 삭제 모드 토글 -----------------
     private void toggleDeleteMode() {
         deleteMode = !deleteMode;
         for (Component comp : groupButtonContainer.getComponents()) {
@@ -205,14 +202,13 @@ public class MainPanel extends JPanel {
 
                 for (String g : toDelete) {
                     frame.deleteGroup(g);
-                    removeGroupButton(g);
                 }
+                loadExistingGroups(); // ★ MODIFIED: 삭제 후 갱신
                 JOptionPane.showMessageDialog(this, "선택한 그룹이 삭제되었습니다.");
             }
         }
     }
 
-    // ----------------- 그룹 버튼 생성 -----------------
     private void addGroupButton(String groupName) {
         JPanel panel = new JPanel(new BorderLayout(5, 5));
         panel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 50));
@@ -231,8 +227,6 @@ public class MainPanel extends JPanel {
 
         panel.add(groupBtn, BorderLayout.CENTER);
         panel.add(deleteBox, BorderLayout.EAST);
-
-        // 그룹 간 구분선 추가
         panel.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, Color.LIGHT_GRAY));
 
         groupButtonContainer.add(panel);
@@ -240,23 +234,8 @@ public class MainPanel extends JPanel {
         groupButtonContainer.repaint();
     }
 
-    private void removeGroupButton(String groupName) {
-        for (Component comp : groupButtonContainer.getComponents()) {
-            if (comp instanceof JPanel) {
-                JPanel panel = (JPanel) comp;
-                JButton btn = (JButton) panel.getComponent(0);
-                if (btn.getText().equals(groupName)) {
-                    groupButtonContainer.remove(panel);
-                    groupButtonContainer.revalidate();
-                    groupButtonContainer.repaint();
-                    return;
-                }
-            }
-        }
-    }
-
     private void openMemberPanel(String groupName) {
-        MemberPanel mp = new MemberPanel(frame, groupName, this);
+        MemberPanel mp = new MemberPanel(frame, groupName, this, currentUser);
         frame.switchPanel("Member_" + groupName, mp);
     }
 
@@ -267,27 +246,24 @@ public class MainPanel extends JPanel {
 
     private void addHoverClickEffect(JButton btn, Color baseColor) {
         btn.addMouseListener(new java.awt.event.MouseAdapter() {
-            @Override public void mouseEntered(java.awt.event.MouseEvent e) { btn.setBackground(baseColor.darker()); }
-            @Override public void mouseExited(java.awt.event.MouseEvent e) { btn.setBackground(baseColor); }
-            @Override public void mousePressed(java.awt.event.MouseEvent e) { btn.setBackground(baseColor.darker().darker()); }
-            @Override public void mouseReleased(java.awt.event.MouseEvent e) { btn.setBackground(baseColor); }
+            @Override public void mouseEntered(MouseEvent e) { btn.setBackground(baseColor.darker()); }
+            @Override public void mouseExited(MouseEvent e) { btn.setBackground(baseColor); }
+            @Override public void mousePressed(MouseEvent e) { btn.setBackground(baseColor.darker().darker()); }
+            @Override public void mouseReleased(MouseEvent e) { btn.setBackground(baseColor); }
         });
     }
 
+    public void loadExistingGroups() {
+        groupButtonContainer.removeAll(); // ★ MODIFIED: 기존 버튼 제거
+
+        if(currentUser.getGroupList() == null) return;
+        for(Group g : currentUser.getGroupList().getGroups()) addGroupButton(g.getName());
+
+        groupButtonContainer.revalidate();
+        groupButtonContainer.repaint(); // ★ MODIFIED: UI 갱신
+    }
+
     public void removeGroup(String groupName) {
-        removeGroupButton(groupName);
+        loadExistingGroups(); // ★ MODIFIED: 버튼 갱신
     }
-    
- // 둥근 버튼 스타일 + 테두리 색상 적용 메서드
-    private void styleRoundedButton(JButton button, Font font, Dimension size, Color bgColor, Color borderColor) {
-        button.setFont(font);
-        button.setBackground(bgColor);
-        button.setFocusPainted(false);
-        button.setPreferredSize(size);
-        button.setBorder(new javax.swing.border.LineBorder(borderColor, 1, true)); // ★ 둥근 테두리
-        button.setContentAreaFilled(true);
-    }
-
 }
-
-
