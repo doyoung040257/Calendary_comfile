@@ -20,7 +20,7 @@ public class ThemeManager {
 			break;
 		case "DEFAULT":
 		default:
-			bgColor = Color.decode("#D8BFD8");
+			bgColor = Color.decode("#f0f8ff");
 			fgColor = Color.BLACK;
 			break;
 		}
@@ -73,3 +73,4 @@ public class ThemeManager {
 		}
 	}
 }
+
