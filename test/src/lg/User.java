@@ -19,6 +19,8 @@ public class User implements Serializable {
     private Map<LocalDate, List<CalendarFrame01.TodoEntry>> dailyTasks = new HashMap<>();
     private Map<LocalDate, String> dailyReviews = new HashMap<>();
 
+    private boolean notificationsEnabled = true; // ✅ 추가
+    
 	public User(String id, String password, String name, String birth, String gender, String email) {
         this.id = id;
         this.password = password;
@@ -43,6 +45,9 @@ public class User implements Serializable {
     }
     
 
+    public boolean isNotificationsEnabled() { return notificationsEnabled; }  // ✅ 추가
+    public void setNotificationsEnabled(boolean enabled) { this.notificationsEnabled = enabled; } // ✅ 추가
+
 
     // Setter
     public void setName(String name) { this.name = name; }
@@ -53,7 +58,8 @@ public class User implements Serializable {
 	public Map<LocalDate, String> getDailyReviews() {
 	    return dailyReviews;
 	}
-}
 
+
+}
 
 
