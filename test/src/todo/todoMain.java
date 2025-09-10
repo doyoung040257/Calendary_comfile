@@ -14,9 +14,10 @@ import GroupTest.MainPanel;   // ★ MainPanel 참조
 
 public class todoMain extends JFrame{
 
-	private final static todoListMake sharedList = new todoListMake();
+	//private final static todoListMake sharedList = new todoListMake();
 	private final java.util.List<JCheckBox> rowChecks = new java.util.ArrayList<>();
 
+	private final todoListMake userList;
     private User currentUser;
 	private User user; 
 	
@@ -31,14 +32,16 @@ public class todoMain extends JFrame{
     private MainPanel mainPanel;
 
     // ★ MainPanel에서 열 때
-    public todoMain(MainPanel mainPanel) {
+    public todoMain(User user,MainPanel mainPanel) {
+    	this.user = user;
+    	this.userList = user.getTodolist(); // 로그인한 사용자의 리스트
         this.mainPanel = mainPanel; // 기존 MainPanel 참조 저장
         initComponents();
     }
     
     // 기존 생성자 (MainPanel 없을 때)
-    public todoMain() {
-        this(null);
+    public todoMain(User user) {
+    	this(user, null);
     }
 	
     private void initComponents() {
@@ -100,7 +103,7 @@ public class todoMain extends JFrame{
         addition.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-	            todoAddition addi = new todoAddition(sharedList, todoMain.this::renderList);
+	            todoAddition addi = new todoAddition(userList, todoMain.this::renderList);
 	            addi.todo_addition_page();	
 			}
 		});
@@ -119,10 +122,10 @@ public class todoMain extends JFrame{
                     if (rowChecks.get(i).isSelected()) {
                     	
                     	//캘린더 데이터 동기화
-                        todoList itemToDelete = sharedList.getTodolist().get(i); // 삭제 전 항목 가져오기
+                        todoList itemToDelete = userList.getTodolist().get(i); // 삭제 전 항목 가져오기
                         removeFromCalendarTasks(itemToDelete); // 캘린더 데이터에서 삭제
                         
-                        sharedList.getTodolist().remove(i); // 기존 목록에서 삭제
+                        userList.getTodolist().remove(i); // 기존 목록에서 삭제
                         any = true;
                     }
                 }
@@ -151,8 +154,8 @@ public class todoMain extends JFrame{
 	    
 	    homeButton.addActionListener(e -> {
 	          // 현재 화면이 이미 홈이므로 메시지를 표시
-	    	JOptionPane.showMessageDialog(this, "홈 화면으로 이동합니다.");
-	    	CalendarFrame01 calendarframe01 = new CalendarFrame01();
+	    	JOptionPane.showMessageDialog(homeButton, "홈 화면으로 이동합니다.");
+	    	CalendarFrame01 calendarframe01 = new CalendarFrame01(user);
 	    	dispose();
 	    });
 	
@@ -161,7 +164,7 @@ public class todoMain extends JFrame{
 	    });
 
         groupButton.addActionListener(e -> {
-            JOptionPane.showMessageDialog(this, "그룹 관리 화면으로 이동합니다.");
+            JOptionPane.showMessageDialog(groupButton, "그룹 관리 화면으로 이동합니다.");
             SwingUtilities.invokeLater(() -> new MainFrame("사용자")); // 기본 사용자명 전달
 			dispose();
         });
@@ -172,13 +175,12 @@ public class todoMain extends JFrame{
     //캘린더 데이터 삭제 헬퍼 메서드
     private void removeFromCalendarTasks(todoList itemToDelete) {
         if (itemToDelete == null) return;
-        
+
         LocalDate todoDate = DateParser.parseDate(itemToDelete.getDay());
-        if (todoDate != null) {
-            List<CalendarFrame01.TodoEntry> tasksForDay = CalendarFrame01.dailyTasks.get(todoDate);
+        if (todoDate != null && user != null) { // ✅ 현재 로그인된 user 사용
+            List<CalendarFrame01.TodoEntry> tasksForDay = user.getDailyTasks().get(todoDate);
             if (tasksForDay != null) {
-                // 할일 제목(work)이 같은 항목을 캘린더 목록에서 찾아 삭제
-            	tasksForDay.removeIf(entry -> entry.id.equals(itemToDelete.getId()));
+                tasksForDay.removeIf(entry -> entry.id.equals(itemToDelete.getId()));
             }
         }
     }
@@ -193,8 +195,8 @@ public class todoMain extends JFrame{
         rowChecks.clear();
 
         int y = 10; // 버튼의 시작 y좌표
-        for (int i = 0; i < sharedList.getTodolist().size(); i++) {
-            todoList t = sharedList.getTodolist().get(i);
+        for (int i = 0; i < userList.getTodolist().size(); i++) {
+            todoList t = userList.getTodolist().get(i);
 
             JButton b = new JButton(t.getWork());
             b.setBounds(10, y, 405, 40); //10, 70, 450, 570
@@ -211,7 +213,7 @@ public class todoMain extends JFrame{
             final int idx = i;
             
             b.addActionListener(ev -> {
-                new todoModify(sharedList, idx, this::renderList).open();
+                new todoModify(userList, idx, this::renderList).open();
             });
             
             y += 45; // 다음 버튼 아래로
@@ -302,8 +304,8 @@ public class todoMain extends JFrame{
 	  	return panel;
     }
     
-    public static todoListMake getSharedList() {
-        return sharedList;
+    public todoListMake getSharedList() {
+        return userList;
     }
 }
 
