@@ -4,15 +4,22 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.ArrayList;
 
 import Settings.*;
 import frame.CalendarFrame01;
 import lg.LoginFrame;
+import lg.SessionManager;
+import lg.SignupFrame;
 import lg.User;
+import lg.UserDatabase;
+import todo.todoList;
+import todo.todoListMake;
 
 public class SettingsMenu extends JFrame {
 
 	private User user;
+	private todoListMake listMaker;
 
 	// User를 받는 생성자
 	public SettingsMenu(User currentUser) {
@@ -25,6 +32,12 @@ public class SettingsMenu extends JFrame {
 	// ② 기존 생성자 (User 없이도 열리게)
 	public SettingsMenu() {
 		this(null);
+	}
+	
+	public SettingsMenu(User currentUser, todoListMake listMaker) {
+	    this.user = currentUser;
+	    this.listMaker = listMaker;
+	    initComponents();
 	}
 
 	public void initComponents() {
@@ -88,6 +101,19 @@ public class SettingsMenu extends JFrame {
 
 		    if (result == JOptionPane.YES_OPTION) {
 		        // 로그아웃 처리 (필요 시 user 초기화)
+		    	if (user != null) {
+		            // ✅ 현재 사용자의 todoList를 DB에 반영
+		            UserDatabase.userDatabase.put(user.getId(), user);
+		            UserDatabase.saveUsers();
+		            
+		            if (user.getTodolist() != null) {
+		                user.getTodolist().clearAllTodos();
+		            }
+		        }
+
+		        // ✅ 세션 해제
+		        SessionManager.logout();
+
 		        this.dispose();                 // 설정 메뉴 닫기
 		        new LoginFrame().setVisible(true); // 로그인 페이지 열기
 		    }
