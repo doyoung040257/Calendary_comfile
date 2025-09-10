@@ -136,11 +136,6 @@ public class todoMain extends JFrame{
                 } else {
                 	showCheckboxes = false;
                 	renderList();
-					
-					 // 🔔 알림 표시 추가
-                    if (SessionManager.getCurrentUser().isNotificationsEnabled()) {
-                        JOptionPane.showMessageDialog(todoMain.this, "선택한 할 일이 삭제되었습니다!");
-                    }
                 }
             }
         });
@@ -172,7 +167,7 @@ public class todoMain extends JFrame{
 
         groupButton.addActionListener(e -> {
             JOptionPane.showMessageDialog(groupButton, "그룹 관리 화면으로 이동합니다.");
-            SwingUtilities.invokeLater(() -> new MainFrame(user)); // ★ 문자열 -> User 객체
+            SwingUtilities.invokeLater(() -> new MainFrame("사용자")); // 기본 사용자명 전달
 			dispose();
         });
 
@@ -315,8 +310,6 @@ public class todoMain extends JFrame{
         return userList;
     }
 }
-
-
 
 
 
