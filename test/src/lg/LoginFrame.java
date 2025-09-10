@@ -4,8 +4,11 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
 
 import frame.CalendarFrame01;
+import todo.todoList;
+import todo.todoListMake;
 
 public class LoginFrame extends JFrame {
     private JTextField idField;
@@ -126,6 +129,22 @@ public class LoginFrame extends JFrame {
             User user = UserDatabase.userDatabase.get(id);
             if (user.getPassword().equals(pw)) {
                 JOptionPane.showMessageDialog(this, user.getName() + "님 환영합니다!");
+
+                todoListMake sharedList = new todoListMake();
+                sharedList.setTodolist(user.getTodolist().getTodolist());
+                
+                // 할 일 목록 불러오기
+                if (user.getTodolist() != null && !user.getTodolist().getTodolist().isEmpty()) {
+                    System.out.println("할 일 목록:");
+                    for (todoList t : user.getTodolist().getTodolist()) {
+                        System.out.println(" - " + t.toString());
+                    }
+                } else {
+                    System.out.println("저장된 할 일이 없습니다.");
+                }
+                
+                SessionManager.login(user);
+                
                 new CalendarFrame01(null).setVisible(true);
                 dispose();
             } else {
@@ -189,3 +208,4 @@ class GlassButton extends JButton {
         g2.dispose();
     }
 }
+
