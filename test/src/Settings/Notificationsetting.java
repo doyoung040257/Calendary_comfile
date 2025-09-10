@@ -1,184 +1,117 @@
 package Settings;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.FlowLayout;
-import java.awt.GridLayout;
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.swing.BoxLayout;
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JRadioButton;
-import javax.swing.JTextField;
-import javax.swing.ButtonGroup;
+import javax.swing.*;
 
 import frame.CalendarFrame01;
-import Settings.*;
-import lg.*;
+import lg.User;
 
-public class PersonalInfoPage extends JFrame {
+import java.awt.*;
 
-	private User user;
+public class Notificationsetting extends JFrame {
+
 	private JPanel panel;
-	private JButton savebtn;
+	private JLabel titleLabel;
+	private JRadioButton onRadio;
+	private JRadioButton offRadio;
+	private JButton confirmButton;
 	private JButton backButton;
+	private User user;
 
-	// 수정 가능한 입력 필드
-	private JTextField nameField;
-	private JTextField birthField;
-	private JTextField genderField;
-	private JTextField emailField;
-	private JRadioButton maleBtn;
-	private JRadioButton femaleBtn;
-	private ButtonGroup genderGroup;
-	
-	public PersonalInfoPage(User user) { // User 객체를 생성자로 받음
-		if (user == null)
-			throw new IllegalArgumentException("User cannot be null");
+	public Notificationsetting(User user) {
 		this.user = user;
-		setTitle(user.getName() + "님의 개인정보");
+		setTitle("알림 설정");
+		setSize(400, 250);
+		setLocationRelativeTo(null);
+		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+
+		// 전체 기본 폰트 설정 (한글 깨짐 방지)
+		Font defaultFont = new Font("맑은 고딕", Font.PLAIN, 14);
+		UIManager.put("Label.font", defaultFont);
+		UIManager.put("Button.font", defaultFont);
+		UIManager.put("RadioButton.font", defaultFont);
 
 		panel = new JPanel();
-		panel.setLayout(new GridLayout(6, 2, 10, 10));
+		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 
-		// 아이디는 수정 불가
-		panel.add(new JLabel("아이디:"));
-		panel.add(new JLabel(user.getId()));
+		// 제목 라벨
+		titleLabel = new JLabel("알림 설정", SwingConstants.CENTER);
+		titleLabel.setFont(new Font("굴림", Font.BOLD, 24));
+		titleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-		// 이름
-		panel.add(new JLabel("이름:"));
-		nameField = new JTextField(user.getName());
-		panel.add(nameField);
+		// 라디오 버튼
+		onRadio = new JRadioButton("알림 켜기");
+		offRadio = new JRadioButton("알림 끄기");
+		onRadio.setFont(new Font("굴림", Font.PLAIN, 18));
+		offRadio.setFont(new Font("굴림", Font.PLAIN, 18));
+		onRadio.setAlignmentX(Component.CENTER_ALIGNMENT);
+		offRadio.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-		// 생년월일
-		panel.add(new JLabel("생년월일:"));
-		birthField = new JTextField(user.getBirth());
-		panel.add(birthField);
-
-		// 성별
-		panel.add(new JLabel("성별:"));
-		maleBtn = new JRadioButton("남자");
-		femaleBtn = new JRadioButton("여자");
-
-		// 로그인된 User 객체에 따라 선택 초기화
-		if ("남자".equals(user.getGender())) {
-		    maleBtn.setSelected(true);
-		} else {
-		    femaleBtn.setSelected(true);
-		}
 		// 그룹 지정
-		genderGroup = new ButtonGroup();
-		genderGroup.add(maleBtn);
-		genderGroup.add(femaleBtn);
+		ButtonGroup group = new ButtonGroup();
+		group.add(onRadio);
+		group.add(offRadio);
 
-		// 성별 버튼을 담은 패널 생성
-		JPanel genderPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-		genderPanel.add(maleBtn);
-		genderPanel.add(femaleBtn);
-		
-		// 패널 색상 적용
-		Color bgColor, fgColor;
-		switch (Setting.theme) {
-		    case "DARK":
-		        bgColor = Color.BLACK;
-		        fgColor = Color.WHITE;
-		        break;
-		    case "PASTEL":
-		        bgColor = new Color(255, 228, 225);
-		        fgColor = Color.BLACK;
-		        break;
-		    default:
-		        bgColor = new Color(0xD8BFD8);
-		        fgColor = Color.BLACK;
+		// 현재 설정 반영
+		if (Setting.notificationsEnabled) {
+			onRadio.setSelected(true);
+		} else {
+			offRadio.setSelected(true);
 		}
 
-		// genderPanel 배경
-		genderPanel.setBackground(bgColor);
+		// 확인 버튼
+		confirmButton = new JButton("확인");
 
-		// JRadioButton 배경 적용
-		maleBtn.setBackground(bgColor);
-		maleBtn.setForeground(fgColor);
-		femaleBtn.setBackground(bgColor);
-		femaleBtn.setForeground(fgColor);
+		confirmButton.addActionListener(e -> {
+			if (onRadio.isSelected()) {
+				Setting.notificationsEnabled = true;
+				JOptionPane.showMessageDialog(this, "알림이 켜졌습니다");
+				
+			} else {
+				Setting.notificationsEnabled = false;
+				JOptionPane.showMessageDialog(this, "알림이 꺼졌습니다");
+			}
+			ThemeManager.applyTheme(this.getOwner());
 
-		panel.add(genderPanel);
+			
+			// 테마 적용
+			ThemeManager.applyTheme(this);
 
-		// 이메일
-		panel.add(new JLabel("이메일:"));
-		emailField = new JTextField(user.getEmail());
-		panel.add(emailField);
+			 // 현재 알림 설정 창 닫기
+		    this.dispose();
 
-		savebtn = new JButton("확인");
-		savebtn.addActionListener(e -> {
-			// User 객체에 값 반영 (User 클래스에 setter가 있어야 함)
-			user.setName(nameField.getText());
-			user.setBirth(birthField.getText());
-			if (maleBtn.isSelected()) {
-		        user.setGender("남자");
-		    } else if (femaleBtn.isSelected()) {
-		        user.setGender("여자");
-		    }
-			user.setEmail(emailField.getText());
-
-			JOptionPane.showMessageDialog(this, "정보가 성공적으로 저장되었습니다.");
-
-			// 현재 창 닫고 메인 캘린더로 이동
-			this.dispose();
-			new CalendarFrame01(user).setVisible(true);
+		    // 메인 캘린더 화면으로 돌아가기
+		    new CalendarFrame01(user).setVisible(true);
+			
 		});
 
+		// 뒤로가기 버튼
 		backButton = new JButton("뒤로가기");
 		backButton.addActionListener(e -> {
-			new SettingsMenu(user).setVisible(true); // 로그인된 User 객체 전달
-			this.dispose();
+			Window window = SwingUtilities.getWindowAncestor(backButton);
+			if (window != null) {
+				window.dispose(); // 현재 창 닫기
+			}
+			new SettingsMenu(user).setVisible(true); // 새 메뉴 열기
 		});
 
+		// 버튼 패널
 		JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 10));
-		buttonPanel.add(savebtn);
+		buttonPanel.add(confirmButton);
 		buttonPanel.add(backButton);
 
-		setLayout(new BorderLayout());
-		add(panel, BorderLayout.CENTER);
-		add(buttonPanel, BorderLayout.SOUTH);
+		// 패널에 요소 추가
+		panel.add(Box.createVerticalStrut(20));
+		panel.add(titleLabel);
+		panel.add(Box.createVerticalStrut(15));
+		panel.add(onRadio);
+		panel.add(offRadio);
+		panel.add(Box.createVerticalStrut(20));
+		panel.add(buttonPanel);
 
-		applyTheme();
+		add(panel);
 
-		setSize(400, 300);
-		setLocationRelativeTo(null);
+		// 테마 적용
+		ThemeManager.applyTheme(this);
 		setVisible(true);
 	}
-
-	private void applyTheme() {
-		Color bgColor;
-		Color fgColor;
-
-		switch (Setting.theme) {
-		case "DARK":
-			bgColor = Color.BLACK;
-			fgColor = Color.WHITE;
-			break;
-		case "PASTEL":
-			bgColor = new Color(255, 228, 225);
-			fgColor = Color.BLACK;
-			break;
-		default:
-			bgColor = new Color(0xD8BFD8);
-			fgColor = Color.BLACK;
-
-		}
-
-		panel.setBackground(bgColor);
-
-		for (Component comp : panel.getComponents()) {
-			comp.setBackground(bgColor);
-			comp.setForeground(fgColor);
-		}
-	}
-
 }
