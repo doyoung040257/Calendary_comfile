@@ -68,4 +68,10 @@ public class todoList implements Serializable{
 	public int hashCode() {
 	    return Objects.hash(id);
 	}
+	
+    @Override
+    public String toString() {
+        return "[할 일: " + work + ", 날짜: " + day + ", 시간: " + time +
+               ", 메모: " + note + ", 중요도: " + importance + "]";
+    }
 }
