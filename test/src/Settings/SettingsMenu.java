@@ -105,10 +105,6 @@ public class SettingsMenu extends JFrame {
 		            // ✅ 현재 사용자의 todoList를 DB에 반영
 		            UserDatabase.userDatabase.put(user.getId(), user);
 		            UserDatabase.saveUsers();
-		            
-		            if (user.getTodolist() != null) {
-		                user.getTodolist().clearAllTodos();
-		            }
 		        }
 
 		        // ✅ 세션 해제
@@ -147,3 +143,4 @@ public class SettingsMenu extends JFrame {
 
 
 }
+
