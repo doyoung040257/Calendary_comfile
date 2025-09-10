@@ -52,7 +52,7 @@ public class Notificationsetting extends JFrame {
 		group.add(offRadio);
 
 		// 현재 설정 반영
-		if (Setting.notificationsEnabled) {
+		if (user.isNotificationsEnabled()) {
 			onRadio.setSelected(true);
 		} else {
 			offRadio.setSelected(true);
@@ -62,14 +62,13 @@ public class Notificationsetting extends JFrame {
 		confirmButton = new JButton("확인");
 
 		confirmButton.addActionListener(e -> {
-			if (onRadio.isSelected()) {
-				Setting.notificationsEnabled = true;
-				JOptionPane.showMessageDialog(this, "알림이 켜졌습니다");
-				
-			} else {
-				Setting.notificationsEnabled = false;
-				JOptionPane.showMessageDialog(this, "알림이 꺼졌습니다");
-			}
+			 if (onRadio.isSelected()) {
+			        user.setNotificationsEnabled(true);
+			        JOptionPane.showMessageDialog(this, "알림이 켜졌습니다");
+			    } else {
+			        user.setNotificationsEnabled(false);
+			        JOptionPane.showMessageDialog(this, "알림이 꺼졌습니다");
+			    }
 			ThemeManager.applyTheme(this.getOwner());
 
 			
