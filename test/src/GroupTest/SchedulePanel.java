@@ -7,6 +7,7 @@ import java.awt.*;
 import java.util.*;
 import java.util.List;
 
+
 public class SchedulePanel extends JPanel {
 
     private List<String> events; // frame의 schedules 또는 groupSchedules와 연결
@@ -31,31 +32,21 @@ public class SchedulePanel extends JPanel {
         // ----------------- 상단 패널 (검색 + 버튼) -----------------
         JPanel topPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 10));
         JTextField searchField = new JTextField(10);
-        JButton searchBtn = new JButton("검색");
 
-        searchBtn.setBackground(highlightColor);
-        searchBtn.setForeground(Color.WHITE);
-        searchBtn.setFocusPainted(false);
+        RoundedButton searchBtn = new RoundedButton("검색", 20);
+        styleButton(searchBtn, highlightColor);
 
         topPanel.add(new JLabel("검색: "));
         topPanel.add(searchField);
         topPanel.add(searchBtn);
 
-        JButton addBtn = new JButton("일정 추가");
-        JButton editBtn = new JButton("일정 수정/삭제");
-        JButton rangeEditBtn = new JButton("선택 범위 수정/삭제");
+        RoundedButton addBtn = new RoundedButton("일정 추가", 20);
+        RoundedButton editBtn = new RoundedButton("일정 수정/삭제", 20);
+        RoundedButton rangeEditBtn = new RoundedButton("선택 범위 수정/삭제", 20);
 
-        addBtn.setBackground(highlightColor);
-        addBtn.setForeground(Color.WHITE);
-        addBtn.setFocusPainted(false);
-
-        editBtn.setBackground(highlightColor);
-        editBtn.setForeground(Color.WHITE);
-        editBtn.setFocusPainted(false);
-
-        rangeEditBtn.setBackground(highlightColor);
-        rangeEditBtn.setForeground(Color.WHITE);
-        rangeEditBtn.setFocusPainted(false);
+        styleButton(addBtn, highlightColor);
+        styleButton(editBtn, highlightColor);
+        styleButton(rangeEditBtn, highlightColor);
 
         if (!isGroup) {
             topPanel.add(addBtn);
@@ -146,22 +137,14 @@ public class SchedulePanel extends JPanel {
 
         // ----------------- 하단 이전 화면 버튼 -----------------
         JPanel bottomPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 10));
-        JButton backBtn = new JButton("이전 화면");
+        RoundedButton backBtn = new RoundedButton("이전 화면", 20);
         backBtn.setPreferredSize(new Dimension(140, 40));
-        backBtn.setBackground(highlightColor);
-        backBtn.setForeground(Color.WHITE);
-        backBtn.setFocusPainted(false);
+        styleButton(backBtn, highlightColor);
         backBtn.addActionListener(e -> {
             if (frame != null) frame.backTo("Member_" + groupName);
         });
         bottomPanel.add(backBtn);
         add(bottomPanel, BorderLayout.SOUTH);
-
-        addHoverEffect(addBtn, highlightColor);
-        addHoverEffect(editBtn, highlightColor);
-        addHoverEffect(rangeEditBtn, highlightColor);
-        addHoverEffect(searchBtn, highlightColor);
-        addHoverEffect(backBtn, highlightColor);
     }
 
     // ----------------- 이벤트 처리 메소드 -----------------
@@ -291,6 +274,14 @@ public class SchedulePanel extends JPanel {
             @Override public void mousePressed(java.awt.event.MouseEvent e) { button.setBackground(original.darker().darker()); }
             @Override public void mouseReleased(java.awt.event.MouseEvent e) { button.setBackground(original.darker()); }
         });
+    }
+
+    // ----------------- 공통 스타일 적용 -----------------
+    private void styleButton(RoundedButton button, Color bgColor) {
+        button.setBackground(bgColor);
+        button.setForeground(Color.WHITE);
+        button.setFocusPainted(false);
+        addHoverEffect(button, bgColor);
     }
 
     public String getGroupName() { return groupName; }
