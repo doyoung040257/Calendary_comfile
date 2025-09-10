@@ -41,7 +41,7 @@ public class MainPanel extends JPanel {
         settingBtn.setFont(new Font("맑은 고딕", Font.BOLD, 12));
         settingBtn.addActionListener(e -> {
             this.setVisible(false);
-            new SettingsMenu(currentUser, this).setVisible(true);
+           new SettingsMenu(currentUser, "group", frame).setVisible(true); // ★ MainPanel 전달
         });
         addHoverClickEffect(settingBtn, new Color(100, 149, 237));
         topPanel.add(settingBtn, BorderLayout.EAST);
@@ -289,4 +289,5 @@ public class MainPanel extends JPanel {
     }
 
 }
+
 
