@@ -1,4 +1,5 @@
 package GroupTest;
+import GroupTest.RoundedButton;
 
 import javax.swing.*;
 import javax.swing.border.LineBorder;
@@ -6,22 +7,22 @@ import java.awt.*;
 import java.awt.event.*;
 import java.util.List;
 
-import todo.todoMain; // ★ todoMain import
+import todo.todoMain;
 
 public class MemberPanel extends JPanel {
 
     private MainFrame frame;
     private String groupName;
-    private MainPanel mainPanel; // ★ MainPanel 참조
+    private MainPanel mainPanel;
     private JPanel memberPanel;
     private JLabel titleLabel;
 
     private final Color BUTTON_COLOR = new Color(180, 150, 200);
 
-    public MemberPanel(MainFrame frame, String groupName, MainPanel mainPanel) { // ★ 생성자 수정
+    public MemberPanel(MainFrame frame, String groupName, MainPanel mainPanel) {
         this.frame = frame;
         this.groupName = groupName;
-        this.mainPanel = mainPanel; // ★ MainPanel 저장
+        this.mainPanel = mainPanel;
 
         setLayout(new BorderLayout(10, 10));
         setBackground(Color.WHITE);
@@ -53,7 +54,7 @@ public class MemberPanel extends JPanel {
         buttonPanel.setPreferredSize(new Dimension(0, 60));
 
         // 그룹 나가기 버튼
-        JButton leaveBtn = new JButton("그룹 나가기");
+        JButton leaveBtn = new RoundedButton("그룹 나가기", 20);
         leaveBtn.setFont(buttonFont);
         leaveBtn.setBackground(BUTTON_COLOR);
         leaveBtn.setForeground(Color.WHITE);
@@ -73,7 +74,7 @@ public class MemberPanel extends JPanel {
         buttonPanel.add(leaveBtn);
 
         // 이전 화면 버튼
-        JButton backBtn = new JButton("이전 화면");
+        JButton backBtn = new RoundedButton("이전 화면", 20);
         backBtn.setFont(buttonFont);
         backBtn.setBackground(BUTTON_COLOR);
         backBtn.setForeground(Color.WHITE);
@@ -91,9 +92,19 @@ public class MemberPanel extends JPanel {
         syncButtonPanel.setBackground(Color.WHITE);
         syncButtonPanel.setPreferredSize(new Dimension(0, 60));
 
-        JButton homeBtn = new JButton("홈");
-        JButton todoBtn = new JButton("할 일");
-        JButton groupBtn = new JButton("그룹");
+        JButton homeBtn = new RoundedButton("홈", 30);
+      //검정색 테두리 추가
+        ((RoundedButton) homeBtn).setRoundedBorder(Color.BLACK, 2);
+        
+        JButton todoBtn = new RoundedButton("할 일", 30);
+        //검정색 테두리 추가
+        ((RoundedButton) todoBtn).setRoundedBorder(Color.BLACK, 2);
+        
+        JButton groupBtn = new RoundedButton("그룹", 30);
+        //검정색 테두리 추가
+        ((RoundedButton) groupBtn).setRoundedBorder(Color.BLACK, 2);
+        
+    
         addHoverClickEffect(homeBtn, Color.WHITE);
         addHoverClickEffect(todoBtn, Color.WHITE);
         addHoverClickEffect(groupBtn, Color.WHITE);
@@ -107,18 +118,17 @@ public class MemberPanel extends JPanel {
             new frame.CalendarFrame01().setVisible(true);
         });
 
-        // ★ todoMain 버튼 수정: MainPanel에서 호출된 경우 복귀
         todoBtn.setFont(buttonFont);
         todoBtn.setBackground(Color.WHITE);
         todoBtn.setFocusPainted(false);
         todoBtn.setPreferredSize(buttonSize);
         todoBtn.addActionListener(e -> {
-            this.setVisible(false); // MemberPanel 숨기기
+            this.setVisible(false);
             todoMain todoPage;
             if (mainPanel != null) {
-                todoPage = new todoMain(mainPanel); // MainPanel에서 호출 시 기존 인스턴스 유지
+                todoPage = new todoMain(mainPanel);
             } else {
-                todoPage = new todoMain(); // CalendarFrame01 등에서 호출 시 기본 동작
+                todoPage = new todoMain();
             }
             todoPage.fr.setVisible(true);
         });
@@ -150,7 +160,7 @@ public class MemberPanel extends JPanel {
                 JLabel memberLabel = new JLabel(m);
                 memberLabel.setPreferredSize(new Dimension(150, 25));
 
-                JButton scheduleBtn = new JButton("일정 보기");
+                JButton scheduleBtn = new RoundedButton("일정 보기", 20);
                 scheduleBtn.setFont(new Font("맑은 고딕", Font.BOLD, 14));
                 scheduleBtn.setBackground(BUTTON_COLOR);
                 scheduleBtn.setForeground(Color.WHITE);
@@ -188,6 +198,16 @@ public class MemberPanel extends JPanel {
 
     public String getGroupName() {
         return groupName;
+    }
+    
+    // 둥근 버튼 스타일 메서드
+    private void styleRoundedButton(JButton button, Font font, Dimension size, Color bgColor, Color borderColor) {
+        button.setFont(font);
+        button.setBackground(bgColor);
+        button.setFocusPainted(false);
+        button.setPreferredSize(size);
+        button.setBorder(new javax.swing.border.LineBorder(borderColor, 1, true)); // ★ 둥근 테두리
+        button.setContentAreaFilled(true);
     }
 }
 
