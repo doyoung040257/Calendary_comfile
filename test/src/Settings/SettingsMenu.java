@@ -87,10 +87,13 @@ public class SettingsMenu extends JFrame {
 
 		// 알림 설정 페이지
 		notificationBtn.addActionListener(e -> {
-            this.dispose();
-            new Notificationsetting(user); // 새 창만 열기
-        });
-
+		    if (user == null) {
+		        JOptionPane.showMessageDialog(this, "로그인된 사용자 정보가 없습니다.");
+		        return; // user가 없으면 알림 설정 창 열지 않음
+		    }
+		    this.dispose();
+		    new Notificationsetting(user); // 안전하게 user 전달
+		});
 
 		// 글꼴 변경 버튼 클릭
 		fontBtn.addActionListener(e -> {
@@ -163,4 +166,5 @@ public class SettingsMenu extends JFrame {
 
 
 }
+
 
