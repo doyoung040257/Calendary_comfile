@@ -17,7 +17,14 @@ public class Notificationsetting extends JFrame {
 	private JButton backButton;
 	private User user;
 
-	public Notificationsetting(User user) {
+	public Notificationsetting(User user) {		
+		 if (user == null) {
+		        JOptionPane.showMessageDialog(null, "사용자 정보가 없습니다.\n설정 메뉴로 돌아갑니다.");
+		        new SettingsMenu(null).setVisible(true); // user 없을 때 기본 메뉴로 복귀
+		        dispose();
+		        return; // 더 이상 진행하지 않음
+		    }
+		
 		this.user = user;
 		setTitle("알림 설정");
 		setSize(400, 250);
@@ -62,26 +69,31 @@ public class Notificationsetting extends JFrame {
 		confirmButton = new JButton("확인");
 
 		confirmButton.addActionListener(e -> {
-			 if (onRadio.isSelected()) {
-			        user.setNotificationsEnabled(true);
-			        JOptionPane.showMessageDialog(this, "알림이 켜졌습니다");
-			    } else {
-			        user.setNotificationsEnabled(false);
-			        JOptionPane.showMessageDialog(this, "알림이 꺼졌습니다");
-			    }
-			ThemeManager.applyTheme(this.getOwner());
+			if (user != null) {
+                if (onRadio.isSelected()) {
+                    user.setNotificationsEnabled(true);
+                    JOptionPane.showMessageDialog(this, "알림이 켜졌습니다");
+                } else {
+                    user.setNotificationsEnabled(false);
+                    JOptionPane.showMessageDialog(this, "알림이 꺼졌습니다");
+                }
+            } else {
+                JOptionPane.showMessageDialog(this, "사용자 정보가 없습니다");
+            }
 
-			
-			// 테마 적용
-			ThemeManager.applyTheme(this);
+            // 테마 적용 (owner가 null이면 현재 창 적용)
+            Window owner = this.getOwner();
+            if (owner != null) {
+                ThemeManager.applyTheme(owner);
+            }
+            ThemeManager.applyTheme(this);
 
-			 // 현재 알림 설정 창 닫기
-		    this.dispose();
+            // 현재 창 닫기
+            this.dispose();
 
-		    // 메인 캘린더 화면으로 돌아가기
-		    new CalendarFrame01(user).setVisible(true);
-			
-		});
+            // 메인 캘린더 화면 열기 (user가 null이면 기본 생성)
+            new CalendarFrame01(user).setVisible(true);
+        });
 
 		// 뒤로가기 버튼
 		backButton = new JButton("뒤로가기");
@@ -114,3 +126,4 @@ public class Notificationsetting extends JFrame {
 		setVisible(true);
 	}
 }
+
