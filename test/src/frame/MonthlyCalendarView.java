@@ -155,7 +155,7 @@ public class MonthlyCalendarView extends JFrame {
             @Override
             public void mouseClicked(java.awt.event.MouseEvent e) {
                 if (isCurrentMonth) {
-                    TodoPageView todoPage = new TodoPageView(date, mainFrame, user);
+                    TodoPageView todoPage = new TodoPageView(date, mainFrame);
                     todoPage.setVisible(true);
                     dispose();
                 }
@@ -253,4 +253,5 @@ public class MonthlyCalendarView extends JFrame {
         return panel;
     }
 }
+
 
