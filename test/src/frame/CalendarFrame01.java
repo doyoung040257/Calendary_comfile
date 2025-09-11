@@ -190,7 +190,7 @@ public class CalendarFrame01 extends JPanel {
             public void mouseClicked(MouseEvent e) {
             	//원래코드
             	//new TodoPageView(currentDate, CalendarFrame01.this).setVisible(true);
-                new TodoPageView(currentDate, CalendarFrame01.this).setVisible(true);
+                new TodoPageView(currentDate, CalendarFrame01.this,SessionManager.getCurrentUser()).setVisible(true); //변경
             }
         });
         add(new JScrollPane(todoPanel), BorderLayout.CENTER);
@@ -442,4 +442,5 @@ public class CalendarFrame01 extends JPanel {
 //            ))
 //        );
 //    }
+
 
