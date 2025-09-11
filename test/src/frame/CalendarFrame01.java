@@ -16,17 +16,13 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.UUID;
-
 import javax.swing.border.Border;
-
 import GroupTest.CalenderGroupPage;
 import GroupTest.MainFrame;
 import Settings.SettingsMenu;
 import Settings.ThemeManager;
-
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-
 import lg.User; // User 클래스 임포트 추가
 import todo.todoMain;
 
@@ -84,31 +80,22 @@ public class CalendarFrame01 extends JFrame {
     }
 
     public CalendarFrame01(LocalDate date) {
-        this.currentDate = date;
-        this.user = lg.SessionManager.getCurrentUser();
-
-        // --- 프레임 기본 설정 ---
-        setTitle("주간 플래너");
-        setSize(480, 800);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+         // --- 프레임 기본 설정 ---
         setLayout(new BorderLayout());
-        setLocationRelativeTo(null);
-
-        // 초기 샘플 데이터 생성
-//        createSampleTasks();
+        setBackground(Color.BLACK);
 
         Font titleFont = new Font("SansSerif", Font.BOLD, 22);
         Font buttonFont = new Font("SansSerif", Font.BOLD, 16);
 
         // --- 상단 패널 (월 이동 및 설정) ---
-        JPanel topPanel = new JPanel(new BorderLayout());
-        //topPanel.setBackground(Color.decode("#D8BFD8"));
+        JPanel topPanel = createNavPanel();
+        topPanel.setLayout(new BorderLayout());
         topPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+        add(topPanel);
 
-        JPanel monthControlPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        JPanel monthControlPanel = createNavPanel();
+        monthControlPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
         monthControlPanel.setOpaque(false);
-
-        topPanel.add(monthControlPanel, BorderLayout.WEST);
 
         // 테마 적용
         ThemeManager.applyTheme(topPanel);
@@ -123,8 +110,7 @@ public class CalendarFrame01 extends JFrame {
             @Override
             public void mouseClicked(MouseEvent e) {
                 // 기존 CalendarFrame01 인스턴스를 MonthlyCalendarView에 전달
-                new MonthlyCalendarView(CalendarFrame01.this).setVisible(true);
-                dispose();
+                new MonthlyCalendarView().setVisible(true);
             }
         });
 
@@ -141,14 +127,12 @@ public class CalendarFrame01 extends JFrame {
 
         topPanel.add(monthControlPanel, BorderLayout.WEST);
 
-        // '월간 달력' 버튼을 '설정'으로 변경하고 기능 제거
-        JButton settingsViewButton = new JButton("설정");
-        settingsViewButton.setFont(buttonFont);
-        topPanel.add(settingsViewButton, BorderLayout.EAST);
+        // 설정버튼
+		JButton settingsViewButton = createNavButton("설정",buttonFont);
+		topPanel.add(settingsViewButton, BorderLayout.EAST);
         settingsViewButton.addActionListener(e -> {
             JOptionPane.showMessageDialog(this, "설정 화면으로 이동합니다.");
             new SettingsMenu(this.user).setVisible(true);
-            dispose();
         });
 
         // --- 진행률 바 ---
@@ -158,7 +142,18 @@ public class CalendarFrame01 extends JFrame {
         progressBar.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
         progressBar.setForeground(Color.decode("#F5E6CC"));
 
-        // --- 날짜 버튼 패널 ---
+//        // --- 날짜 버튼 패널 ---
+//        JPanel dayButtonsPanel = createNavPanel();
+//		dayButtonsPanel.setLayout(new GridLayout(1, 7, 5, 5));
+//        dayButtonsPanel.setBorder(BorderFactory.createEmptyBorder(10, 5, 10, 5));
+//
+//        for (int i = 0; i < 7; i++) {
+//            dayButtons[i] = createNavButton2();
+//            dayButtons[i].setFont(titleFont);
+//            dayButtons[i].addActionListener(new DayButtonListener(i));
+//            dayButtonsPanel.add(dayButtons[i]);
+//        }
+         // --- 날짜 버튼 패널 ---
         JPanel dayButtonsPanel = new JPanel(new GridLayout(1, 7, 5, 5));
         dayButtonsPanel.setBorder(BorderFactory.createEmptyBorder(10, 5, 10, 5));
 
@@ -169,11 +164,13 @@ public class CalendarFrame01 extends JFrame {
             dayButtonsPanel.add(dayButtons[i]);
         }
 
-        JPanel headerPanel = new JPanel(new BorderLayout());
+        JPanel headerPanel = createNavPanel();
+        headerPanel.setLayout(new BorderLayout());
         headerPanel.add(topPanel, BorderLayout.NORTH);
 
         // 새로운 패널에 진행률 바와 날짜 버튼 패널을 추가
-        JPanel progressAndDayPanel = new JPanel(new BorderLayout());
+        JPanel progressAndDayPanel = createNavPanel();
+        progressAndDayPanel.setLayout(new BorderLayout());
         progressAndDayPanel.add(progressBar, BorderLayout.NORTH);
         progressAndDayPanel.add(dayButtonsPanel, BorderLayout.CENTER);
 
@@ -181,56 +178,19 @@ public class CalendarFrame01 extends JFrame {
         add(headerPanel, BorderLayout.NORTH);
 
         // --- 할일 목록 패널 (중앙) ---
-        todoPanel = new JPanel();
+        todoPanel = createNavPanel();
         todoPanel.setLayout(new BoxLayout(todoPanel, BoxLayout.Y_AXIS)); // 세로 정렬을 위해 BoxLayout 사용
         todoPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
         todoPanel.setCursor(new Cursor(Cursor.HAND_CURSOR));
         todoPanel.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
+            	//원래코드
+            	//new TodoPageView(currentDate, CalendarFrame01.this).setVisible(true);
                 new TodoPageView(currentDate, CalendarFrame01.this).setVisible(true);
-                dispose();
             }
         });
         add(new JScrollPane(todoPanel), BorderLayout.CENTER);
-
-        // --- 하단 네비게이션 패널 ---
-        JPanel bottomPanel = new JPanel(new BorderLayout());
-        bottomPanel.setBackground(Color.decode("#D8BFD8"));
-
-        JPanel navPanel = new JPanel(new GridLayout(1, 3));
-        navPanel.setOpaque(false);
-        navPanel.setPreferredSize(new Dimension(0, 60));
-
-        JButton homeButton = createNavButton("홈", buttonFont);
-        JButton todoButton = createNavButton("할일", buttonFont);
-        JButton groupButton = createNavButton("그룹", buttonFont);
-
-        homeButton.addActionListener(e -> {
-            // 현재 화면이 이미 홈이므로 메시지를 표시
-            JOptionPane.showMessageDialog(this, "이미 홈 화면입니다.");
-        });
-
-        todoButton.addActionListener(e -> {
-
-            JOptionPane.showMessageDialog(this, "할일 화면으로 이동합니다.");
-            todoMain todomain = new todoMain(user);
-            dispose();
-        });
-
-        groupButton.addActionListener(e -> {
-            JOptionPane.showMessageDialog(this, "그룹 관리 화면으로 이동합니다.");
-            SwingUtilities.invokeLater(() -> new MainFrame("사용자")); // ★ 문자열 -> User 객체
-            dispose();
-        });
-
-        navPanel.add(homeButton);
-        navPanel.add(todoButton);
-        navPanel.add(groupButton);
-
-        bottomPanel.add(navPanel, BorderLayout.SOUTH);
-
-        add(bottomPanel, BorderLayout.SOUTH);
 
         prevWeekButton.addActionListener(e -> {
             currentDate = currentDate.minusWeeks(1);
@@ -418,6 +378,7 @@ public class CalendarFrame01 extends JFrame {
 //        );
 //    }
 }
+
 
 
 
