@@ -53,13 +53,17 @@ public class MonthlyCalendarView extends JFrame {
         monthLabel = new JLabel();
         monthLabel.setFont(new Font("SansSerif", Font.BOLD, 22));
 
-        JButton prevMonthButton = createNavButton("◀", new Font("SansSerif", Font.BOLD, 18));
+        JButton prevMonthButton = createNavButton2("◀", new Font("SansSerif", Font.BOLD, 16));
+        prevMonthButton.setPreferredSize(new Dimension(40, 40));
+        prevMonthButton.setMargin(new Insets(0, 0, 0, 0));
         prevMonthButton.addActionListener(e -> {
             currentDate = currentDate.minusMonths(1);
             updateCalendar();
         });
 
-        JButton nextMonthButton = createNavButton("▶", new Font("SansSerif", Font.BOLD, 18));
+        JButton nextMonthButton = createNavButton2("▶", new Font("SansSerif", Font.BOLD, 16));
+        nextMonthButton.setPreferredSize(new Dimension(40, 40));
+        nextMonthButton.setMargin(new Insets(0, 0, 0, 0));
         nextMonthButton.addActionListener(e -> {
             currentDate = currentDate.plusMonths(1);
             updateCalendar();
@@ -163,10 +167,12 @@ public class MonthlyCalendarView extends JFrame {
         });
 
         JLabel dateLabel = new JLabel(String.valueOf(date.getDayOfMonth()));
-        dateLabel.setBorder(new EmptyBorder(5, 5, 0, 0));
+        dateLabel.setHorizontalAlignment(SwingConstants.CENTER); // 수평 중앙
+        dateLabel.setVerticalAlignment(SwingConstants.CENTER);   // 수직 중앙
+        dateLabel.setBorder(new EmptyBorder(0, 0, 0, 0));
 
         if (!isCurrentMonth) {
-            dateLabel.setForeground(Color.GRAY);
+            dateLabel.setForeground(Color.LIGHT_GRAY);
         } else {
             DayOfWeek dayOfWeek = date.getDayOfWeek();
             if (dayOfWeek == DayOfWeek.SUNDAY) dateLabel.setForeground(Color.RED);
@@ -195,6 +201,17 @@ public class MonthlyCalendarView extends JFrame {
 
         cell.add(eventsPanel, BorderLayout.CENTER);
         return cell;
+    }
+
+    // --- 상단 달 변경 버튼 생성 함수 ---
+    private JButton createNavButton2(String text, Font font) {
+        JButton button = new JButton(text);
+        button.setFont(font);
+        button.setContentAreaFilled(false);
+        button.setFocusPainted(false);
+        button.setBorderPainted(false);
+        button.setOpaque(false);
+        return button;
     }
 
     // --- 둥근 버튼 생성 함수 ---
@@ -253,5 +270,6 @@ public class MonthlyCalendarView extends JFrame {
         return panel;
     }
 }
+
 
 
