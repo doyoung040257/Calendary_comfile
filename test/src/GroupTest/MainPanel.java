@@ -242,6 +242,40 @@ public class MainPanel extends JPanel {
         loadExistingGroups(); // ★ MODIFIED: 버튼 갱신
     }
 
+		private JScrollPane listScrollBox() {
+	    JScrollPane scrollPane = new JScrollPane() {
+	        @Override
+	        protected void paintComponent(Graphics g) {
+	            super.paintComponent(g); // ← 기존 배경을 지우고 시작
+	            Graphics2D g2 = (Graphics2D) g.create();
+	            g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+
+	            // 둥근 배경 채우기
+	            g2.setColor(getBackground());
+	            g2.fillRoundRect(0, 0, getWidth(), getHeight(), 30, 30);
+
+	            // 테두리
+	            g2.setColor(Color.GRAY);
+	            g2.drawRoundRect(0, 0, getWidth() - 1, getHeight() - 1, 30, 30);
+
+	            g2.dispose();
+	        }
+	    };
+
+	    scrollPane.setBorder(null);
+	    scrollPane.setOpaque(false);
+	    scrollPane.getViewport().setOpaque(false);
+
+	    // 스크롤바를 완전히 숨김
+	    scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
+	    scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+
+	    // 마우스 휠 스크롤만 가능
+	    scrollPane.getVerticalScrollBar().setUnitIncrement(20);
+
+	    return scrollPane;
+	}
+
         private JButton createNavButton(String text, Font font) {
         JButton button = new JButton(text) {
         
@@ -592,4 +626,5 @@ public class MainPanel extends JPanel {
 }
 
 */
+
 
