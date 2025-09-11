@@ -1,6 +1,4 @@
-
 package GroupTest;
-
 import GroupTest.RoundedButton;
 import lg.User;
 
@@ -10,6 +8,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.util.List;
 
+import todo.SetFrame;
 import todo.todoMain;
 
 public class MemberPanel extends JPanel {
@@ -20,25 +19,24 @@ public class MemberPanel extends JPanel {
     private JPanel memberPanel;
     private JLabel titleLabel;
     private User currentUser;
+    private JPanel panel;
+    private SetFrame parentFrame;
 
     private final Color BUTTON_COLOR = new Color(180, 150, 200);
 
-    public MemberPanel(MainFrame frame, String groupName, MainPanel mainPanel, User currentUser) {
-        this.frame = frame;
+//    public MemberPanel(MainFrame frame, String groupName, MainPanel mainPanel) {
+//        this.frame = frame;
+//        this.groupName = groupName;
+//        this.mainPanel = mainPanel;
+//    }
+    
+    public MemberPanel(MainFrame frame, String groupName, MainPanel mainPanel, User currentUser, SetFrame parentFrame) {
+    	this.frame = frame;
         this.groupName = groupName;
         this.mainPanel = mainPanel;
         this.currentUser = currentUser;
-        initialize();
-    }
+        this.parentFrame = parentFrame;
 
-    public MemberPanel(MainFrame frame, String groupName, MainPanel mainPanel) {
-        this.frame = frame;
-        this.groupName = groupName;
-        this.mainPanel = mainPanel;
-        initialize();
-    }
-
-    private void initialize() {
         setLayout(new BorderLayout(10, 10));
         setBackground(Color.WHITE);
 
@@ -96,60 +94,10 @@ public class MemberPanel extends JPanel {
         backBtn.setFocusPainted(false);
         backBtn.setPreferredSize(buttonSize);
         addHoverClickEffect(backBtn, BUTTON_COLOR);
-        backBtn.addActionListener(e -> frame.backTo("Main"));
+        backBtn.addActionListener(e -> parentFrame.showGroupPanel());
         buttonPanel.add(backBtn);
 
         bottomPanel.add(buttonPanel, BorderLayout.NORTH);
-
-        // ----------------- 동기화 버튼 -----------------
-        JPanel syncButtonPanel = new JPanel(new GridLayout(1, 3, 5, 0));
-        syncButtonPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-        syncButtonPanel.setBackground(Color.WHITE);
-        syncButtonPanel.setPreferredSize(new Dimension(0, 60));
-
-        JButton homeBtn = new RoundedButton("홈", 30);
-        ((RoundedButton) homeBtn).setRoundedBorder(Color.BLACK, 2);
-
-        JButton todoBtn = new RoundedButton("할 일", 30);
-        ((RoundedButton) todoBtn).setRoundedBorder(Color.BLACK, 2);
-
-        JButton groupBtn = new RoundedButton("그룹", 30);
-        ((RoundedButton) groupBtn).setRoundedBorder(Color.BLACK, 2);
-
-        addHoverClickEffect(homeBtn, Color.WHITE);
-        addHoverClickEffect(todoBtn, Color.WHITE);
-        addHoverClickEffect(groupBtn, Color.WHITE);
-
-        homeBtn.setFont(buttonFont);
-        homeBtn.setBackground(Color.WHITE);
-        homeBtn.setFocusPainted(false);
-        homeBtn.setPreferredSize(buttonSize);
-        homeBtn.addActionListener(e -> {
-            SwingUtilities.getWindowAncestor(this).dispose();
-            new frame.CalendarFrame01().setVisible(true);
-        });
-
-        todoBtn.setFont(buttonFont);
-        todoBtn.setBackground(Color.WHITE);
-        todoBtn.setFocusPainted(false);
-        todoBtn.setPreferredSize(buttonSize);
-        todoBtn.addActionListener(e -> {
-            this.setVisible(false);
-            if (currentUser != null) {
-                new todoMain(currentUser, mainPanel).setVisible(true);
-            }
-        });
-
-        groupBtn.setFont(buttonFont);
-        groupBtn.setBackground(Color.WHITE);
-        groupBtn.setFocusPainted(false);
-        groupBtn.setPreferredSize(buttonSize);
-        groupBtn.addActionListener(e -> JOptionPane.showMessageDialog(this, "현재 화면이 그룹 메인입니다."));
-
-        syncButtonPanel.add(homeBtn);
-        syncButtonPanel.add(todoBtn);
-        syncButtonPanel.add(groupBtn);
-        bottomPanel.add(syncButtonPanel, BorderLayout.SOUTH);
 
         add(bottomPanel, BorderLayout.SOUTH);
     }
@@ -174,8 +122,10 @@ public class MemberPanel extends JPanel {
                 scheduleBtn.setFocusPainted(false);
                 scheduleBtn.setPreferredSize(new Dimension(120, 30));
                 addHoverClickEffect(scheduleBtn, BUTTON_COLOR);
-                scheduleBtn.addActionListener(e -> frame.switchPanel("Schedule_" + groupName + "_" + m,
-                        new SchedulePanel(frame, groupName, m, false)));
+                scheduleBtn.addActionListener(e -> {
+                    SchedulePanel sp = new SchedulePanel(frame, groupName, m, false, parentFrame);
+                    parentFrame.showSchedulePanel(groupName, m, sp);
+                });
 
                 row.add(memberLabel, BorderLayout.WEST);
                 row.add(scheduleBtn, BorderLayout.EAST);
@@ -203,163 +153,17 @@ public class MemberPanel extends JPanel {
         updateMemberList();
     }
 
-    public String getGroupName() { return groupName; }
-}
-/*
-package GroupTest;
-
-import javax.swing.*;
-import javax.swing.border.LineBorder;
-import java.awt.*;
-import java.util.List;
-
-import lg.User;
-import todo.todoMain;
-
-public class MemberPanel extends JPanel {
-
-    private MainFrame frame;
-    private String groupName;
-    private MainPanel mainPanel;
-    private JPanel memberPanel;
-    private JLabel titleLabel;
-    private User currentUser;
-
-    private final Color BUTTON_COLOR = new Color(180, 150, 200);
-    private final Font buttonFont = new Font("맑은 고딕", Font.BOLD, 14);
-    private final Dimension buttonSize = new Dimension(140, 40);
-
-    public MemberPanel(MainFrame frame, String groupName, MainPanel mainPanel, User currentUser) {
-        this.frame = frame;
-        this.groupName = groupName;
-        this.mainPanel = mainPanel;
-        this.currentUser = currentUser;
-        initialize();
+    public String getGroupName() {
+        return groupName;
     }
-
-    private void initialize() {
-        setLayout(new BorderLayout(10, 10));
-        setBackground(Color.WHITE);
-
-        titleLabel = new JLabel(groupName + " - 멤버 목록", JLabel.CENTER);
-        titleLabel.setFont(new Font("맑은 고딕", Font.BOLD, 20));
-        add(titleLabel, BorderLayout.NORTH);
-
-        memberPanel = new JPanel();
-        memberPanel.setLayout(new BoxLayout(memberPanel, BoxLayout.Y_AXIS));
-        memberPanel.setBackground(Color.WHITE);
-        JScrollPane scrollPane = new JScrollPane(memberPanel);
-        scrollPane.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-        add(scrollPane, BorderLayout.CENTER);
-
-        updateMemberList(); // ★ MODIFIED: User의 GroupList에서 가져오기
-
-        JPanel bottomPanel = new JPanel(new BorderLayout());
-        bottomPanel.setBackground(Color.WHITE);
-
-        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 10));
-        buttonPanel.setBackground(Color.WHITE);
-        buttonPanel.setPreferredSize(new Dimension(0, 60));
-
-        RoundedButton backBtn = new RoundedButton("이전 화면", 20);
-        styleButton(backBtn, BUTTON_COLOR);
-        backBtn.setPreferredSize(buttonSize);
-        backBtn.addActionListener(e -> frame.backTo("Main"));
-        buttonPanel.add(backBtn);
-
-        bottomPanel.add(buttonPanel, BorderLayout.NORTH);
-
-        JPanel syncButtonPanel = new JPanel(new GridLayout(1, 3, 5, 0));
-        syncButtonPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-        syncButtonPanel.setBackground(Color.WHITE);
-        syncButtonPanel.setPreferredSize(new Dimension(0, 60));
-
-        RoundedButton homeBtn = new RoundedButton("홈", 30);
-        homeBtn.setRoundedBorder(Color.BLACK, 2);
-        styleButton(homeBtn, Color.WHITE);
-
-        RoundedButton todoBtn = new RoundedButton("할 일", 30);
-        todoBtn.setRoundedBorder(Color.BLACK, 2);
-        styleButton(todoBtn, Color.WHITE);
-
-        RoundedButton groupBtn = new RoundedButton("그룹", 30);
-        groupBtn.setRoundedBorder(Color.BLACK, 2);
-        styleButton(groupBtn, Color.WHITE);
-
-        homeBtn.setPreferredSize(buttonSize);
-        todoBtn.setPreferredSize(buttonSize);
-        groupBtn.setPreferredSize(buttonSize);
-
-        homeBtn.addActionListener(e -> {
-            SwingUtilities.getWindowAncestor(this).dispose();
-            new frame.CalendarFrame01().setVisible(true);
-        });
-
-        todoBtn.addActionListener(e -> {
-            this.setVisible(false);
-            if (currentUser != null) new todoMain(currentUser, mainPanel).setVisible(true);
-        });
-
-        groupBtn.addActionListener(e -> JOptionPane.showMessageDialog(this, "현재 화면이 그룹 메인입니다."));
-
-        syncButtonPanel.add(homeBtn);
-        syncButtonPanel.add(todoBtn);
-        syncButtonPanel.add(groupBtn);
-        bottomPanel.add(syncButtonPanel, BorderLayout.SOUTH);
-
-        add(bottomPanel, BorderLayout.SOUTH);
-    }
-
-    public void updateMemberList() {
-        memberPanel.removeAll();
-
-        // ★ MODIFIED: User 객체의 GroupList에서 멤버 목록 가져오기
-        Group group = currentUser.getGroupList().getGroupByName(groupName);
-        if (group != null) {
-            List<String> members = group.getMembers();
-            for (String m : members) {
-                JPanel row = new JPanel(new BorderLayout(10, 5));
-                row.setBackground(Color.WHITE);
-                row.setBorder(new LineBorder(Color.GRAY, 1, true));
-                row.setMaximumSize(new Dimension(Integer.MAX_VALUE, 40));
-
-                JLabel memberLabel = new JLabel(m);
-                memberLabel.setPreferredSize(new Dimension(150, 25));
-
-                RoundedButton scheduleBtn = new RoundedButton("일정 보기", 20);
-                styleButton(scheduleBtn, BUTTON_COLOR);
-                scheduleBtn.setPreferredSize(new Dimension(120, 30));
-                scheduleBtn.addActionListener(e -> frame.switchPanel(
-                        "Schedule_" + groupName + "_" + m,
-                        new SchedulePanel(frame, groupName, m, false)
-                ));
-
-                row.add(memberLabel, BorderLayout.WEST);
-                row.add(scheduleBtn, BorderLayout.EAST);
-
-                memberPanel.add(row);
-                memberPanel.add(Box.createRigidArea(new Dimension(0, 5)));
-            }
-        }
-
-        memberPanel.revalidate();
-        memberPanel.repaint();
-    }
-
-    private void styleButton(RoundedButton button, Color bgColor) {
-        button.setFont(buttonFont);
+    
+    // 둥근 버튼 스타일 메서드
+    private void styleRoundedButton(JButton button, Font font, Dimension size, Color bgColor, Color borderColor) {
+        button.setFont(font);
         button.setBackground(bgColor);
-        button.setForeground(Color.WHITE);
         button.setFocusPainted(false);
+        button.setPreferredSize(size);
+        button.setBorder(new javax.swing.border.LineBorder(borderColor, 1, true)); // ★ 둥근 테두리
+        button.setContentAreaFilled(true);
     }
-
-    public void setGroupName(String groupName) {
-        this.groupName = groupName;
-        titleLabel.setText(groupName + " - 멤버 목록");
-        updateMemberList();
-    }
-
-    public String getGroupName() { return groupName; }
 }
-
-*/
