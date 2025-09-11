@@ -169,7 +169,8 @@ public class SignupFrame extends JFrame {
         };
         panel.setOpaque(false);
 
-        if (field instanceof JTextField tf) {
+        if (field instanceof JTextField) {
+        	JTextField tf = (JTextField) field; // 직접 캐스팅
             tf.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
             tf.setForeground(Color.BLACK);
             tf.setCaretColor(Color.BLACK);
@@ -320,3 +321,4 @@ class GlassComboRenderer extends DefaultListCellRenderer {
         return label;
     }
 }
+
