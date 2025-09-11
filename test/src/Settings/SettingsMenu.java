@@ -54,7 +54,7 @@ public class SettingsMenu extends JFrame {
 		Design design = new Design(); // 수정
 		
 		setTitle("설정");
-		setSize(250, 350);
+		setSize(250, 310);
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setLocationRelativeTo(null);
 		setLayout(new FlowLayout());
@@ -147,23 +147,20 @@ public class SettingsMenu extends JFrame {
 		
 		// 버튼 추가
 		panel.add(themeBtn);
-		panel.add(Box.createVerticalStrut(15));
+		panel.add(Box.createVerticalStrut(10));
 		panel.add(infoBtn);
-		panel.add(Box.createVerticalStrut(15));
+		panel.add(Box.createVerticalStrut(10));
 		panel.add(notificationBtn);
-		panel.add(Box.createVerticalStrut(15));
+		panel.add(Box.createVerticalStrut(10));
 		panel.add(fontBtn); // 글꼴 변경 버튼 추가
-		panel.add(Box.createVerticalStrut(15));
+		panel.add(Box.createVerticalStrut(10));
 		panel.add(logoutBtn);
-		panel.add(Box.createVerticalStrut(15));
+		panel.add(Box.createVerticalStrut(10));
 		panel.add(backButton);
-		panel.add(Box.createVerticalStrut(15));
+		panel.add(Box.createVerticalStrut(10));
 		
 		ThemeManager.applyTheme(this);
 		add(panel);
 		setVisible(true);
 	}
 }
-
-
-
