@@ -72,7 +72,7 @@ public class MainPanel extends JPanel {
         groupButtonContainer = createNavPanel();
         groupButtonContainer.setLayout(new BoxLayout(groupButtonContainer, BoxLayout.Y_AXIS));
         groupButtonContainer.setBackground(Color.WHITE);
-        scrollPane.add(groupButtonContainer);
+        scrollPane.setViewportView(groupButtonContainer);
         
         scrollPane.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
         add(scrollPane, BorderLayout.CENTER);
@@ -185,19 +185,21 @@ public class MainPanel extends JPanel {
 
     private void addGroupButton(String groupName) {
         JPanel panel = new JPanel(new BorderLayout(5, 5));
+		panel.setBackground(new Color(0,0,0,0));
         panel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 50));
         panel.setBackground(new Color(200, 200, 255));
 
-        JButton groupBtn = new JButton(groupName);
-        groupBtn.setFont(new Font("맑은 고딕", Font.BOLD, 16));
-        groupBtn.setBackground(new Color(200, 200, 255));
-        groupBtn.setFocusPainted(false);
-        addHoverClickEffect(groupBtn, new Color(200, 200, 255));
+        JButton groupBtn = createNavButton(groupName, new Font("맑은 고딕", Font.BOLD, 16));
+//        groupBtn.setFocusPainted(false);
+//        addHoverClickEffect(groupBtn, new Color(200, 200, 255));
         groupBtn.addActionListener(e -> openMemberPanel(groupName));
 
         JCheckBox deleteBox = new JCheckBox();
         deleteBox.setVisible(deleteMode);
-        deleteBox.setBackground(new Color(200, 200, 255));
+        deleteBox.setOpaque(false);
+        deleteBox.setContentAreaFilled(false);
+        deleteBox.setBorderPainted(false);
+        deleteBox.setFocusPainted(false);
 
         panel.add(groupBtn, BorderLayout.CENTER);
         panel.add(deleteBox, BorderLayout.EAST);
@@ -626,5 +628,6 @@ public class MainPanel extends JPanel {
 }
 
 */
+
 
 
