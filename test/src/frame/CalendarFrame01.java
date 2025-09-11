@@ -83,8 +83,9 @@ public class CalendarFrame01 extends JPanel {
         this.user = lg.SessionManager.getCurrentUser();
         
          // --- 프레임 기본 설정 ---
-        setLayout(new BorderLayout());
-        setBackground(Color.BLACK);
+        
+        setLayout(null);
+		setBackground(Color.BLACK);
 
         Font titleFont = new Font("SansSerif", Font.BOLD, 22);
         Font buttonFont = new Font("SansSerif", Font.BOLD, 16);
@@ -93,6 +94,7 @@ public class CalendarFrame01 extends JPanel {
         JPanel topPanel = createNavPanel();
         topPanel.setLayout(new BorderLayout());
         topPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+        topPanel.setBounds(10, 10, 445, 50);
         add(topPanel);
 
         JPanel monthControlPanel = createNavPanel();
@@ -137,49 +139,41 @@ public class CalendarFrame01 extends JPanel {
             new SettingsMenu(this.user).setVisible(true);
         });
 
-        // --- 진행률 바 ---
-        progressBar = new JProgressBar(0, 100);
-        progressBar.setStringPainted(true);
-        progressBar.setFont(new Font("SansSerif", Font.BOLD, 18));
-        progressBar.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
-        progressBar.setForeground(Color.decode("#F5E6CC"));
-
-//        // --- 날짜 버튼 패널 ---
-//        JPanel dayButtonsPanel = createNavPanel();
-//		dayButtonsPanel.setLayout(new GridLayout(1, 7, 5, 5));
-//        dayButtonsPanel.setBorder(BorderFactory.createEmptyBorder(10, 5, 10, 5));
-//
-//        for (int i = 0; i < 7; i++) {
-//            dayButtons[i] = createNavButton2();
-//            dayButtons[i].setFont(titleFont);
-//            dayButtons[i].addActionListener(new DayButtonListener(i));
-//            dayButtonsPanel.add(dayButtons[i]);
-//        }
          // --- 날짜 버튼 패널 ---
-        JPanel dayButtonsPanel = new JPanel(new GridLayout(1, 7, 5, 5));
+        JPanel dayButtonsPanel = createNavPanel();
+        dayButtonsPanel.setLayout(new GridLayout(1, 7, 5, 5));
+        dayButtonsPanel.setBounds(10, 70, 445, 60);
         dayButtonsPanel.setBorder(BorderFactory.createEmptyBorder(10, 5, 10, 5));
-
+        add(dayButtonsPanel);
+        
         for (int i = 0; i < 7; i++) {
-            dayButtons[i] = new JButton();
-            dayButtons[i].setFont(titleFont);
+        	dayButtons[i] = createNavButton2("", buttonFont);
             dayButtons[i].addActionListener(new DayButtonListener(i));
             dayButtonsPanel.add(dayButtons[i]);
         }
-
-        JPanel headerPanel = createNavPanel();
-        headerPanel.setLayout(new BorderLayout());
-        headerPanel.add(topPanel, BorderLayout.NORTH);
-
-        // 새로운 패널에 진행률 바와 날짜 버튼 패널을 추가
+        
+        // --- 진행률 바 ---
+        progressBar = createRoundProgressBar(0, 100);
+        progressBar.setStringPainted(true);
+        progressBar.setFont(new Font("SansSerif", Font.BOLD, 18));
+        progressBar.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
+        progressBar.setPreferredSize(new Dimension(445, 25));
+        progressBar.setForeground(Color.decode("#F5E6CC"));
+        progressBar.setBackground(Color.LIGHT_GRAY);
+        
         JPanel progressAndDayPanel = createNavPanel();
+        progressAndDayPanel.setBounds(10, 140, 445, 25);
         progressAndDayPanel.setLayout(new BorderLayout());
+        progressAndDayPanel.setBackground(Color.white);
         progressAndDayPanel.add(progressBar, BorderLayout.NORTH);
-        progressAndDayPanel.add(dayButtonsPanel, BorderLayout.CENTER);
-
-        headerPanel.add(progressAndDayPanel, BorderLayout.CENTER);
-        add(headerPanel, BorderLayout.NORTH);
+        
+        add(progressAndDayPanel);
 
         // --- 할일 목록 패널 (중앙) ---
+        JScrollPane scrollPane = listScrollBox();
+        scrollPane.setBounds(10, 175, 445, 505);
+        add(scrollPane);
+        
         todoPanel = createNavPanel();
         todoPanel.setLayout(new BoxLayout(todoPanel, BoxLayout.Y_AXIS)); // 세로 정렬을 위해 BoxLayout 사용
         todoPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
@@ -192,7 +186,7 @@ public class CalendarFrame01 extends JPanel {
                 new TodoPageView(currentDate, CalendarFrame01.this).setVisible(true);
             }
         });
-        add(new JScrollPane(todoPanel), BorderLayout.CENTER);
+        scrollPane.setViewportView(todoPanel);
 
         prevWeekButton.addActionListener(e -> {
             currentDate = currentDate.minusWeeks(1);
@@ -217,31 +211,25 @@ public class CalendarFrame01 extends JPanel {
     }
 
     void updateWeekView() {
-        // Calculate the week of the month
         LocalDate firstDayOfMonth = LocalDate.of(currentDate.getYear(), currentDate.getMonth(), 1);
         int weekNumber = ((currentDate.getDayOfYear() - firstDayOfMonth.getDayOfYear()) / 7) + 1;
-
         monthLabel.setText(currentDate.format(DateTimeFormatter.ofPattern("M월", Locale.KOREA)) + " " + weekNumber + "주차");
 
-        // 현재 주의 첫 번째 날짜를 구합니다.
         LocalDate startOfWeek = currentDate.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
-
         for (int i = 0; i < 7; i++) {
             LocalDate day = startOfWeek.plusDays(i);
             dayButtons[i].setText(String.valueOf(day.getDayOfMonth()));
+            dayButtons[i].putClientProperty("selected", false); // 초기화
         }
 
-        // 모든 버튼의 테두리를 초기화합니다.
-        for (int i = 0; i < 7; i++) {
-            dayButtons[i].setBorder(new JButton().getBorder());
-        }
-
-        // 현재 날짜에 해당하는 버튼을 강조합니다.
         int dayIndex = (currentDate.getDayOfWeek().getValue() - 1);
-        dayButtons[dayIndex].setBorder(BorderFactory.createLineBorder(Color.decode("#FF5733"), 3));
+        dayButtons[dayIndex].putClientProperty("selected", true);
 
-        updateTodoPanel();
-        updateProgressBar();
+        for (JButton btn : dayButtons) {
+            btn.repaint(); // 다시 그리기
+            updateTodoPanel();
+            updateProgressBar();
+        }
     }
 
 
@@ -285,7 +273,7 @@ public class CalendarFrame01 extends JPanel {
                 : new ArrayList<>();
 
         if (tasks.isEmpty()) {
-            progressBar.setValue(100);
+            progressBar.setValue(0);
             progressBar.setString("할 일 없음");
             progressBar.setForeground(Color.LIGHT_GRAY);
             return;
@@ -327,8 +315,44 @@ public class CalendarFrame01 extends JPanel {
             
             // Update the UI
             updateWeekView();
+            revalidate();
+            repaint();
         }
     }
+    
+    private JScrollPane listScrollBox() {
+	    JScrollPane scrollPane = new JScrollPane() {
+	        @Override
+	        protected void paintComponent(Graphics g) {
+	            super.paintComponent(g); // ← 기존 배경을 지우고 시작
+	            Graphics2D g2 = (Graphics2D) g.create();
+	            g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+
+	            // 둥근 배경 채우기
+	            g2.setColor(getBackground());
+	            g2.fillRoundRect(0, 0, getWidth(), getHeight(), 30, 30);
+
+	            // 테두리
+	            g2.setColor(Color.GRAY);
+	            g2.drawRoundRect(0, 0, getWidth() - 1, getHeight() - 1, 30, 30);
+
+	            g2.dispose();
+	        }
+	    };
+
+	    scrollPane.setBorder(null);
+	    scrollPane.setOpaque(false);
+	    scrollPane.getViewport().setOpaque(false);
+
+	    // 스크롤바를 완전히 숨김
+	    scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
+	    scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+
+	    // 마우스 휠 스크롤만 가능
+	    scrollPane.getVerticalScrollBar().setUnitIncrement(20);
+
+	    return scrollPane;
+	}
 
     private JButton createNavButton(String text, Font font) {
         JButton button = new JButton(text) {
@@ -372,6 +396,55 @@ public class CalendarFrame01 extends JPanel {
         
         return button;
     }
+    
+    // 날짜버튼(강조테두리 생성위해 만듬) //수정
+    private JButton createNavButton2(String text, Font font) {
+        JButton button = new JButton(text) {
+            @Override
+            protected void paintComponent(Graphics g) {
+                Graphics2D g2 = (Graphics2D) g.create();
+                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+
+                // 선택된 버튼이면 강조색, 아니면 기본 배경색
+                Color bg = getBackground();
+                Object selected = getClientProperty("selected");
+                if (selected != null && (boolean) selected) {
+                    bg = new Color(255, 100, 100); // 강조색
+                }
+
+                if (getModel().isArmed()) {
+                    g2.setColor(bg.darker());
+                } else {
+                    g2.setColor(bg);
+                }
+
+                // 둥근 사각형 배경
+                g2.fillRoundRect(0, 0, getWidth(), getHeight(), 30, 30);
+                g2.dispose();
+
+                super.paintComponent(g);
+            }
+
+            @Override
+            protected void paintBorder(Graphics g) {
+                Graphics2D g2 = (Graphics2D) g.create();
+                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                g2.setColor(Color.GRAY); // 항상 회색 테두리
+                g2.drawRoundRect(0, 0, getWidth() - 1, getHeight() - 1, 30, 30);
+                g2.dispose();
+            }
+        };
+
+        button.setFont(font);
+        button.setBackground(Color.WHITE);
+        button.setForeground(Color.BLACK);
+        button.setContentAreaFilled(false);
+        button.setFocusPainted(false);
+        button.setBorderPainted(true);
+        button.setOpaque(false);
+        button.putClientProperty("selected", false);
+        return button;
+    }
         
         
     public JPanel createNavPanel() {
@@ -397,6 +470,46 @@ public class CalendarFrame01 extends JPanel {
 	  };
 	  	panel.setOpaque(false); // 네모난 기본 배경 칠하지 않도록
 	  	return panel;
+    }
+    
+    private JProgressBar createRoundProgressBar(int min, int max) {
+        JProgressBar progressBar = new JProgressBar(min, max) {
+            @Override
+            protected void paintComponent(Graphics g) {
+                Graphics2D g2 = (Graphics2D) g.create();
+                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+
+                int width = getWidth();
+                int height = getHeight();
+                int arc = 30;
+
+                // 배경
+                g2.setColor(Color.LIGHT_GRAY);
+                g2.fillRoundRect(0, 0, width, height, arc, arc);
+
+                // 진행률 채우기
+                int progressWidth = (int) (width * getPercentComplete());
+                g2.setColor(getForeground());
+                g2.fillRoundRect(0, 0, progressWidth, height, arc, arc);
+
+                // ✅ 텍스트 직접 출력
+                String text = getString(); // "67%"
+                FontMetrics fm = g2.getFontMetrics();
+                int textWidth = fm.stringWidth(text);
+                int textHeight = fm.getAscent();
+                g2.setColor(Color.BLUE);   // 원하는 글자색
+                g2.drawString(text, (width - textWidth) / 2, (height + textHeight) / 2 - 2);
+
+                g2.dispose();
+            }
+        };
+
+        progressBar.setStringPainted(true);
+        progressBar.setForeground(new Color(76, 175, 80)); // 초록
+        progressBar.setBackground(Color.LIGHT_GRAY);
+        progressBar.setBorderPainted(false);
+        progressBar.setOpaque(false);
+        return progressBar;
     }
 }
 
