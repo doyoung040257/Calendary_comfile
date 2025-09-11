@@ -26,7 +26,7 @@ import java.awt.event.MouseEvent;
 import lg.User; // User 클래스 임포트 추가
 import todo.todoMain;
 
-public class CalendarFrame01 extends JFrame {
+public class CalendarFrame01 extends JPanel {
 
 //    protected static Object dailyTasks;
 	LocalDate currentDate;
@@ -442,3 +442,4 @@ public class CalendarFrame01 extends JFrame {
 //            ))
 //        );
 //    }
+
