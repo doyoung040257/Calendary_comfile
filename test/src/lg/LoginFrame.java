@@ -145,7 +145,7 @@ public class LoginFrame extends JFrame {
                 
                 SessionManager.login(user);
                 
-                new CalendarFrame01(user).setVisible(true);
+                new SetFrame(user).setVisible(true);
                 dispose();
             } else {
                 JOptionPane.showMessageDialog(this, "비밀번호가 틀렸습니다.");
@@ -208,5 +208,6 @@ class GlassButton extends JButton {
         g2.dispose();
     }
 }
+
 
 
