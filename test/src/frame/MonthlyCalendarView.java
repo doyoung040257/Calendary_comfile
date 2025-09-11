@@ -1,13 +1,7 @@
 // MonthlyCalendarView.java
 package frame;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Container;
-import java.awt.Cursor;
-import java.awt.Font;
-import java.awt.GridLayout;
-import java.awt.FlowLayout; 
+import java.awt.*;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.YearMonth;
@@ -16,21 +10,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-import javax.swing.BorderFactory;
-import javax.swing.Box;
-import javax.swing.BoxLayout;
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.SwingConstants;
+import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 
 import Settings.SettingsMenu;
 import Settings.ThemeManager;
 import lg.User;
-
 
 public class MonthlyCalendarView extends JFrame {
 
@@ -38,8 +23,8 @@ public class MonthlyCalendarView extends JFrame {
     private JLabel monthLabel;
     private JPanel dateGridPanel;
     private CalendarFrame01 mainFrame;
-	private User user;
-    
+    private User user;
+
     public MonthlyCalendarView() {
         this(new CalendarFrame01());
     }
@@ -54,72 +39,54 @@ public class MonthlyCalendarView extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
 
-        // --- 전체 컨텐츠 패널 설정 ---
         Container contentPane = getContentPane();
         contentPane.setLayout(new BorderLayout(10, 10));
         ((JPanel) contentPane).setBorder(new EmptyBorder(10, 10, 10, 10));
 
-        // --- 상단 (NORTH): 월 이동 및 표시 섹션 ---
-        JPanel topPanel = new JPanel(new BorderLayout());
-//        topPanel.setBackground(Color.decode("#D8BFD8"));
+        // --- 상단 (NORTH): 월 이동 및 표시 섹션 (둥근 하늘색 패널) ---
+        JPanel topPanel = createNavPanel(); // 둥근 패널
+        topPanel.setBackground(Color.decode("#ADD8E6")); // 하늘색
+        topPanel.setLayout(new BorderLayout());
         topPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-        
-        JPanel monthControlPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        monthControlPanel.setOpaque(false);
-        topPanel.add(monthControlPanel, BorderLayout.WEST);
-     // 테마 적용
         ThemeManager.applyTheme(topPanel);
-        
-        // 레이아웃을 왼쪽 정렬로 변경
-        JPanel monthNavPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 1, 0)); // 가로 간격을 1로 수정
-        monthNavPanel.setOpaque(false);
 
-        JButton prevMonthButton = new JButton("◀");
-        styleArrowButton(prevMonthButton);
+        monthLabel = new JLabel();
+        monthLabel.setFont(new Font("SansSerif", Font.BOLD, 22));
+
+        JButton prevMonthButton = createNavButton("◀", new Font("SansSerif", Font.BOLD, 18));
         prevMonthButton.addActionListener(e -> {
             currentDate = currentDate.minusMonths(1);
             updateCalendar();
         });
 
-        monthLabel = new JLabel();
-        monthLabel.setFont(new Font("SansSerif", Font.BOLD, 22));
-
-        JButton nextMonthButton = new JButton("▶");
-        styleArrowButton(nextMonthButton);
+        JButton nextMonthButton = createNavButton("▶", new Font("SansSerif", Font.BOLD, 18));
         nextMonthButton.addActionListener(e -> {
             currentDate = currentDate.plusMonths(1);
             updateCalendar();
         });
 
+        JPanel monthNavPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 1, 0));
+        monthNavPanel.setOpaque(false); // 상단 배경이 보이도록 투명
         monthNavPanel.add(prevMonthButton);
         monthNavPanel.add(monthLabel);
         monthNavPanel.add(nextMonthButton);
-        
-        // monthNavPanel을 topPanel의 왼쪽에 배치
+
         topPanel.add(monthNavPanel, BorderLayout.WEST);
-        
-        // '주간' 버튼을 제거
-        // topPanel.add(weeklyViewButton, BorderLayout.EAST);
-        
         contentPane.add(topPanel, BorderLayout.NORTH);
 
         // --- 중앙 (CENTER): 요일 헤더 + 날짜 그리드 ---
         JPanel calendarPanel = new JPanel(new BorderLayout());
 
-        // 중앙-상단: 요일 헤더 (일, 월, 화...)
         JPanel dayOfWeekPanel = new JPanel(new GridLayout(1, 7));
         String[] dayNames = { "일", "월", "화", "수", "목", "금", "토" };
         for (int i = 0; i < dayNames.length; i++) {
             JLabel dayLabel = new JLabel(dayNames[i], SwingConstants.CENTER);
-            if (i == 0)
-                dayLabel.setForeground(Color.RED);
-            if (i == 6)
-                dayLabel.setForeground(Color.BLUE);
+            if (i == 0) dayLabel.setForeground(Color.RED);
+            if (i == 6) dayLabel.setForeground(Color.BLUE);
             dayOfWeekPanel.add(dayLabel);
         }
         calendarPanel.add(dayOfWeekPanel, BorderLayout.NORTH);
 
-        // 중앙-중앙: 실제 날짜 그리드
         dateGridPanel = new JPanel(new GridLayout(0, 7, 5, 5));
         calendarPanel.add(dateGridPanel, BorderLayout.CENTER);
 
@@ -129,10 +96,7 @@ public class MonthlyCalendarView extends JFrame {
         JPanel buttonPanel = new JPanel(new GridLayout(1, 2, 20, 0));
         buttonPanel.setBorder(new EmptyBorder(10, 0, 0, 0));
 
-        JButton mainButton = new JButton("메인 페이지");
-        mainButton.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2));
-        mainButton.setFont(new Font("Malgun Gothic", Font.BOLD, 16));
-
+        JButton mainButton = createNavButton("메인 페이지", new Font("Malgun Gothic", Font.BOLD, 16));
         mainButton.addActionListener(e -> {
             mainFrame.currentDate = currentDate;
             mainFrame.updateWeekView();
@@ -140,31 +104,27 @@ public class MonthlyCalendarView extends JFrame {
             dispose();
         });
 
-        JButton settingsButton = new JButton("설정 페이지");
-        settingsButton.setBorder(BorderFactory.createLineBorder(Color.GRAY, 2));
-        settingsButton.setFont(new Font("Malgun Gothic", Font.BOLD, 16));
-        
+        JButton settingsButton = createNavButton("설정 페이지", new Font("Malgun Gothic", Font.BOLD, 16));
         settingsButton.addActionListener(e -> {
-             JOptionPane.showMessageDialog(this, "설정 화면은 으로 이동합니다.");
-             new SettingsMenu(this.user).setVisible(true);
-             dispose();
+            JOptionPane.showMessageDialog(this, "설정 화면으로 이동합니다.");
+            new SettingsMenu(this.user).setVisible(true);
+            dispose();
         });
-        
+
         buttonPanel.add(mainButton);
         buttonPanel.add(settingsButton);
         contentPane.add(buttonPanel, BorderLayout.SOUTH);
-        
+
         updateCalendar();
     }
 
     private void updateCalendar() {
         monthLabel.setText(currentDate.format(DateTimeFormatter.ofPattern("yyyy년 M월", Locale.KOREA)));
         dateGridPanel.removeAll();
-        
+
         YearMonth yearMonth = YearMonth.from(currentDate);
         LocalDate firstDayOfMonth = yearMonth.atDay(1);
         int daysInMonth = yearMonth.lengthOfMonth();
-        
         int firstDayOfWeek = firstDayOfMonth.getDayOfWeek().getValue() % 7;
 
         for (int i = 0; i < firstDayOfWeek; i++) {
@@ -180,7 +140,7 @@ public class MonthlyCalendarView extends JFrame {
         for (int i = 1; i <= totalCells - filledCells; i++) {
             dateGridPanel.add(createDayCell(firstDayOfMonth.plusDays(daysInMonth + i - 1), false));
         }
-        
+
         dateGridPanel.revalidate();
         dateGridPanel.repaint();
     }
@@ -209,10 +169,8 @@ public class MonthlyCalendarView extends JFrame {
             dateLabel.setForeground(Color.GRAY);
         } else {
             DayOfWeek dayOfWeek = date.getDayOfWeek();
-            if (dayOfWeek == DayOfWeek.SUNDAY)
-                dateLabel.setForeground(Color.RED);
-            if (dayOfWeek == DayOfWeek.SATURDAY)
-                dateLabel.setForeground(Color.BLUE);
+            if (dayOfWeek == DayOfWeek.SUNDAY) dateLabel.setForeground(Color.RED);
+            if (dayOfWeek == DayOfWeek.SATURDAY) dateLabel.setForeground(Color.BLUE);
         }
         cell.add(dateLabel, BorderLayout.NORTH);
 
@@ -220,35 +178,78 @@ public class MonthlyCalendarView extends JFrame {
         eventsPanel.setLayout(new BoxLayout(eventsPanel, BoxLayout.Y_AXIS));
         eventsPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
 
-        lg.User currentUser = lg.SessionManager.getCurrentUser();
-        List<CalendarFrame01.TodoEntry> todos =(currentUser != null)
-        		? currentUser.getDailyTasks().getOrDefault(date, new ArrayList<>())
-	    	    : new ArrayList<>();
+        User currentUser = lg.SessionManager.getCurrentUser();
+        List<CalendarFrame01.TodoEntry> todos = (currentUser != null)
+                ? currentUser.getDailyTasks().getOrDefault(date, new ArrayList<>())
+                : new ArrayList<>();
         for (CalendarFrame01.TodoEntry todo : todos) {
             JLabel todoLabel = new JLabel(todo.title);
             todoLabel.setOpaque(true);
             todoLabel.setBackground(todo.color);
             todoLabel.setFont(new Font("Malgun Gothic", Font.PLAIN, 10));
             todoLabel.setBorder(new EmptyBorder(2, 4, 2, 4));
-            if(todo.completed) {
-                todoLabel.setText("√ " + todo.title);
-            }
-
+            if (todo.completed) todoLabel.setText("√ " + todo.title);
             eventsPanel.add(todoLabel);
             eventsPanel.add(Box.createVerticalStrut(2));
         }
 
         cell.add(eventsPanel, BorderLayout.CENTER);
-
         return cell;
     }
-    
-    private void styleArrowButton(JButton button) {
-        button.setFont(new Font("SansSerif", Font.BOLD, 18));
-        button.setOpaque(false);
+
+    // --- 둥근 버튼 생성 함수 ---
+    private JButton createNavButton(String text, Font font) {
+        JButton button = new JButton(text) {
+            @Override
+            protected void paintComponent(Graphics g) {
+                Graphics2D g2 = (Graphics2D) g.create();
+                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                if (getModel().isArmed()) g2.setColor(getBackground().darker());
+                else g2.setColor(getBackground());
+                g2.fillRoundRect(0, 0, getWidth(), getHeight(), 30, 30);
+                g2.dispose();
+                super.paintComponent(g);
+            }
+
+            @Override
+            protected void paintBorder(Graphics g) {
+                Graphics2D g2 = (Graphics2D) g.create();
+                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                g2.setColor(Color.GRAY);
+                g2.drawRoundRect(0, 0, getWidth() - 1, getHeight() - 1, 30, 30);
+                g2.dispose();
+            }
+        };
+        button.setFont(font);
+        button.setBackground(Color.WHITE);
+        button.setForeground(Color.BLACK);
         button.setContentAreaFilled(false);
+        button.setFocusPainted(false);
         button.setBorderPainted(false);
-        button.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        button.setOpaque(false);
+        return button;
+    }
+
+    // --- 둥근 패널 생성 함수 ---
+    private JPanel createNavPanel() {
+        JPanel panel = new JPanel() {
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                Graphics2D g2 = (Graphics2D) g.create();
+                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                g2.setColor(getBackground());
+                g2.fillRoundRect(0, 0, getWidth(), getHeight(), 30, 30);
+                g2.dispose();
+            }
+            @Override
+            protected void paintBorder(Graphics g) {
+                Graphics2D g2 = (Graphics2D) g.create();
+                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                g2.dispose();
+            }
+        };
+        panel.setOpaque(false);
+        return panel;
     }
 }
-
