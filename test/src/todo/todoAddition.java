@@ -5,12 +5,12 @@ import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
+import java.time.format.TextStyle;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import lg.SessionManager;
-
 import javax.swing.*;
-
 import frame.CalendarFrame01; // 캘린더 데이터 접근을 위해 import
 import frame.DateParser;      // 날짜 파싱 유틸리티 import
 import frame.TodoPageView;
@@ -28,6 +28,8 @@ public class todoAddition extends JFrame {
     }
 
     public void todo_addition_page() {
+    	LocalDate targetDate;
+        
         setTitle("할 일 추가");
         setSize(400, 700);
         setLocationRelativeTo(null);
@@ -64,7 +66,15 @@ public class todoAddition extends JFrame {
         JButton datebtn = new JButton();
         datebtn.setFocusPainted(false);
         datebtn.setBounds(150, 200, 200, 30);
-        datebtn.setText(pageView.getToDate());
+        if (pageView != null) {
+        	 datebtn.setText(pageView.getToDate());
+        }else {
+            targetDate = LocalDate.now();
+            String formattedDate = targetDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+            String dayOfWeek = targetDate.getDayOfWeek().getDisplayName(TextStyle.SHORT, Locale.ENGLISH);
+            String targetDateStr = formattedDate + "[" + dayOfWeek + "]";
+            datebtn.setText(targetDateStr);
+        }
         datebtn.addActionListener(e -> new todoCalendar((year, month, day, dayWeek) -> datebtn.setText(year + "-" + month + "-" + day + "[" + dayWeek + "]")));
         add(datebtn);
 
@@ -204,6 +214,3 @@ public class todoAddition extends JFrame {
         setVisible(true);
     }
 }
-
-
-
