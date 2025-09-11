@@ -17,7 +17,6 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.UUID;
 import javax.swing.border.Border;
-import GroupTest.CalenderGroupPage;
 import GroupTest.MainFrame;
 import Settings.SettingsMenu;
 import Settings.ThemeManager;
@@ -190,7 +189,7 @@ public class CalendarFrame01 extends JPanel {
             public void mouseClicked(MouseEvent e) {
             	//원래코드
             	//new TodoPageView(currentDate, CalendarFrame01.this).setVisible(true);
-                new TodoPageView(currentDate, CalendarFrame01.this,SessionManager.getCurrentUser()).setVisible(true); //변경
+                new TodoPageView(currentDate, CalendarFrame01.this).setVisible(true);
             }
         });
         add(new JScrollPane(todoPanel), BorderLayout.CENTER);
@@ -442,5 +441,3 @@ public class CalendarFrame01 extends JPanel {
 //            ))
 //        );
 //    }
-
-
