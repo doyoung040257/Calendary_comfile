@@ -51,22 +51,26 @@ public class SettingsMenu extends JFrame {
 	}
 
 	public void initComponents() {
-		setTitle("설정 메뉴");
-		setSize(450, 350);
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		Design design = new Design(); // 수정
+		
+		setTitle("설정");
+		setSize(250, 350);
+		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setLocationRelativeTo(null);
 		setLayout(new FlowLayout());
+		
+        Font buttonFont = new Font("맑은 고딕", Font.BOLD, 16);
 
 		JPanel panel = new JPanel();
 		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-		panel.setBorder(BorderFactory.createEmptyBorder(30, 50, 30, 50));
+		panel.setBorder(BorderFactory.createEmptyBorder(10, 50, 20, 50));
 
-		// 버튼들
-		JButton themeBtn = new JButton("테마 설정");
-		JButton infoBtn = new JButton("개인정보 수정");
-		JButton notificationBtn = new JButton("알림 설정");
-		JButton fontBtn = new JButton("글꼴 변경");
-		JButton logoutBtn = new JButton("로그아웃");
+		// 버튼들		
+		JButton themeBtn = design.createNavButton("테마 설정", buttonFont);
+		JButton infoBtn = design.createNavButton("개인정보 수정", buttonFont);
+		JButton notificationBtn = design.createNavButton("알림 설정", buttonFont);;
+		JButton fontBtn = design.createNavButton("글꼴 변경", buttonFont);
+		JButton logoutBtn = design.createNavButton("로그아웃", buttonFont);;
 		
 
 		// 테마 설정 페이지
@@ -129,7 +133,7 @@ public class SettingsMenu extends JFrame {
         });
 		
 
-		JButton backButton = new JButton("뒤로가기");
+		JButton backButton = design.createNavButton("뒤로가기", buttonFont);;
 		backButton.addActionListener(e -> {
 		    if ("group".equals(source)) {
 		        if (parentFrame != null) {
@@ -159,8 +163,6 @@ public class SettingsMenu extends JFrame {
 		add(panel);
 		setVisible(true);
 	}
-
-
 }
 
 
