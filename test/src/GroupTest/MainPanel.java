@@ -9,6 +9,7 @@ import java.util.List;
 
 import Settings.SettingsMenu;
 import lg.User;
+import todo.SetFrame;
 import todo.todoMain;
 import frame.CalendarFrame01;
 
@@ -17,13 +18,27 @@ public class MainPanel extends JPanel {
     private MainFrame frame;
     private JPanel groupButtonContainer;
     private User currentUser;
+    private SetFrame parentFrame;
     private boolean deleteMode = false;
 
-    public MainPanel(MainFrame frame) {
+    
+    public MainPanel(MainFrame frame, SetFrame parentFrame, User currentUser) {
         this.frame = frame;
-        this.currentUser = frame.getCurrentUser();
-        setLayout(new BorderLayout(10, 10));
-        setBackground(Color.WHITE);
+        this.parentFrame = parentFrame;
+        this.currentUser = currentUser;
+        initUI();
+    }
+
+    public MainPanel(MainFrame frame, User currentUser) {
+        this.frame = frame;
+        this.parentFrame = null;
+        this.currentUser = currentUser;
+        initUI();
+    }
+    
+    public void initUI()  { //여기
+        setLayout(new BorderLayout());
+        setBackground(Color.BLACK);
 
         // ----------------- 상단 -----------------
         JPanel topPanel = new JPanel(new BorderLayout());
@@ -41,8 +56,9 @@ public class MainPanel extends JPanel {
         settingBtn.setFont(new Font("맑은 고딕", Font.BOLD, 12));
         settingBtn.addActionListener(e -> {
             this.setVisible(false);
-            new SettingsMenu(currentUser, "group", frame).setVisible(true); // ★ MainPanel 전달
+            new SettingsMenu(currentUser, "group", this).setVisible(true); // ★ MainPanel 전달
         });
+        
         addHoverClickEffect(settingBtn, new Color(100, 149, 237));
         topPanel.add(settingBtn, BorderLayout.EAST);
         add(topPanel, BorderLayout.NORTH);
@@ -83,51 +99,6 @@ public class MainPanel extends JPanel {
         groupButtonPanel.add(createBtn);
         groupButtonPanel.add(deleteBtn);
         bottomPanel.add(groupButtonPanel, BorderLayout.NORTH);
-
-        // ----------------- 동기화 버튼 -----------------
-        JPanel syncButtonPanel = new JPanel(new GridLayout(1, 3, 5, 0));
-        syncButtonPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-        syncButtonPanel.setBackground(Color.WHITE);
-        syncButtonPanel.setPreferredSize(new Dimension(0, 60));
-
-        RoundedButton homeBtn = new RoundedButton("홈", 30);
-        ((RoundedButton) homeBtn).setRoundedBorder(Color.BLACK, 2);
-
-        RoundedButton todoBtn = new RoundedButton("할 일", 30);
-        ((RoundedButton) todoBtn).setRoundedBorder(Color.BLACK, 2);
-
-        RoundedButton groupBtn = new RoundedButton("그룹", 30);
-        ((RoundedButton) groupBtn).setRoundedBorder(Color.BLACK, 2);
-
-        addHoverClickEffect(homeBtn, Color.WHITE);
-        addHoverClickEffect(todoBtn, Color.WHITE);
-        addHoverClickEffect(groupBtn, Color.WHITE);
-
-        homeBtn.setFont(buttonFont);
-        homeBtn.setBackground(Color.WHITE);
-        homeBtn.setPreferredSize(mainButtonSize);
-        homeBtn.addActionListener(e -> disposeAndOpenCalendar());
-
-        todoBtn.setFont(buttonFont);
-        todoBtn.setBackground(Color.WHITE);
-        todoBtn.setPreferredSize(mainButtonSize);
-        todoBtn.addActionListener(e -> {
-            this.setVisible(false);
-            if (currentUser != null) {
-                new todoMain(currentUser, this).setVisible(true);
-            }
-        });
-
-        groupBtn.setFont(buttonFont);
-        groupBtn.setBackground(Color.WHITE);
-        groupBtn.setPreferredSize(mainButtonSize);
-        groupBtn.addActionListener(e -> JOptionPane.showMessageDialog(this, "현재 화면이 그룹 메인입니다."));
-
-        syncButtonPanel.add(homeBtn);
-        syncButtonPanel.add(todoBtn);
-        syncButtonPanel.add(groupBtn);
-        bottomPanel.add(syncButtonPanel, BorderLayout.SOUTH);
-
         add(bottomPanel, BorderLayout.SOUTH);
 
         // ----------------- 이벤트 처리 -----------------
@@ -135,6 +106,7 @@ public class MainPanel extends JPanel {
         deleteBtn.addActionListener(e -> toggleDeleteMode());
 
         loadExistingGroups(); // ★ MODIFIED: 초기 로드
+        setVisible(true);
     }
 
     // ----------------- 그룹 생성 -----------------
@@ -235,8 +207,9 @@ public class MainPanel extends JPanel {
     }
 
     private void openMemberPanel(String groupName) {
-        MemberPanel mp = new MemberPanel(frame, groupName, this, currentUser);
-        frame.switchPanel("Member_" + groupName, mp);
+        if (parentFrame != null) {
+            parentFrame.showMemberPanel(groupName);  // ★ SetFrame에 직접 위임
+        }
     }
 
     private void disposeAndOpenCalendar() {
@@ -256,7 +229,7 @@ public class MainPanel extends JPanel {
     public void loadExistingGroups() {
         groupButtonContainer.removeAll(); // ★ MODIFIED: 기존 버튼 제거
 
-        if(currentUser.getGroupList() == null) return;
+        if (currentUser == null || currentUser.getGroupList() == null) return;
         for(Group g : currentUser.getGroupList().getGroups()) addGroupButton(g.getName());
 
         groupButtonContainer.revalidate();
