@@ -24,10 +24,13 @@ public class Notificationsetting extends JFrame {
 		        dispose();
 		        return; // 더 이상 진행하지 않음
 		    }
-		
+		 
+		Design design = new Design();
+		Font buttonFont = new Font("맑은 고딕", Font.BOLD, 16);
+	
 		this.user = user;
 		setTitle("알림 설정");
-		setSize(400, 250);
+		setSize(250, 185);
 		setLocationRelativeTo(null);
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
@@ -66,7 +69,7 @@ public class Notificationsetting extends JFrame {
 		}
 
 		// 확인 버튼
-		confirmButton = new JButton("확인");
+		confirmButton = design.createNavButton("확인", defaultFont);
 
 		confirmButton.addActionListener(e -> {
 			if (user != null) {
@@ -96,7 +99,7 @@ public class Notificationsetting extends JFrame {
         });
 
 		// 뒤로가기 버튼
-		backButton = new JButton("뒤로가기");
+		backButton = design.createNavButton("뒤로가기", defaultFont);
 		backButton.addActionListener(e -> {
 			Window window = SwingUtilities.getWindowAncestor(backButton);
 			if (window != null) {
@@ -106,17 +109,17 @@ public class Notificationsetting extends JFrame {
 		});
 
 		// 버튼 패널
-		JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 10));
+		JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 0));
 		buttonPanel.add(confirmButton);
 		buttonPanel.add(backButton);
 
 		// 패널에 요소 추가
-		panel.add(Box.createVerticalStrut(20));
+		panel.add(Box.createVerticalStrut(10));
 		panel.add(titleLabel);
-		panel.add(Box.createVerticalStrut(15));
+		panel.add(Box.createVerticalStrut(5));
 		panel.add(onRadio);
 		panel.add(offRadio);
-		panel.add(Box.createVerticalStrut(20));
+		panel.add(Box.createVerticalStrut(5));
 		panel.add(buttonPanel);
 
 		add(panel);
@@ -126,4 +129,3 @@ public class Notificationsetting extends JFrame {
 		setVisible(true);
 	}
 }
-
