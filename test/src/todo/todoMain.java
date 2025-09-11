@@ -10,6 +10,7 @@ import Settings.ThemeManager;
 import lg.User;
 import frame.CalendarFrame01; // 캘린더 데이터 접근을 위해 import
 import frame.DateParser;      // 날짜 파싱 유틸리티 import
+import frame.TodoPageView;
 import GroupTest.MainPanel;   // ★ MainPanel 참조
 
 public class todoMain extends JPanel{
@@ -19,7 +20,8 @@ public class todoMain extends JPanel{
 
 	private final todoListMake userList;
     private User currentUser;
-	private User user; 
+	private User user;
+	private TodoPageView pageView;
 	
 	private boolean showCheckboxes = false;
 	
@@ -29,16 +31,17 @@ public class todoMain extends JPanel{
     private JPanel list;
 
     // ★ MainPanel에서 열 때
-    public todoMain(User user,MainPanel mainPanel) {
+    public todoMain(User user,MainPanel mainPanel, TodoPageView pageView) { // 수정
     	this.user = user;
     	this.userList = user.getTodolist(); // 로그인한 사용자의 리스트
         this.mainPanel = mainPanel; // 기존 MainPanel 참조 저장
+        this.pageView = pageView;
         initComponents();
     }
     
     // 기존 생성자 (MainPanel 없을 때)
     public todoMain(User user) {
-    	this(user, null);
+    	this(user, null, null);
     }
 	
     private void initComponents() {
@@ -93,13 +96,11 @@ public class todoMain extends JPanel{
 		renderList();
 		
 		//추가기능
-        addition.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-	            todoAddition addi = new todoAddition(userList, todoMain.this::renderList, null);
-	            addi.todo_addition_page();	
-			}
-		});
+        addition.addActionListener(e -> {
+            	todoAddition addi = new todoAddition(userList, todoMain.this::renderList, pageView); //수정
+            	addi.todo_addition_page();
+            
+        });
         
         //삭제기능
         delete.addActionListener(new ActionListener() {
