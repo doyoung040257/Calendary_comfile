@@ -13,15 +13,18 @@ import javax.swing.*;
 
 import frame.CalendarFrame01; // 캘린더 데이터 접근을 위해 import
 import frame.DateParser;      // 날짜 파싱 유틸리티 import
+import frame.TodoPageView;
 
 public class todoAddition extends JFrame {
 
 	private final todoListMake list;
 	private final Runnable afterSave;
+	private TodoPageView pageView;
 
-    public todoAddition(todoListMake list, Runnable afterSave) {
+    public todoAddition(todoListMake list, Runnable afterSave, TodoPageView pageView) {
     	this.list = list;
     	this.afterSave = afterSave;
+    	this.pageView = pageView;
     }
 
     public void todo_addition_page() {
@@ -58,11 +61,10 @@ public class todoAddition extends JFrame {
         add(daytitle);
         
         LocalDate today = LocalDate.now();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM월 dd일");
         JButton datebtn = new JButton();
         datebtn.setFocusPainted(false);
         datebtn.setBounds(150, 200, 200, 30);
-        datebtn.setText(today.format(formatter));
+        datebtn.setText(pageView.getToDate());
         datebtn.addActionListener(e -> new todoCalendar((year, month, day, dayWeek) -> datebtn.setText(year + "-" + month + "-" + day + "[" + dayWeek + "]")));
         add(datebtn);
 
@@ -202,5 +204,6 @@ public class todoAddition extends JFrame {
         setVisible(true);
     }
 }
+
 
 
