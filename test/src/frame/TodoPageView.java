@@ -32,6 +32,11 @@ public class TodoPageView extends JFrame {
     private CalendarFrame01 mainFrame;     // 메인 캘린더 프레임
     private User user;                     // 현재 사용자
     private JButton deleteButton;          // 삭제 버튼
+    private String toDate;                 // 날짜 정보(0000-00-00[])
+    
+    public String getToDate() { return toDate; }
+
+	public void setToDate(String toDate) { this.toDate = toDate; }
 
     // --- 생성자 ---
     public TodoPageView(LocalDate date, CalendarFrame01 mainFrame) {
@@ -76,6 +81,7 @@ public class TodoPageView extends JFrame {
             // 날짜를 하루 전으로 변경
             currentDate = currentDate.minusDays(1);
             refreshDateDisplay(); // 날짜 표시 갱신
+            updateToDate();       // toDate 날짜 갱신
             isDeleteMode = false; // 삭제 모드 초기화
             loadTodoList();       // 할 일 목록 갱신
         });
@@ -100,6 +106,7 @@ public class TodoPageView extends JFrame {
             // 날짜를 하루 뒤로 변경
             currentDate = currentDate.plusDays(1);
             refreshDateDisplay();
+            updateToDate(); 
             isDeleteMode = false;
             loadTodoList();
         });
@@ -167,6 +174,7 @@ public class TodoPageView extends JFrame {
         addButton.setPreferredSize(new Dimension(100, 40));
         deleteButton.setPreferredSize(new Dimension(100, 40));
 
+        updateToDate(); // toDate 처음 실행 날짜
         // --- 할 일 추가 버튼 클릭 시 ---
         addButton.addActionListener(e -> {
             new todoAddition(SessionManager.getCurrentUser().getTodolist(), () -> {
@@ -499,4 +507,11 @@ public class TodoPageView extends JFrame {
             progressBar.setForeground(new Color(144, 238, 144)); // 초록
         }
     }
+        // --- toDate 갱신 ---
+        private void updateToDate() {
+        String formatted = currentDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+        String dayOfWeek = currentDate.getDayOfWeek().getDisplayName(TextStyle.SHORT, Locale.ENGLISH);
+        this.toDate = formatted + "[" + dayOfWeek + "]";
+    }
 }
+
