@@ -1,10 +1,12 @@
 package Settings;
 
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Window;
 
+import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
@@ -35,48 +37,70 @@ public class LightMode extends JFrame {
 	}
 
 	private void initComponents() {
-
+		Design design = new Design();
+		Font buttonFont = new Font("맑은 고딕", Font.BOLD, 16);
+		
 		setTitle("배경 선택");
-		setSize(500, 400);
+		setSize(300, 255);
 
 		panel = new JPanel();
 		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 
+		// 타이틀
 		title = new JLabel("배경 선택", SwingConstants.CENTER);
-		title.setFont(new Font("굴림", Font.BOLD, 26));
-		title.setAlignmentX(CENTER_ALIGNMENT); // 가운데 정렬
+//		title.setBorder(BorderFactory.createEmptyBorder(10, 0, 0, 0));
+		title.setFont(new Font("맑은 고딕", Font.BOLD, 26));
+		
+		JPanel titlePanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 10)); 
+		titlePanel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 20));
+		titlePanel.setOpaque(false);
+		titlePanel.add(title);
 
+		// 라디오 버튼
 		defaultBtn = new JRadioButton("기본 배경");
 		pastelBtn = new JRadioButton("파스텔 배경");
 		darkBtn = new JRadioButton("블랙 배경");
 
-		defaultBtn.setFont(new Font("굴림", Font.PLAIN, 20));
-		pastelBtn.setFont(new Font("굴림", Font.PLAIN, 20));
-		darkBtn.setFont(new Font("굴림", Font.PLAIN, 20));
+		defaultBtn.setFont(new Font("맑은 고딕", Font.PLAIN, 20));
+		pastelBtn.setFont(new Font("맑은 고딕", Font.PLAIN, 20));
+		darkBtn.setFont(new Font("맑은 고딕", Font.PLAIN, 20));
+		
+		JPanel radioPanel = new JPanel();
+		radioPanel.setLayout(new BoxLayout(radioPanel, BoxLayout.Y_AXIS));
+		radioPanel.setOpaque(false);
 
-		defaultBtn.setAlignmentX(CENTER_ALIGNMENT);
-		pastelBtn.setAlignmentX(CENTER_ALIGNMENT);
-		darkBtn.setAlignmentX(CENTER_ALIGNMENT);
+		defaultBtn.setAlignmentX(Component.LEFT_ALIGNMENT);
+		pastelBtn.setAlignmentX(Component.LEFT_ALIGNMENT);
+		darkBtn.setAlignmentX(Component.LEFT_ALIGNMENT);
+		
+		radioPanel.add(defaultBtn);
+		radioPanel.add(pastelBtn);
+		radioPanel.add(darkBtn);
 
+		// 버튼 그룹
 		ButtonGroup group = new ButtonGroup();
 		group.add(defaultBtn);
 		group.add(pastelBtn);
 		group.add(darkBtn);
 
 		// 확인 버튼
-		chbtn = new JButton("확인");
+		chbtn = design.createNavButton("확인", buttonFont);
 
 		// 뒤로가기 버튼
-		backButton = new JButton("뒤로가기");
+		backButton = design.createNavButton("뒤로가기", buttonFont);
 
-		JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 10)); // 가운데 정렬, 버튼 사이 간격 20px
+		// 하단 버튼 그룹(확인, 뒤로가기)
+		JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 10)); // 가운데 정렬, 버튼 사이 간격 20px
 		buttonPanel.add(chbtn);
 		buttonPanel.add(backButton);
+		
+		//패널 정렬
+		titlePanel.setAlignmentX(Component.CENTER_ALIGNMENT);
+		radioPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
+		buttonPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-		panel.add(title);
-		panel.add(defaultBtn);
-		panel.add(pastelBtn);
-		panel.add(darkBtn);
+		panel.add(titlePanel);
+		panel.add(radioPanel);
 		panel.add(buttonPanel);
 
 		// 현재 테마 반영
@@ -125,8 +149,6 @@ public class LightMode extends JFrame {
 			// SettingsMenu 창 열기
 			new SettingsMenu(user).setVisible(true);
 		});
-
-		setSize(400, 300);
 		setLocationRelativeTo(null);
 		setVisible(true);
 	}
