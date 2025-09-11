@@ -4,10 +4,12 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.FlowLayout;
+import java.awt.Font;
 import java.awt.GridLayout;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -16,6 +18,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
+import javax.swing.SwingConstants;
 import javax.swing.ButtonGroup;
 
 import frame.CalendarFrame01;
@@ -44,25 +47,32 @@ public class PersonalInfoPage extends JFrame {
 		this.user = user;
 		setTitle(user.getName() + "님의 개인정보");
 
+		Design design = new Design();
+		Font buttonFont = new Font("맑은 고딕", Font.BOLD, 16);
+		
+		setSize(280, 280);
+		setLocationRelativeTo(null);
+		
 		panel = new JPanel();
-		panel.setLayout(new GridLayout(6, 2, 10, 10));
+		panel.setLayout(new GridLayout(5, 2, 0, 0));
+		panel.setBorder(BorderFactory.createEmptyBorder(0,0,10,0));
 
 		// 아이디는 수정 불가
-		panel.add(new JLabel("아이디:"));
+		panel.add(new JLabel("아이디:", SwingConstants.CENTER));
 		panel.add(new JLabel(user.getId()));
 
 		// 이름
-		panel.add(new JLabel("이름:"));
+		panel.add(new JLabel("이름:", SwingConstants.CENTER));
 		nameField = new JTextField(user.getName());
 		panel.add(nameField);
 
 		// 생년월일
-		panel.add(new JLabel("생년월일:"));
+		panel.add(new JLabel("생년월일:", SwingConstants.CENTER));
 		birthField = new JTextField(user.getBirth());
 		panel.add(birthField);
 
 		// 성별
-		panel.add(new JLabel("성별:"));
+		panel.add(new JLabel("성별:", SwingConstants.CENTER));
 		maleBtn = new JRadioButton("남자");
 		femaleBtn = new JRadioButton("여자");
 
@@ -110,11 +120,11 @@ public class PersonalInfoPage extends JFrame {
 		panel.add(genderPanel);
 
 		// 이메일
-		panel.add(new JLabel("이메일:"));
+		panel.add(new JLabel("이메일:", SwingConstants.CENTER));
 		emailField = new JTextField(user.getEmail());
 		panel.add(emailField);
 
-		savebtn = new JButton("확인");
+		savebtn = design.createNavButton("확인", buttonFont);
 		savebtn.addActionListener(e -> {
 			// User 객체에 값 반영 (User 클래스에 setter가 있어야 함)
 			user.setName(nameField.getText());
@@ -133,13 +143,13 @@ public class PersonalInfoPage extends JFrame {
 			new CalendarFrame01(user).setVisible(true);
 		});
 
-		backButton = new JButton("뒤로가기");
+		backButton = design.createNavButton("뒤로가기", buttonFont);
 		backButton.addActionListener(e -> {
 			new SettingsMenu(user).setVisible(true); // 로그인된 User 객체 전달
 			this.dispose();
 		});
 
-		JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 10));
+		JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 5));
 		buttonPanel.add(savebtn);
 		buttonPanel.add(backButton);
 
@@ -149,8 +159,6 @@ public class PersonalInfoPage extends JFrame {
 
 		applyTheme();
 
-		setSize(400, 300);
-		setLocationRelativeTo(null);
 		setVisible(true);
 	}
 
