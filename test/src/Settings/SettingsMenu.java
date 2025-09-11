@@ -22,7 +22,7 @@ import todo.todoListMake;
 
 public class SettingsMenu extends JFrame {
 
-	private JFrame parentFrame;
+	private JPanel parentFrame;
 	private User user;
 	private todoListMake listMaker;
 	 private String source; // 📌 출처 구분 ("calendar" or "group")
@@ -36,7 +36,7 @@ public class SettingsMenu extends JFrame {
 
 
 	// ✅ 그룹 페이지에서 열 때 호출하는 생성자
-	public SettingsMenu(User currentUser, String source, JFrame parentFrame) {
+	public SettingsMenu(User currentUser, String source, JPanel parentFrame) {
 	    this.user = currentUser;
 	    this.source = source;
 	    this.parentFrame = parentFrame; // ✅ 부모 저장
@@ -163,3 +163,4 @@ public class SettingsMenu extends JFrame {
 
 
 }
+
