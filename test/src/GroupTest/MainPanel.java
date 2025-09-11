@@ -37,64 +37,66 @@ public class MainPanel extends JPanel {
     }
     
     public void initUI()  { //여기
-        setLayout(new BorderLayout());
+   	setLayout(null);
         setBackground(Color.BLACK);
 
+        Font titleFont = new Font("SansSerif", Font.BOLD, 22);
+        Font buttonFont = new Font("SansSerif", Font.BOLD, 16);
+        
         // ----------------- 상단 -----------------
-        JPanel topPanel = new JPanel(new BorderLayout());
+        JPanel topPanel = createNavPanel();
+        topPanel.setLayout(new BorderLayout());
         topPanel.setBackground(Color.WHITE);
-        topPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        topPanel.setBounds(10, 10, 445, 50);
+        topPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 
         JLabel title = new JLabel("그룹 관리", JLabel.CENTER);
-        title.setFont(new Font("맑은 고딕", Font.BOLD, 24));
-        topPanel.add(title, BorderLayout.PAGE_END);
+        title.setFont(titleFont);
+        topPanel.add(title, BorderLayout.CENTER);
 
-        JButton settingBtn = new JButton("설정");
-        settingBtn.setBackground(new Color(100, 149, 237));
-        settingBtn.setForeground(Color.WHITE);
-        settingBtn.setFocusPainted(false);
-        settingBtn.setFont(new Font("맑은 고딕", Font.BOLD, 12));
-        settingBtn.addActionListener(e -> {
-            this.setVisible(false);
-            new SettingsMenu(currentUser, "group", this).setVisible(true); // ★ MainPanel 전달
+        // 수정
+		JButton settingsViewButton = createNavButton("설정",buttonFont);
+		topPanel.add(settingsViewButton, BorderLayout.EAST);
+        settingsViewButton.addActionListener(e -> {
+            JOptionPane.showMessageDialog(this, "설정 화면으로 이동합니다.");
+            new SettingsMenu(this.currentUser).setVisible(true);
         });
         
-        addHoverClickEffect(settingBtn, new Color(100, 149, 237));
-        topPanel.add(settingBtn, BorderLayout.EAST);
+//        addHoverClickEffect(settingsViewButton, new Color(100, 149, 237)); 나중에 추가
         add(topPanel, BorderLayout.NORTH);
 
         // ----------------- 그룹 버튼 컨테이너 -----------------
-        groupButtonContainer = new JPanel();
+        JScrollPane scrollPane = listScrollBox();
+        scrollPane.setBounds(10, 70, 445, 570);
+        
+        groupButtonContainer = createNavPanel();
         groupButtonContainer.setLayout(new BoxLayout(groupButtonContainer, BoxLayout.Y_AXIS));
         groupButtonContainer.setBackground(Color.WHITE);
-        JScrollPane scrollPane = new JScrollPane(groupButtonContainer);
+        scrollPane.add(groupButtonContainer);
+        
         scrollPane.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
         add(scrollPane, BorderLayout.CENTER);
 
         // ----------------- 하단 버튼 -----------------
         JPanel bottomPanel = new JPanel(new BorderLayout());
-        bottomPanel.setBackground(Color.WHITE);
-
-        Font buttonFont = new Font("맑은 고딕", Font.BOLD, 14);
-        Dimension mainButtonSize = new Dimension(140, 40);
+        bottomPanel.setOpaque(false);
+        bottomPanel.setBounds(10, 636, 445, 50);
 
         JPanel groupButtonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 10));
-        groupButtonPanel.setBackground(Color.WHITE);
-        groupButtonPanel.setPreferredSize(new Dimension(0, 60));
+        groupButtonPanel.setOpaque(false);
+
 
         RoundedButton createBtn = new RoundedButton("그룹 만들기", 20);
         createBtn.setFont(buttonFont);
         createBtn.setBackground(new Color(180, 150, 200));
-        createBtn.setForeground(Color.WHITE);
-        createBtn.setPreferredSize(mainButtonSize);
-        addHoverClickEffect(createBtn, new Color(180, 150, 200));
+//        createBtn.setForeground(Color.WHITE);
+//        addHoverClickEffect(createBtn, new Color(180, 150, 200));
 
         RoundedButton deleteBtn = new RoundedButton("그룹 삭제", 20);
         deleteBtn.setFont(buttonFont);
         deleteBtn.setBackground(new Color(180, 150, 200));
-        deleteBtn.setForeground(Color.WHITE);
-        deleteBtn.setPreferredSize(mainButtonSize);
-        addHoverClickEffect(deleteBtn, new Color(180, 150, 200));
+//        deleteBtn.setForeground(Color.WHITE);
+//        addHoverClickEffect(deleteBtn, new Color(180, 150, 200));
 
         groupButtonPanel.add(createBtn);
         groupButtonPanel.add(deleteBtn);
@@ -238,6 +240,74 @@ public class MainPanel extends JPanel {
 
     public void removeGroup(String groupName) {
         loadExistingGroups(); // ★ MODIFIED: 버튼 갱신
+    }
+
+        private JButton createNavButton(String text, Font font) {
+        JButton button = new JButton(text) {
+        
+        @Override
+        protected void paintComponent(Graphics g) {
+            Graphics2D g2 = (Graphics2D) g.create();
+            g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+            // 배경 색상 (눌렸을 때 어둡게)
+            if (getModel().isArmed()) {
+                g2.setColor(getBackground().darker());
+            } else {
+                g2.setColor(getBackground());
+            }
+            // 둥근 사각형 배경
+            g2.fillRoundRect(0, 0, getWidth(), getHeight(), 30, 30);
+            g2.dispose();
+            // 버튼 텍스트 그대로 출력
+            super.paintComponent(g);
+        }
+
+        @Override
+        protected void paintBorder(Graphics g) {
+            Graphics2D g2 = (Graphics2D) g.create();
+            g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+            g2.setColor(Color.GRAY); // 테두리 색상
+            g2.drawRoundRect(0, 0, getWidth() - 1, getHeight() - 1, 30, 30);
+            g2.dispose();
+        }
+    };
+    
+	    button.setFont(font);
+	    button.setBackground(Color.WHITE);
+	    button.setForeground(Color.BLACK);
+	
+	    // 기본 버튼 효과 제거
+	    button.setContentAreaFilled(false);
+	    button.setFocusPainted(false);
+	    button.setBorderPainted(false);
+	    button.setOpaque(false);
+        
+        return button;
+    }
+    
+    public JPanel createNavPanel() {
+        JPanel panel = new JPanel() {
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                Graphics2D g2 = (Graphics2D) g.create();
+                // 안티앨리어싱 (부드럽게)
+                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                // 배경을 둥근 사각형으로 채우기
+                g2.setColor(getBackground());
+                g2.fillRoundRect(0, 0, getWidth(), getHeight(), 30, 30); 
+                // (x, y, w, h, arcW, arcH)
+                g2.dispose();
+            }
+	      @Override
+	      protected void paintBorder(Graphics g) {
+	          Graphics2D g2 = (Graphics2D) g.create();
+	          g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+	          g2.dispose();
+	      }
+	  };
+	  	panel.setOpaque(false); // 네모난 기본 배경 칠하지 않도록
+	  	return panel;
     }
 }
 /*
@@ -522,3 +592,4 @@ public class MainPanel extends JPanel {
 }
 
 */
+
