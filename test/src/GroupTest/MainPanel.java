@@ -184,10 +184,10 @@ public class MainPanel extends JPanel {
     }
 
     private void addGroupButton(String groupName) {
-        JPanel panel = new JPanel(new BorderLayout(5, 5));
-		panel.setBackground(new Color(0,0,0,0));
+        JPanel panel = createNavPanel();
+        panel.setBackground(new Color(0,0,0,0));
+        panel.setLayout(new BorderLayout(5, 5));
         panel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 50));
-        panel.setBackground(new Color(200, 200, 255));
 
         JButton groupBtn = createNavButton(groupName, new Font("맑은 고딕", Font.BOLD, 16));
 //        groupBtn.setFocusPainted(false);
@@ -628,6 +628,7 @@ public class MainPanel extends JPanel {
 }
 
 */
+
 
 
 
