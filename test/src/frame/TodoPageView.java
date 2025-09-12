@@ -13,6 +13,7 @@ import Settings.ThemeManager;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import Settings.FontManager;
 import Settings.SettingsMenu; // 설정 메뉴 화면
 import lg.SessionManager;     // 현재 로그인한 사용자 정보 관리
 import lg.User;               // 사용자 정보 객체
@@ -339,7 +340,7 @@ public class TodoPageView extends JFrame {
             todoListPanel.add(Box.createVerticalStrut(5));
         }
         updateProgressBar();
-        oneLineReviewArea.setText(SessionManager.getCurrentUser().getDailyReviews()
+        oneLineReviewField.setText(SessionManager.getCurrentUser().getDailyReviews()
                 .getOrDefault(currentDate, "예시: 오늘 하루도 멋지게 완수!"));
         todoListPanel.revalidate();
         todoListPanel.repaint();
@@ -663,4 +664,5 @@ public class TodoPageView extends JFrame {
         return panel;
     }
 }
+
 
