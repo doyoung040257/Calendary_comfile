@@ -182,7 +182,7 @@ class GlassButton extends JButton {
 		setFocusPainted(false);
 		setBorderPainted(false);
 		setForeground(Color.WHITE); // 글씨 흰색
-		setFont(new Font("Inconsolata", Font.BOLD, 14));
+		setFont(new Font("맑은 고딕", Font.BOLD, 14));
 		setOpaque(false);
 
 		addMouseListener(new MouseAdapter() {
@@ -220,3 +220,4 @@ class GlassButton extends JButton {
 		g2.dispose();
 	}
 }
+
