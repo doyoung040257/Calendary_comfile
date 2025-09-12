@@ -1,4 +1,3 @@
-
 package GroupTest;
 
 import javax.swing.*;
@@ -10,6 +9,8 @@ import java.util.List;
 import todo.todoListMake;
 import todo.SetFrame;
 import todo.todoList;
+import lg.UserDatabase;
+import lg.User;
 
 public class SchedulePanel extends JPanel {
 
@@ -63,6 +64,27 @@ public class SchedulePanel extends JPanel {
         }
         add(topPanel, BorderLayout.NORTH);
 
+        // ---------------------------
+        // 1. users.dat 불러오기
+        UserDatabase.loadUsers();
+
+        // 2. 현재 사용자(User) 가져오기
+        User currentUser = UserDatabase.getUser(memberName); // memberName == User ID
+        if (currentUser != null) {
+            System.out.println("User 데이터 로드 성공:");
+            System.out.println("ID: " + currentUser.getId());
+            System.out.println("Name: " + currentUser.getName());
+            System.out.println("Birth: " + currentUser.getBirth());
+            System.out.println("TodoList: " + currentUser.getTodolist());
+        } else {
+            System.out.println("User 데이터가 존재하지 않습니다: " + memberName);
+        }
+
+        // 3. todoData가 없는 경우 User의 todolist 사용
+        if (todoData == null && currentUser != null) {
+            todoData = currentUser.getTodolist();
+        }
+
         // events 초기화
         events = new ArrayList<>();
         if (todoData != null) {
@@ -70,7 +92,7 @@ public class SchedulePanel extends JPanel {
                 String timeStr = item.getTime(); // "14:30"
                 int hour = 0;
                 try {
-                    hour = Integer.parseInt(timeStr.split(":")[0]);
+                	hour = Integer.parseInt(timeStr.replaceAll("시.*", "")); // 시만 추출
                 } catch (Exception e) { e.printStackTrace(); }
                 events.add(item.getWork() + "(" + hour + "시)");
             }
@@ -230,7 +252,3 @@ public class SchedulePanel extends JPanel {
 
     public String getGroupName() { return groupName; }
 }
-
-
-
-
