@@ -15,6 +15,7 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 
 import Settings.FontManager;
+import Settings.GlobalFont;
 import Settings.SettingsMenu;
 import Settings.ThemeManager;
 import lg.SessionManager;
@@ -309,6 +310,8 @@ public class TodoPageView extends JFrame {
         
        
         loadTodoList();
+        FontManager.applyFontRecursively(this, GlobalFont.currentFont);
+        //Settings.FontManager.applyFontRecursively(this);
     }
 
     private void saveReview() {
@@ -643,5 +646,4 @@ public class TodoPageView extends JFrame {
         return panel;
     }
 }
-
 
