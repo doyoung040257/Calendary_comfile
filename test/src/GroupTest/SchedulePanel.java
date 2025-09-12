@@ -99,9 +99,9 @@ public class SchedulePanel extends JPanel {
                 // 기존 이벤트가 있으면 이어 붙이기
                 String current = events.get(hour);
                 if (current == null || current.isEmpty()) {
-                    events.set(hour, item.getWork()+"\n");
+                    events.set(hour, item.getWork());
                 } else {
-                    events.set(hour, current + ", " + item.getWork()); // 이어 붙이기
+                    events.set(hour, current + "\n" + item.getWork()); // 이어 붙이기
                 }
             }
         } else {
@@ -131,21 +131,50 @@ public class SchedulePanel extends JPanel {
 
         table.setDefaultRenderer(Object.class, new DefaultTableCellRenderer() {
             @Override
-            public Component getTableCellRendererComponent(JTable t, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-                Component c = super.getTableCellRendererComponent(t, value, isSelected, hasFocus, row, column);
-                if (column == 1) {
-                    if (isSelected) c.setBackground(new Color(173, 216, 230));
-                    else if (value != null && !value.toString().isEmpty()) c.setBackground(new Color(255, 255, 153));
-                    else c.setBackground(Color.WHITE);
-                } else c.setBackground(Color.WHITE);
-                return c;
+            public Component getTableCellRendererComponent(JTable table, Object value,
+                    boolean isSelected, boolean hasFocus, int row, int column) {
+
+                JTextArea textArea = new JTextArea();
+                textArea.setText(value != null ? value.toString() : "");
+                textArea.setLineWrap(true);          // 줄바꿈 활성화
+                textArea.setWrapStyleWord(true);     // 단어 단위로 줄바꿈
+                textArea.setFont(new Font("맑은 고딕", Font.PLAIN, 14));
+                textArea.setOpaque(true);
+
+             // 색상 지정
+                if (column == 0) { // 시간 컬럼
+                    textArea.setBackground(new Color(220, 220, 220)); // 연한 회색
+                } else { // 일정 컬럼
+                    if (isSelected) textArea.setBackground(new Color(173, 216, 230));
+                    else if (value != null && !value.toString().isEmpty()) textArea.setBackground(new Color(255, 255, 153));
+                    else textArea.setBackground(Color.WHITE);
+                }
+                
+//                if (isSelected) textArea.setBackground(new Color(173, 216, 230));
+//                //else if (value != null && !value.toString().isEmpty()) textArea.setBackground(new Color(255, 255, 153));
+//                else textArea.setBackground(Color.WHITE);
+
+                return textArea;
             }
         });
+
 
         JScrollPane scrollPane = new JScrollPane(table);
         add(scrollPane, BorderLayout.CENTER);
 
         updateTableFromEvents();
+        
+     // JTable 행 높이 자동 조정 (줄바꿈 대응)
+        for (int row = 0; row < table.getRowCount(); row++) {
+            int maxHeight = 30; // 기본 높이
+            Object value = table.getValueAt(row, 1);
+            if (value != null) {
+                int lines = value.toString().split("\n").length; // 줄 수 계산
+                maxHeight = Math.max(maxHeight, lines * 20);    // 1줄당 20픽셀
+            }
+            table.setRowHeight(row, maxHeight);
+        }
+
 
         // 버튼 기능
         if (!isGroup) {
