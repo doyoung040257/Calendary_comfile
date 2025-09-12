@@ -146,8 +146,8 @@ public class SetFrame extends JFrame {
         return scrollPane;
     }
 	
-    private JButton createNavButton(String text, Font font) {
-        JButton button = new JButton(text) {
+    private JButton createNavButton(ImageIcon icon) {
+        JButton button = new JButton(icon) {
         
         @Override
         protected void paintComponent(Graphics g) {
@@ -175,8 +175,6 @@ public class SetFrame extends JFrame {
             g2.dispose();
         }
     };
-    
-	    button.setFont(font);
 	    button.setBackground(Color.WHITE);
 	    button.setForeground(Color.BLACK);
 	
@@ -220,4 +218,5 @@ public class SetFrame extends JFrame {
         return new ImageIcon(scaled);
     }
 }
+
 
