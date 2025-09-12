@@ -119,6 +119,7 @@ public class MonthlyCalendarView extends JFrame {
         buttonPanel.add(settingsButton);
         contentPane.add(buttonPanel, BorderLayout.SOUTH);
 
+        FontManager.applyFontRecursively(this);
         updateCalendar();
     }
 
@@ -270,6 +271,7 @@ public class MonthlyCalendarView extends JFrame {
         return panel;
     }
 }
+
 
 
 
