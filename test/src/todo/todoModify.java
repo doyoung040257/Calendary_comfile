@@ -27,7 +27,7 @@ public class todoModify extends JFrame {
         selectedImportance = item.getImportance();
 
 		Font titleFont = new Font("맑은 고딕", Font.BOLD, 22);
-        Font buttonFont = new Font("맑은 고딕", Font.BOLD, 16);
+        Font buttonFont = new Font("맑은 고딕", Font.BOLD, 14);
 		
         setTitle("할 일 수정");
         setSize(350, 600);
@@ -178,6 +178,7 @@ public class todoModify extends JFrame {
         centerPanel.add(six);
         
         JLabel noteTitle = new JLabel("메모", JLabel.CENTER);
+		noteTitle.setFont(buttonFont);
         noteTitle.setBounds(5,5,50,150);
         six.add(noteTitle);
 
@@ -315,6 +316,7 @@ public class todoModify extends JFrame {
 	  	return panel;
     }
 }
+
 
 
 
