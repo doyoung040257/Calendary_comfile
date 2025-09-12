@@ -94,6 +94,7 @@ public class TodoPageView extends JFrame {
         dateLabel.setOpaque(true);
         dateLabel.setBackground(Color.decode("#F5E6CC"));
         dateLabel.setBorder(new LineBorder(Color.BLACK, 2));
+		ThemeManager.applyTheme(dateLabel);
 
         // 우측 패널
         JPanel rightPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 5, 0));
@@ -557,5 +558,6 @@ public class TodoPageView extends JFrame {
     }
 
 }
+
 
 
