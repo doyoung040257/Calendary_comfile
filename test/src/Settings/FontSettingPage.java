@@ -6,165 +6,136 @@ import java.awt.event.*;
 
 public class FontSettingPage extends JFrame {
 
-	private JComboBox<String> fontCombo;
-	private JComboBox<Integer> sizeCombo;
-	private JRadioButton plainBtn, boldBtn, italicBtn;
-	private JLabel previewLabel;
-	private Font selectedFont;
-	private SettingsMenu parentMenu;
+    private JComboBox<String> fontCombo;
+    private JComboBox<Integer> sizeCombo;
+    private JRadioButton plainBtn, boldBtn, italicBtn;
+    private JLabel previewLabel;
+    private Font selectedFont;
+    private SettingsMenu parentMenu;
 
-	private JPanel panel;
+    public FontSettingPage(SettingsMenu parentMenu) {
+        this.parentMenu = parentMenu;
 
-	public FontSettingPage(SettingsMenu parentMenu) {
-		this.parentMenu = parentMenu;
+        setTitle("글꼴 설정");
+        setSize(400, 300);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        setLocationRelativeTo(null);
 
-		setTitle("글꼴 설정");
-		setSize(400, 300);
-		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		setLocationRelativeTo(null);
+        Font defaultFont = new Font("맑은 고딕", Font.PLAIN, 14);
+        UIManager.put("Label.font", defaultFont);
+        UIManager.put("Button.font", defaultFont);
+        UIManager.put("RadioButton.font", defaultFont);
+        UIManager.put("ComboBox.font", defaultFont);
 
-		// 전체 기본 폰트 한글 깨짐 방지
-		Font defaultFont = new Font("맑은 고딕", Font.PLAIN, 14);
-		UIManager.put("Label.font", defaultFont);
-		UIManager.put("Button.font", defaultFont);
-		UIManager.put("RadioButton.font", defaultFont);
-		UIManager.put("ComboBox.font", defaultFont);
+        String[] fonts = {"맑은 고딕", "궁서체", "새굴림", "돋움체", "휴먼모음T", "HY얕은 샘물M"};
 
-		String[] fonts = { "궁서체", "맑은 고딕", "새굴림", "돋움체", "휴먼모음T", "HY얕은 샘물M" };
+        // 설치된 글꼴만 필터링
+        String[] systemFonts = GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames();
+        java.util.List<String> availableFonts = new java.util.ArrayList<>();
+        for (String f : fonts) {
+            for (String sysFont : systemFonts) {
+                if (sysFont.equalsIgnoreCase(f)) {
+                    availableFonts.add(f);
+                    break;
+                }
+            }
+        }
+        if (availableFonts.isEmpty()) availableFonts.add("맑은 고딕");
 
-		// 시스템에 설치된 글꼴 확인
-		String[] systemFonts = GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames();
+        fontCombo = new JComboBox<>(availableFonts.toArray(new String[0]));
+        Integer[] sizes = new Integer[41];
+        for (int i = 0; i < sizes.length; i++) sizes[i] = i + 10;
+        sizeCombo = new JComboBox<>(sizes);
 
-		java.util.List<String> availableFonts = new java.util.ArrayList<>();
+        plainBtn = new JRadioButton("보통", true);
+        boldBtn = new JRadioButton("굵게");
+        italicBtn = new JRadioButton("기울임");
+        ButtonGroup group = new ButtonGroup();
+        group.add(plainBtn);
+        group.add(boldBtn);
+        group.add(italicBtn);
 
-		for (String f : fonts) {
-			boolean exists = false;
-			for (String sysFont : systemFonts) {
-				if (sysFont.equalsIgnoreCase(f)) {
-					exists = true;
-					break;
-				}
-			}
-			// 설치되어 있으면 추가
-			if (exists) {
-				availableFonts.add(f);
-			}
-		}
+        previewLabel = new JLabel("가나다 ABC 123 Preview", SwingConstants.CENTER);
+        previewLabel.setFont(new Font("맑은 고딕", Font.PLAIN, 20));
 
-		// 만약 리스트가 비어 있으면 기본 글꼴만 추가
-		if (!availableFonts.contains(getName())) {
-		    String fontName = "맑은 고딕";
-		}
+        JButton applyBtn = new JButton("적용");
+        applyBtn.setFont(defaultFont);
+        applyBtn.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-		// ✅ 최종적으로 JComboBox 생성
-		fontCombo = new JComboBox<>(availableFonts.toArray(new String[0]));
-		
-		Integer[] sizes = new Integer[41];
-		for (int i = 0; i < sizes.length; i++)
-			sizes[i] = i + 10;
-		sizeCombo = new JComboBox<>(sizes);
+        applyBtn.addActionListener(e -> {
+            Font appliedFont = previewLabel.getFont();
+            if (appliedFont != null) {
+                GlobalFont.currentFont = appliedFont;
 
-		plainBtn = new JRadioButton("보통", true);
-		boldBtn = new JRadioButton("굵게");
-		italicBtn = new JRadioButton("기울임");
-		ButtonGroup group = new ButtonGroup();
-		group.add(plainBtn);
-		group.add(boldBtn);
-		group.add(italicBtn);
+                // 열린 모든 JFrame에 글꼴 적용
+                for (Window w : Window.getWindows()) {
+                    if (w instanceof JFrame) {
+                        GlobalFont.applyFontRecursively((JFrame) w, appliedFont);
+                    }
+                }
+            }
+            parentMenu.setVisible(true);
+            this.dispose();
+        });
 
-		previewLabel = new JLabel("가나다 ABC 123 Preview", SwingConstants.CENTER);
-		previewLabel.setFont(new Font("맑은 고딕", Font.PLAIN, 20));
 
-		JButton applyBtn = new JButton("적용");
-		applyBtn.setFont(new Font("맑은 고딕", Font.PLAIN, 16));
-		applyBtn.setAlignmentX(Component.CENTER_ALIGNMENT);
-		applyBtn.addActionListener(e -> {
-			Font appliedFont = previewLabel.getFont();
-			if (appliedFont != null) {
-		        // 1. 전역 글꼴 업데이트
-		        GlobalFont.currentFont = appliedFont;
 
-		        // 2. 현재 열려있는 모든 프레임에 글꼴 적용
-		        for (Window w : Window.getWindows()) {
-		            if (w instanceof JFrame) {
-		                JFrame frame = (JFrame) w; // 명시적 캐스팅
-		            }
-		        }
+        JPanel topPanel = new JPanel(new GridLayout(3, 2, 5, 5));
+        topPanel.add(new JLabel("글꼴 이름:"));
+        topPanel.add(fontCombo);
+        topPanel.add(new JLabel("글꼴 크기:"));
+        topPanel.add(sizeCombo);
 
-		    }
-			parentMenu.setVisible(true);
-			this.dispose();
-		});
+        JPanel stylePanel = new JPanel();
+        stylePanel.add(plainBtn);
+        stylePanel.add(boldBtn);
+        stylePanel.add(italicBtn);
+        topPanel.add(new JLabel("스타일:"));
+        topPanel.add(stylePanel);
 
-		JPanel topPanel = new JPanel(new GridLayout(3, 2, 5, 5));
-		topPanel.add(new JLabel("글꼴 이름:"));
-		topPanel.add(fontCombo);
-		topPanel.add(new JLabel("글꼴 크기:"));
-		topPanel.add(sizeCombo);
+        add(topPanel, BorderLayout.NORTH);
+        add(previewLabel, BorderLayout.CENTER);
+        add(applyBtn, BorderLayout.SOUTH);
 
-		JPanel stylePanel = new JPanel();
-		stylePanel.add(plainBtn);
-		stylePanel.add(boldBtn);
-		stylePanel.add(italicBtn);
-		topPanel.add(new JLabel("스타일:"));
-		topPanel.add(stylePanel);
+        ActionListener updatePreview = e -> updateFontPreview();
+        fontCombo.addActionListener(updatePreview);
+        sizeCombo.addActionListener(updatePreview);
+        plainBtn.addActionListener(updatePreview);
+        boldBtn.addActionListener(updatePreview);
+        italicBtn.addActionListener(updatePreview);
 
-		add(topPanel, BorderLayout.NORTH);
-		add(previewLabel, BorderLayout.CENTER);
-		add(applyBtn, BorderLayout.SOUTH);
+        FontManager.applyFontRecursively(this);
 
-		ActionListener updatePreview = e -> updateFontPreview();
-		fontCombo.addActionListener(updatePreview);
-		sizeCombo.addActionListener(updatePreview);
-		plainBtn.addActionListener(updatePreview);
-		boldBtn.addActionListener(updatePreview);
-		italicBtn.addActionListener(updatePreview);
+    }
 
-		applyTheme();
-	}
+    private void updateFontPreview() {
+        String fontName = (String) fontCombo.getSelectedItem();
+        int fontSize = (Integer) sizeCombo.getSelectedItem();
+        int style = Font.PLAIN;
+        if (boldBtn.isSelected()) style = Font.BOLD;
+        else if (italicBtn.isSelected()) style = Font.ITALIC;
 
-	private void updateFontPreview() {
-		String fontName = (String) fontCombo.getSelectedItem();
-		int fontSize = (Integer) sizeCombo.getSelectedItem();
-		int style = Font.PLAIN;
-		if (boldBtn.isSelected())
-			style = Font.BOLD;
-		else if (italicBtn.isSelected())
-			style = Font.ITALIC;
+        selectedFont = new Font(fontName, style, fontSize);
+        previewLabel.setFont(selectedFont);
+    }
 
-		selectedFont = new Font(fontName, style, fontSize);
-		previewLabel.setFont(selectedFont);
-	}
 
-	private void applyTheme() {
-		Color bgColor;
-		Color fgColor;
+    // 🔹 재귀적으로 컨테이너 내부 글꼴 적용 (아이콘 제외)
+    private void applyFontRecursively(Container container, Font font) {
+        for (Component comp : container.getComponents()) {
+            // JLabel 이모지 제외
+            if (comp instanceof JLabel) {
+                JLabel label = (JLabel) comp;
+                String text = label.getText();
+                if ("👤".equals(text) || "🔒".equals(text)) continue;
+            }
 
-		switch (Setting.theme) {
-		case "DARK":
-			bgColor = Color.DARK_GRAY;
-			fgColor = Color.WHITE;
-			break;
-		case "PASTEL":
-			bgColor = new Color(255, 228, 225);
-			fgColor = Color.BLACK;
-			break;
-		case "DEFAULT":
-		default:
-			bgColor = Color.decode("#D8BFD8");
-			fgColor = Color.BLACK;
-			break;
-		}
+            comp.setFont(font);
 
-		// JFrame의 contentPane에 배경색 적용
-		getContentPane().setBackground(bgColor);
-
-		// 모든 컴포넌트 반복 적용
-		for (Component comp : getContentPane().getComponents()) {
-			ThemeManager.applyTheme(this); //테마 적용
-
-		}
-	}
-
+            if (comp instanceof Container) {
+                applyFontRecursively((Container) comp, font);
+            }
+        }
+        container.setFont(font);
+    }
 }
-
