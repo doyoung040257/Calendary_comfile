@@ -32,6 +32,20 @@ public class MonthlyCalendarView extends JFrame {
         this.mainFrame = mainFrame;
         this.currentDate = mainFrame.currentDate;
 
+        // 안전하게 user 초기화
+		if (mainFrame != null) {
+			// getter가 있으면 getUser() 사용 권장
+			try {
+				this.user = mainFrame.getUser();
+			} catch (Exception ex) {
+				// getUser가 없을 경우 직접 접근 시도 (필드가 public이면)
+				this.user = mainFrame.user;
+			}
+		}
+		if (this.user == null) {
+			this.user = lg.SessionManager.getCurrentUser();
+		}
+
         // --- 프레임 기본 설정 ---
         setTitle("월간 달력");
         setSize(800, 800);
@@ -270,6 +284,7 @@ public class MonthlyCalendarView extends JFrame {
         return panel;
     }
 }
+
 
 
 
