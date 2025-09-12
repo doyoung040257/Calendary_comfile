@@ -79,8 +79,8 @@ public class LoginFrame extends JFrame {
 		form.add(Box.createRigidArea(new Dimension(0, 18)));
 
 		// 버튼 행
-		GlassButton signupButton = new GlassButton("회원가입");
-		GlassButton loginButton = new GlassButton("로그인");
+		GlassButton2 signupButton = new GlassButton2("회원가입");
+		GlassButton2 loginButton = new GlassButton2("로그인");
 
 		JPanel btnRow = new JPanel(new FlowLayout(FlowLayout.CENTER, 14, 0));
 		btnRow.setOpaque(false);
@@ -173,10 +173,10 @@ public class LoginFrame extends JFrame {
 }
 
 /** 🎨 GlassButton 클래스 (연보라 버튼) */
-class GlassButton extends JButton {
+class GlassButton2 extends JButton {
 	private boolean hover = false;
 
-	public GlassButton(String text) {
+	public GlassButton2(String text) {
 		super(text);
 		setContentAreaFilled(false);
 		setFocusPainted(false);
@@ -220,4 +220,5 @@ class GlassButton extends JButton {
 		g2.dispose();
 	}
 }
+
 
