@@ -11,10 +11,11 @@ import java.util.List;
 import java.util.Locale;
 import lg.SessionManager;
 import javax.swing.*;
+import javax.swing.border.LineBorder;
+
 import frame.CalendarFrame01; // 캘린더 데이터 접근을 위해 import
 import frame.DateParser;      // 날짜 파싱 유틸리티 import
 import frame.TodoPageView;
-import javax.swing.border.LineBorder;
 
 public class todoAddition extends JFrame {
 
@@ -31,7 +32,7 @@ public class todoAddition extends JFrame {
     public void todo_addition_page() {
     	LocalDate targetDate;
         
-    	Font titleFont = new Font("맑은 고딕", Font.BOLD, 22);
+    	Font titleFont = new Font("맑은 고딕", Font.BOLD, 25);
         Font buttonFont = new Font("맑은 고딕", Font.BOLD, 16);
     	
         setTitle("할 일 추가");
@@ -45,7 +46,7 @@ public class todoAddition extends JFrame {
         title.setBounds(10, 10, 313, 50);
         title.setBackground(Color.LIGHT_GRAY);
         
-        JLabel todo = new JLabel("할 일 수정하기", JLabel.CENTER);
+        JLabel todo = new JLabel("할 일 추가하기", JLabel.CENTER);
         todo.setFont(titleFont);
         title.add(todo);
         add(title);
@@ -353,5 +354,3 @@ public JPanel createNavPanel() {
   	return panel;
 }
 }
-
-
