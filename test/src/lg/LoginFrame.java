@@ -16,6 +16,7 @@ public class LoginFrame extends JFrame {
     private JPasswordField pwField;
 
     public LoginFrame() {
+    	
         setTitle("로그인");
         setSize(450, 600);
         setLocationRelativeTo(null);
@@ -108,11 +109,13 @@ public class LoginFrame extends JFrame {
         panel.setBorder(BorderFactory.createEmptyBorder(0, 6, 0, 6));
 
         JLabel icon = new JLabel(iconText);
-        icon.setFont(icon.getFont().deriveFont(16f));
+//        icon.setFont(icon.getFont().deriveFont(16f));
+        icon.setFont(new Font("Segoe UI Emoji", Font.PLAIN, 18)); // ✅ 이모지 폰트만 적용
         icon.setBorder(BorderFactory.createEmptyBorder(0, 3, 0, 8));
         panel.add(icon, BorderLayout.WEST);
 
         JTextField field = isPassword ? new JPasswordField() : new JTextField();
+        field.setFont(new Font("맑은 고딕", Font.PLAIN, 14)); // ✅ 일반 폰트 유지
         field.setBorder(BorderFactory.createEmptyBorder(8, 6, 8, 6));
         field.setForeground(Color.BLACK);   // 입력 글씨 색
         field.setCaretColor(Color.BLACK);   // 커서 색
