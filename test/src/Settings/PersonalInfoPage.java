@@ -158,7 +158,7 @@ public class PersonalInfoPage extends JFrame {
 		add(buttonPanel, BorderLayout.SOUTH);
 
 		applyTheme();
-
+		FontManager.applyFontRecursively(this);
 		setVisible(true);
 	}
 
@@ -190,3 +190,4 @@ public class PersonalInfoPage extends JFrame {
 	}
 
 }
+
