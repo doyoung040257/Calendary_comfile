@@ -38,7 +38,7 @@ public class CalendarFrame01 extends JPanel {
 
     // 현재 로그인된 사용자를 저장할 필드 추가
     private User currentUser;
-    private User user;
+    User user;
 
     // 할 일 데이터 및 한줄평 데이터를 모든 프레임에서 공유하기 위한 static 변수
 //    public Map<LocalDate, List<TodoEntry>> dailyTasks = new HashMap<>();
@@ -556,3 +556,4 @@ public class CalendarFrame01 extends JPanel {
 //            ))
 //        );
 //    }
+
