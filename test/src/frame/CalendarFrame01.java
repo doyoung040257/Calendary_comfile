@@ -87,8 +87,8 @@ public class CalendarFrame01 extends JPanel {
         setLayout(null);
 		setBackground(Color.BLACK);
 
-        Font titleFont = new Font("SansSerif", Font.BOLD, 22);
-        Font buttonFont = new Font("SansSerif", Font.BOLD, 16);
+        Font titleFont = new Font("맑은 고딕", Font.BOLD, 22);
+        Font buttonFont = new Font("맑은 고딕", Font.BOLD, 16);
 
         // --- 상단 패널 (월 이동 및 설정) ---
         JPanel topPanel = createNavPanel();
@@ -155,7 +155,7 @@ public class CalendarFrame01 extends JPanel {
         // --- 진행률 바 ---
         progressBar = createRoundProgressBar(0, 100);
         progressBar.setStringPainted(true);
-        progressBar.setFont(new Font("SansSerif", Font.BOLD, 18));
+        progressBar.setFont(new Font("맑은 고딕", Font.BOLD, 18));
         progressBar.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
         progressBar.setPreferredSize(new Dimension(445, 25));
         progressBar.setForeground(Color.decode("#F5E6CC"));
@@ -239,7 +239,7 @@ public class CalendarFrame01 extends JPanel {
         List<TodoEntry> tasks =(user != null) 
         		? user.getDailyTasks().getOrDefault(currentDate, new ArrayList<>())
 				: new ArrayList<>();
-        Font todoFont = new Font("SansSerif", Font.PLAIN, 20);
+        Font todoFont = new Font("맑은 고딕", Font.BOLD, 20);
 
         if (tasks.isEmpty()) {
             JLabel noTaskLabel = new JLabel("예정된 할일이 없습니다.");
@@ -554,3 +554,4 @@ public class CalendarFrame01 extends JPanel {
 //            ))
 //        );
 //    }
+
