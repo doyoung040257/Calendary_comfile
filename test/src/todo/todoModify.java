@@ -194,11 +194,11 @@ public class todoModify extends JFrame {
         note.addFocusListener(new FocusListener() {
             @Override
             public void focusGained(FocusEvent e) {
-                if (note.getText().equals("메모")) note.setText("");
+                if (note.getText().equals("메모를 입력하세요")) note.setText("");
             }
             @Override
             public void focusLost(FocusEvent e) {
-                if (note.getText().isEmpty()) note.setText("메모");
+                if (note.getText().isEmpty()) note.setText("메모를 입력하세요");
             }
         });
         
@@ -316,6 +316,7 @@ public class todoModify extends JFrame {
 	  	return panel;
     }
 }
+
 
 
 
