@@ -104,7 +104,7 @@ public class PersonalInfoPage extends JFrame {
 		        fgColor = Color.BLACK;
 		        break;
 		    default:
-		        bgColor = new Color(0xD8BFD8);
+		        bgColor = Color.decode("#f0f8ff");
 		        fgColor = Color.BLACK;
 		}
 
@@ -176,7 +176,7 @@ public class PersonalInfoPage extends JFrame {
 			fgColor = Color.BLACK;
 			break;
 		default:
-			bgColor = new Color(0xD8BFD8);
+			bgColor = Color.decode("#f0f8ff");
 			fgColor = Color.BLACK;
 
 		}
@@ -190,4 +190,5 @@ public class PersonalInfoPage extends JFrame {
 	}
 
 }
+
 
