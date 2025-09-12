@@ -241,7 +241,7 @@ public class TodoPageView extends JFrame {
 
         oneLineReviewField  = new JTextField(25);
         oneLineReviewField.setBorder(new EmptyBorder(5, 5, 5, 5));
-        oneLineReviewField.setFont(new Font("맑은 고딕", Font.PLAIN, 14));
+        oneLineReviewField.setFont(new Font("맑은 고딕", Font.BOLD, 14));
 
         String placeholder = "예시: 오늘 하루도 멋지게 완수!";
         oneLineReviewField.setText(SessionManager.getCurrentUser().getDailyReviews()
@@ -643,4 +643,5 @@ public class TodoPageView extends JFrame {
         return panel;
     }
 }
+
 
