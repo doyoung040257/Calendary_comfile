@@ -8,7 +8,7 @@ import javax.swing.JFrame;
 
 public class GlobalFont {
     // 전역 글꼴 저장
-    public static Font currentFont = null;
+    public static Font currentFont=new Font("맑은 고딕", Font.PLAIN, 14);//null이면 오류나서 임시로 글꼴, 폰트,크기 넣어둠
 
     // 재귀적으로 컨테이너에 폰트 적용
     public static void applyFontRecursively(Container container, Font font) {
