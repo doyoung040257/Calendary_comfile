@@ -86,15 +86,23 @@ public class SchedulePanel extends JPanel {
         }
 
         // events 초기화
-        events = new ArrayList<>();
+        events = new ArrayList<>(Collections.nCopies(24, ""));
+
         if (todoData != null) {
             for (todoList item : todoData.getTodolist()) {
-                String timeStr = item.getTime(); // "14:30"
+                String timeStr = item.getTime(); // "14시 30분"
                 int hour = 0;
                 try {
-                	hour = Integer.parseInt(timeStr.replaceAll("시.*", "")); // 시만 추출
+                    hour = Integer.parseInt(timeStr.replaceAll("시.*", "")); // 시만 추출
                 } catch (Exception e) { e.printStackTrace(); }
-                events.add(item.getWork() + "(" + hour + "시)");
+
+                // 기존 이벤트가 있으면 이어 붙이기
+                String current = events.get(hour);
+                if (current == null || current.isEmpty()) {
+                    events.set(hour, item.getWork()+"\n");
+                } else {
+                    events.set(hour, current + ", " + item.getWork()); // 이어 붙이기
+                }
             }
         } else {
             if (isGroup) {
@@ -163,12 +171,9 @@ public class SchedulePanel extends JPanel {
 
     // JTable 업데이트
     private void updateTableFromEvents() {
-        for (int h = 0; h < 24; h++) table.setValueAt("", h, 1);
-        for (String event : events) {
-            String name = event.split("\\(")[0];
-            int time = Integer.parseInt(event.split("\\(")[1].replaceAll("[^0-9]", ""));
-            table.setValueAt(name, time, 1);
-        }
+    	for (int h = 0; h < 24; h++) {
+    	    table.setValueAt(events.get(h), h, 1); // 이미 이어붙인 문자열 그대로 JTable에 표시
+    	}
     }
 
     // 일정 추가
