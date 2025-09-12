@@ -127,6 +127,11 @@ public class SettingsMenu extends JFrame {
 
 				// ✅ 세션 해제
 				SessionManager.logout();
+				
+				  // ✅ 열려 있는 모든 창 닫기
+		        for (Window window : Window.getWindows()) {
+		            window.dispose();
+		        }
 
 				this.dispose(); // 설정 메뉴 닫기
 				new LoginFrame().setVisible(true); // 로그인 페이지 열기
