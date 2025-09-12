@@ -1,128 +1,108 @@
-// TodoPageView.java 2차수정 (MouseListener 오류 수정)
+// TodoPageView.java 2차수정 (MouseListener 오류 수정 + 하루 한 줄 리뷰 placeholder)
 package frame;
 
-import javax.swing.*;
-import javax.swing.border.EmptyBorder;
-import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.awt.event.*;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.TextStyle;
-import Settings.ThemeManager;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import Settings.FontManager;
-import Settings.SettingsMenu; // 설정 메뉴 화면
-import lg.SessionManager;     // 현재 로그인한 사용자 정보 관리
-import lg.User;               // 사용자 정보 객체
-import todo.todoAddition;      // 할 일 추가 화면
-import todo.todoModify;        // 할 일 수정 화면
-import todo.todoList;          // 할 일 객체 리스트
+
+import javax.swing.*;
+import javax.swing.border.EmptyBorder;
+import javax.swing.border.LineBorder;
+
+import Settings.SettingsMenu;
+import Settings.ThemeManager;
+import lg.SessionManager;
+import lg.User;
+import todo.todoAddition;
+import todo.todoList;
+import todo.todoModify;
 
 public class TodoPageView extends JFrame {
 
-    // --- UI 컴포넌트 선언 ---
-    private JProgressBar progressBar;      // 할 일 진행도를 표시하는 바
-    private JPanel todoListPanel;          // 할 일 목록 패널
-    private LocalDate currentDate;         // 현재 선택한 날짜
-    private JLabel dateLabel;              // 날짜를 표시하는 라벨
-    private JTextField oneLineReviewField;   // 오늘의 한 줄 리뷰
+    private JProgressBar progressBar;
+    private JPanel todoListPanel;
+    private LocalDate currentDate;
+    private JLabel dateLabel;
+    private JTextField oneLineReviewField;
 
-    private boolean isDeleteMode = false;  // 삭제 모드 활성 여부
-    private List<JCheckBox> deleteCheckboxes = new ArrayList<>(); // 삭제용 체크박스
-    private CalendarFrame01 mainFrame;     // 메인 캘린더 프레임
-    private User user;                     // 현재 사용자
-    private JButton deleteButton;          // 삭제 버튼
-    private String toDate;                 // 날짜 정보(0000-00-00[])
+    private boolean isDeleteMode = false;
+    private List<JCheckBox> deleteCheckboxes = new ArrayList<>();
+    private CalendarFrame01 mainFrame;
+    private User user;
+    private JButton deleteButton;
+    private String toDate;
 
     public String getToDate() { return toDate; }
+    public void setToDate(String toDate) { this.toDate = toDate; }
 
-	public void setToDate(String toDate) { this.toDate = toDate; }
-    
-    // --- 생성자 ---
     public TodoPageView(LocalDate date, CalendarFrame01 mainFrame) {
-        this.currentDate = date;           
+        this.currentDate = date;
         this.mainFrame = mainFrame;
 
         setTitle("할 일 페이지");
         setSize(480,800);
         setLayout(null);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        setLocationRelativeTo(null);      
+        setLocationRelativeTo(null);
         setResizable(false);
         setBackground(Color.BLACK);
 
-//        // --- 전체 레이아웃 패널 ---
-//        JPanel contentPane = new JPanel(new BorderLayout(0, 10));
-//        contentPane.setBorder(new EmptyBorder(10, 10, 10, 10));
-//        add(contentPane);
-
-        // --- 상단 섹션: 날짜 및 진행도 표시 ---
         JPanel topSectionPanel = createNavPanel();
         topSectionPanel.setLayout(new BoxLayout(topSectionPanel, BoxLayout.Y_AXIS));
         topSectionPanel.setBorder(new EmptyBorder(0, 0, 0, 0));
         topSectionPanel.setBounds(10, 10, 445, 50);
         add(topSectionPanel);
 
-        // 날짜 이동 패널
         JPanel dateNavigationPanel = createNavPanel();
         dateNavigationPanel.setLayout(new FlowLayout());
 
-        // 좌측 패널
         JPanel leftPanel = new JPanel();
         leftPanel.setOpaque(false);
-
         JButton calendarButton = createNavButton("달력", new Font("맑은 고딕", Font.BOLD, 16));
         calendarButton.setPreferredSize(new Dimension(80, 40));
         calendarButton.addActionListener(e -> {
             new MonthlyCalendarView(mainFrame).setVisible(true);
             dispose();
         });
-
         leftPanel.add(calendarButton);
 
-        // 날짜 표시 라벨
         JPanel dateCenterPanel = new JPanel(new FlowLayout());
         dateCenterPanel.setOpaque(false);
         dateCenterPanel.setBorder(null);
         dateLabel = new JLabel("", SwingConstants.CENTER);
         dateLabel.setFont(new Font("맑은 고딕", Font.BOLD, 18));
         dateLabel.setOpaque(false);
-//        dateLabel.setBackground(Color.decode("#F5E6CC"));
-//        dateLabel.setBorder(new LineBorder(Color.BLACK, 2));
-		ThemeManager.applyTheme(dateLabel);
-		
-		JLabel prevLabel = new JLabel("◀", SwingConstants.CENTER);
-		prevLabel.setFont(new Font("Malgun Gothic", Font.BOLD, 16));
-		prevLabel.setPreferredSize(new Dimension(40, 40));
-		prevLabel.setOpaque(false);  
-		prevLabel.setBorder(null);   
+        ThemeManager.applyTheme(dateLabel);
 
-		// 전날 이동
-		prevLabel.addMouseListener(new java.awt.event.MouseAdapter() {
-		    @Override
-		    public void mouseClicked(java.awt.event.MouseEvent e) {
-		        currentDate = currentDate.minusDays(1);
-		        refreshDateDisplay();
-		        updateToDate();
-		        isDeleteMode = false;
-		        loadTodoList();
-		    }
-		});
+        JLabel prevLabel = new JLabel("◀", SwingConstants.CENTER);
+        prevLabel.setFont(new Font("Malgun Gothic", Font.BOLD, 16));
+        prevLabel.setPreferredSize(new Dimension(40, 40));
+        prevLabel.setOpaque(false);
+        prevLabel.setBorder(null);
+        prevLabel.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                currentDate = currentDate.minusDays(1);
+                refreshDateDisplay();
+                updateToDate();
+                isDeleteMode = false;
+                loadTodoList();
+            }
+        });
 
-		
         JLabel nextLabel = new JLabel("▶", SwingConstants.CENTER);
         nextLabel.setFont(new Font("Malgun Gothic", Font.BOLD, 16));
         nextLabel.setPreferredSize(new Dimension(40, 40));
         nextLabel.setOpaque(false);
         nextLabel.setBorder(null);
-
-        // 다음날 이동
-        nextLabel.addMouseListener(new java.awt.event.MouseAdapter() {
+        nextLabel.addMouseListener(new MouseAdapter() {
             @Override
-            public void mouseClicked(java.awt.event.MouseEvent e) {
+            public void mouseClicked(MouseEvent e) {
                 currentDate = currentDate.plusDays(1);
                 refreshDateDisplay();
                 updateToDate();
@@ -131,15 +111,12 @@ public class TodoPageView extends JFrame {
             }
         });
 
-        
         dateCenterPanel.add(prevLabel);
         dateCenterPanel.add(dateLabel);
         dateCenterPanel.add(nextLabel);
 
-        // 우측 패널
         JPanel rightPanel = new JPanel();
         rightPanel.setOpaque(false);
-
         JButton settingsButton = createNavButton("설정", new Font("맑은 고딕", Font.BOLD, 16));
         settingsButton.setPreferredSize(new Dimension(80, 40));
         settingsButton.addActionListener(e -> {
@@ -147,7 +124,6 @@ public class TodoPageView extends JFrame {
             new SettingsMenu(this.user).setVisible(true);
             dispose();
         });
-
         rightPanel.add(settingsButton);
 
         dateNavigationPanel.add(leftPanel);
@@ -156,7 +132,6 @@ public class TodoPageView extends JFrame {
         topSectionPanel.add(dateNavigationPanel);
         topSectionPanel.add(Box.createVerticalStrut(10));
 
-        // --- 진행도 표시 ---
         progressBar = createRoundProgressBar(0, 100);
         progressBar.setPreferredSize(new Dimension(getWidth(), 30));
         progressBar.setStringPainted(true);
@@ -170,16 +145,13 @@ public class TodoPageView extends JFrame {
 
         JPanel progressPanel = createNavPanel();
         progressPanel.setBounds(10, 70, 445, 50);
-        
         progressPanel.setLayout(new BorderLayout());
         progressPanel.add(progressBar, BorderLayout.CENTER);
         progressPanel.add(progressLabel, BorderLayout.NORTH);
-//        progressPanel.add(Box.createVerticalStrut(10), BorderLayout.NORTH);
         add(progressPanel);
 
         refreshDateDisplay();
 
-        // --- 중앙 섹션 ---
         JPanel centerPanel = createNavPanel();
         centerPanel.setBounds(10, 130, 445, 430);
         centerPanel.setLayout(new BorderLayout());
@@ -195,7 +167,6 @@ public class TodoPageView extends JFrame {
         todoListScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         centerPanel.add(todoListScrollPane);
 
-        // --- 추가 삭제 버튼 패널 ---
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 10));
         buttonPanel.setBounds(10, 560, 445, 50);
         buttonPanel.setOpaque(false);
@@ -206,7 +177,7 @@ public class TodoPageView extends JFrame {
         buttonPanel.add(addButton);
         buttonPanel.add(deleteButton);
         add(buttonPanel);
-        
+
         updateToDate();
         addButton.addActionListener(e -> {
             new todoAddition(SessionManager.getCurrentUser().getTodolist(), () -> {
@@ -262,16 +233,42 @@ public class TodoPageView extends JFrame {
             }
         });
 
-
-        // --- 하루 한 줄 리뷰 ---
+        // --- 하루 한 줄 리뷰 (placeholder 적용) ---
         JPanel reviewPanel = createNavPanel();
         reviewPanel.setBounds(10, 620, 445, 40);
         reviewPanel.setLayout(new BorderLayout());
-        oneLineReviewField  = new JTextField(25); // 25글자 폭
+
+        oneLineReviewField  = new JTextField(25);
         oneLineReviewField.setBorder(new EmptyBorder(5, 5, 5, 5));
         oneLineReviewField.setFont(new Font("맑은 고딕", Font.PLAIN, 14));
-        
-        oneLineReviewField.setText(SessionManager.getCurrentUser().getDailyReviews().getOrDefault(currentDate, ""));
+
+        String placeholder = "예시: 오늘 하루도 멋지게 완수!";
+        oneLineReviewField.setText(SessionManager.getCurrentUser().getDailyReviews()
+                .getOrDefault(currentDate, placeholder));
+        if (oneLineReviewField.getText().isEmpty()) {
+            oneLineReviewField.setText(placeholder);
+            oneLineReviewField.setForeground(Color.GRAY);
+        } else {
+            oneLineReviewField.setForeground(Color.BLACK);
+        }
+
+        oneLineReviewField.addFocusListener(new FocusAdapter() {
+            @Override
+            public void focusGained(FocusEvent e) {
+                if (oneLineReviewField.getText().equals(placeholder)) {
+                    oneLineReviewField.setText("");
+                    oneLineReviewField.setForeground(Color.BLACK);
+                }
+            }
+
+            @Override
+            public void focusLost(FocusEvent e) {
+                if (oneLineReviewField.getText().isEmpty()) {
+                    oneLineReviewField.setText(placeholder);
+                    oneLineReviewField.setForeground(Color.GRAY);
+                }
+            }
+        });
 
         oneLineReviewField.getDocument().addDocumentListener(new javax.swing.event.DocumentListener() {
             @Override
@@ -291,7 +288,6 @@ public class TodoPageView extends JFrame {
         reviewPanel.setBorder(new EmptyBorder(10, 0, 0, 0));
         add(reviewPanel);
 
-        // --- 완료 버튼 ---
         JPanel bottomPanel = new JPanel();
         bottomPanel.setBounds(10, 670, 445, 70);
         JButton completeButton = createNavButton("완료", new Font("맑은 고딕", Font.BOLD, 24));
@@ -310,24 +306,20 @@ public class TodoPageView extends JFrame {
             dispose();
         });
 
-		FontManager.applyFontRecursively(this);
         loadTodoList();
     }
 
-    // --- 한 줄 리뷰 저장 ---
     private void saveReview() {
         SessionManager.getCurrentUser().getDailyReviews()
             .put(currentDate,oneLineReviewField.getText());
         mainFrame.updateTodoPanel();
     }
 
-    // --- 날짜 표시 갱신 ---
     private void refreshDateDisplay() {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("M월 d일 E요일", Locale.KOREA);
         dateLabel.setText(currentDate.format(formatter));
     }
 
-    // --- 할 일 목록 불러오기 ---
     public void loadTodoList() {
         todoListPanel.removeAll();
         deleteCheckboxes.clear();
@@ -335,7 +327,7 @@ public class TodoPageView extends JFrame {
                 .getDailyTasks().getOrDefault(currentDate, new ArrayList<>());
 
         for (CalendarFrame01.TodoEntry todo : todoList) {
-            final CalendarFrame01.TodoEntry todoFinal = todo; // ★ final로 수정
+            final CalendarFrame01.TodoEntry todoFinal = todo;
             todoListPanel.add(createTodoItemPanel(todoFinal));
             todoListPanel.add(Box.createVerticalStrut(5));
         }
@@ -346,7 +338,6 @@ public class TodoPageView extends JFrame {
         todoListPanel.repaint();
     }
 
-    // --- 개별 할 일 패널 생성 ---
     private JPanel createTodoItemPanel(final CalendarFrame01.TodoEntry todo) {
         JPanel todoItemPanel = new JPanel(new BorderLayout(5, 0));
         todoItemPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -387,7 +378,6 @@ public class TodoPageView extends JFrame {
             todoLabel.setForeground(Color.BLACK);
         }
 
-        // ★ MouseListener 오류 수정: final todo 사용
         todoLabel.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -415,9 +405,8 @@ public class TodoPageView extends JFrame {
         return todoItemPanel;
     }
 
-    // --- 수정 화면 열기 ---
     private void openModifyWindow(String uuid) {
-    	List<todoList> allTodos = SessionManager.getCurrentUser().getTodolist().getTodolist();
+        List<todoList> allTodos = SessionManager.getCurrentUser().getTodolist().getTodolist();
         int foundIndex = -1;
         for (int i = 0; i < allTodos.size(); i++) {
             if (allTodos.get(i).getId().equals(uuid)) {
@@ -428,7 +417,6 @@ public class TodoPageView extends JFrame {
 
         if (foundIndex != -1) {
             new todoModify(SessionManager.getCurrentUser().getTodolist(), foundIndex, () -> {
-                // 수정 후 기존 데이터 갱신
                 todoList updatedItem = null;
                 for (todoList item : SessionManager.getCurrentUser().getTodolist().getTodolist()) {
                     if (item.getId().equals(uuid)) {
@@ -495,7 +483,6 @@ public class TodoPageView extends JFrame {
         }
     }
 
-    // --- 진행도 바 갱신 ---
     private void updateProgressBar() {
         List<CalendarFrame01.TodoEntry> todoList = SessionManager.getCurrentUser()
                 .getDailyTasks().getOrDefault(currentDate, new ArrayList<>());
@@ -517,8 +504,8 @@ public class TodoPageView extends JFrame {
         else if (intPercentage < 70) progressBar.setForeground(new Color(255, 218, 128));
         else progressBar.setForeground(new Color(144, 238, 144));
     }
-        // --- toDate 갱신 ---
-        private void updateToDate() {
+
+    private void updateToDate() {
         String formatted = currentDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
         String dayOfWeek = currentDate.getDayOfWeek().getDisplayName(TextStyle.SHORT, Locale.ENGLISH);
         this.toDate = formatted + "[" + dayOfWeek + "]";
@@ -535,21 +522,18 @@ public class TodoPageView extends JFrame {
                 int height = getHeight();
                 int arc = 30;
 
-                // 배경
                 g2.setColor(Color.LIGHT_GRAY);
                 g2.fillRoundRect(0, 0, width, height, arc, arc);
 
-                // 진행률 채우기
                 int progressWidth = (int) (width * getPercentComplete());
                 g2.setColor(getForeground());
                 g2.fillRoundRect(0, 0, progressWidth, height, arc, arc);
 
-                // ✅ 텍스트 직접 출력
-                String text = getString(); // "67%"
+                String text = getString();
                 FontMetrics fm = g2.getFontMetrics();
                 int textWidth = fm.stringWidth(text);
                 int textHeight = fm.getAscent();
-                g2.setColor(Color.BLUE);   // 원하는 글자색
+                g2.setColor(Color.BLUE);
                 g2.drawString(text, (width - textWidth) / 2, (height + textHeight) / 2 - 2);
 
                 g2.dispose();
@@ -557,92 +541,81 @@ public class TodoPageView extends JFrame {
         };
 
         progressBar.setStringPainted(true);
-        progressBar.setForeground(new Color(76, 175, 80)); // 초록
+        progressBar.setForeground(new Color(76, 175, 80));
         progressBar.setBackground(Color.LIGHT_GRAY);
         progressBar.setBorderPainted(false);
         progressBar.setOpaque(false);
         return progressBar;
     }
-        
-	private JScrollPane listScrollBox() {
-	    JScrollPane scrollPane = new JScrollPane() {
-	        @Override
-	        protected void paintComponent(Graphics g) {
-	            super.paintComponent(g); // ← 기존 배경을 지우고 시작
-	            Graphics2D g2 = (Graphics2D) g.create();
-	            g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
-	            // 둥근 배경 채우기
-	            g2.setColor(getBackground());
-	            g2.fillRoundRect(0, 0, getWidth(), getHeight(), 30, 30);
+    private JScrollPane listScrollBox() {
+        JScrollPane scrollPane = new JScrollPane() {
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                Graphics2D g2 = (Graphics2D) g.create();
+                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
-	            // 테두리
-	            g2.setColor(Color.GRAY);
-	            g2.drawRoundRect(0, 0, getWidth() - 1, getHeight() - 1, 30, 30);
+                g2.setColor(getBackground());
+                g2.fillRoundRect(0, 0, getWidth(), getHeight(), 30, 30);
 
-	            g2.dispose();
-	        }
-	    };
+                g2.setColor(Color.GRAY);
+                g2.drawRoundRect(0, 0, getWidth() - 1, getHeight() - 1, 30, 30);
 
-	    scrollPane.setBorder(null);
-	    scrollPane.setOpaque(false);
-	    scrollPane.getViewport().setOpaque(false);
+                g2.dispose();
+            }
+        };
 
-	    // 스크롤바를 완전히 숨김
-	    scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
-	    scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        scrollPane.setBorder(null);
+        scrollPane.setOpaque(false);
+        scrollPane.getViewport().setOpaque(false);
 
-	    // 마우스 휠 스크롤만 가능
-	    scrollPane.getVerticalScrollBar().setUnitIncrement(20);
+        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
+        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        scrollPane.getVerticalScrollBar().setUnitIncrement(20);
 
-	    return scrollPane;
-	}
+        return scrollPane;
+    }
 
-    // --- 커스텀 버튼/패널 ---
     private JButton createNavButton(String text, Font font) {
-    	 JButton button = new JButton(text) {
+        JButton button = new JButton(text) {
+            @Override
+            protected void paintComponent(Graphics g) {
+                Graphics2D g2 = (Graphics2D) g.create();
+                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                if (getModel().isArmed()) {
+                    g2.setColor(getBackground().darker());
+                } else {
+                    g2.setColor(getBackground());
+                }
+                g2.fillRoundRect(0, 0, getWidth(), getHeight(), 30, 30);
+                g2.dispose();
+                super.paintComponent(g);
+            }
 
-             @Override
-             protected void paintComponent(Graphics g) {
-                 Graphics2D g2 = (Graphics2D) g.create();
-                 g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-                 // 배경 색상 (눌렸을 때 어둡게)
-                 if (getModel().isArmed()) {
-                     g2.setColor(getBackground().darker());
-                 } else {
-                     g2.setColor(getBackground());
-                 }
-                 // 둥근 사각형 배경
-                 g2.fillRoundRect(0, 0, getWidth(), getHeight(), 30, 30);
-                 g2.dispose();
-                 super.paintComponent(g);
-             }
+            @Override
+            protected void paintBorder(Graphics g) {
+                Graphics2D g2 = (Graphics2D) g.create();
+                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                g2.setColor(Color.GRAY);
+                g2.drawRoundRect(0, 0, getWidth() - 1, getHeight() - 1, 30, 30);
+                g2.dispose();
+            }
+        };
 
-             @Override
-             protected void paintBorder(Graphics g) {
-                 Graphics2D g2 = (Graphics2D) g.create();
-                 g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-                 g2.setColor(Color.GRAY); // 테두리 색상 (원하시면 여기 색을 변경하세요)
-                 g2.drawRoundRect(0, 0, getWidth() - 1, getHeight() - 1, 30, 30);
-                 g2.dispose();
-             }
-         };
+        button.setFont(font);
+        button.setBackground(Color.WHITE);
+        button.setForeground(Color.BLACK);
+        button.setContentAreaFilled(false);
+        button.setFocusPainted(false);
+        button.setBorderPainted(false);
+        button.setOpaque(false);
 
-         button.setFont(font);
-         button.setBackground(Color.WHITE);
-         button.setForeground(Color.BLACK);
-
-         // 기본 버튼 효과 제거
-         button.setContentAreaFilled(false);
-         button.setFocusPainted(false);
-         button.setBorderPainted(false);
-         button.setOpaque(false);
-
-         return button;
-     }
+        return button;
+    }
 
     public JPanel createNavPanel() {
-    	JPanel panel = new JPanel() {
+        JPanel panel = new JPanel() {
             @Override
             protected void paintComponent(Graphics g) {
                 super.paintComponent(g);
@@ -664,5 +637,3 @@ public class TodoPageView extends JFrame {
         return panel;
     }
 }
-
-
