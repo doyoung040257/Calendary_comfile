@@ -36,7 +36,7 @@ public class MonthlyCalendarView extends JFrame {
         // --- 프레임 기본 설정 ---
         setTitle("월간 달력");
         setSize(800, 800);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null);
 
         Container contentPane = getContentPane();
@@ -270,6 +270,7 @@ public class MonthlyCalendarView extends JFrame {
         return panel;
     }
 }
+
 
 
 
