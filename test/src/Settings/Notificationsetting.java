@@ -124,8 +124,10 @@ public class Notificationsetting extends JFrame {
 
 		add(panel);
 
+		FontManager.applyFontRecursively(this);
 		// 테마 적용
 		ThemeManager.applyTheme(this);
 		setVisible(true);
 	}
 }
+
