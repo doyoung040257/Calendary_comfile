@@ -149,6 +149,7 @@ public class LightMode extends JFrame {
 			// SettingsMenu 창 열기
 			new SettingsMenu(user).setVisible(true);
 		});
+		FontManager.applyFontRecursively(this);
 		setLocationRelativeTo(null);
 		setVisible(true);
 	}
@@ -166,3 +167,4 @@ public class LightMode extends JFrame {
 	}
 
 }
+
