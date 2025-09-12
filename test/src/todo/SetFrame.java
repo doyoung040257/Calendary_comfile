@@ -57,9 +57,14 @@ public class SetFrame extends JFrame {
 	    bottomPanel.setPreferredSize(new Dimension(0, 70));
 	    add(bottomPanel, BorderLayout.SOUTH);
 	
-		JButton homeButton = createNavButton("홈", buttonFont);
-		JButton todoButton = createNavButton("할일", buttonFont);
-		JButton groupButton = createNavButton("그룹", buttonFont);
+	    // ✅ 아이콘 불러오기 (resources/images 안에 넣어야 함)
+        ImageIcon homeIcon = resizeIcon(new ImageIcon(getClass().getResource("/images/hh.png")), 32, 32);
+        ImageIcon todoIcon = resizeIcon(new ImageIcon(getClass().getResource("/images/rr.png")), 32, 32);
+        ImageIcon groupIcon = resizeIcon(new ImageIcon(getClass().getResource("/images/gg.png")), 32, 32);
+	
+        JButton homeButton = createNavButton(homeIcon);
+        JButton todoButton = createNavButton(todoIcon);
+        JButton groupButton = createNavButton(groupIcon);
 		
 		bottomPanel.add(homeButton);
 		bottomPanel.add(todoButton);
@@ -208,5 +213,11 @@ public class SetFrame extends JFrame {
 	  	panel.setOpaque(false); // 네모난 기본 배경 칠하지 않도록
 	  	return panel;
     }
-    
+        // 아이콘 크기 조정
+    private ImageIcon resizeIcon(ImageIcon icon, int w, int h) {
+        Image img = icon.getImage();
+        Image scaled = img.getScaledInstance(w, h, Image.SCALE_SMOOTH);
+        return new ImageIcon(scaled);
+    }
 }
+
