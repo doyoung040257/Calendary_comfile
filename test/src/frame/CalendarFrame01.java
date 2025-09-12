@@ -24,6 +24,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import lg.User; // User 클래스 임포트 추가
 import todo.todoMain;
+import Settings.GlobalFont;
 
 public class CalendarFrame01 extends JPanel {
 
@@ -239,8 +240,9 @@ public class CalendarFrame01 extends JPanel {
         List<TodoEntry> tasks =(user != null) 
         		? user.getDailyTasks().getOrDefault(currentDate, new ArrayList<>())
 				: new ArrayList<>();
-        Font todoFont = new Font("맑은 고딕", Font.BOLD, 20);
-
+        //Font todoFont = new Font("맑은 고딕", Font.BOLD, 20);
+        Font todoFont = GlobalFont.currentFont; //현제로 써는 이렇게 해야 할일을 눌렸을때 바꾼 글꼴이 안바뀐다.
+        
         if (tasks.isEmpty()) {
             JLabel noTaskLabel = new JLabel("예정된 할일이 없습니다.");
             noTaskLabel.setFont(todoFont);
@@ -554,4 +556,3 @@ public class CalendarFrame01 extends JPanel {
 //            ))
 //        );
 //    }
-
