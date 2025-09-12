@@ -26,6 +26,9 @@ public class todoModify extends JFrame {
         todoList item = list.getTodolist().get(index);
         selectedImportance = item.getImportance();
 
+		Font titleFont = new Font("맑은 고딕", Font.BOLD, 22);
+        Font buttonFont = new Font("맑은 고딕", Font.BOLD, 16);
+		
         setTitle("할 일 수정");
         setSize(400, 700);
         setLocationRelativeTo(null);
@@ -53,15 +56,16 @@ public class todoModify extends JFrame {
         one.setBounds(10, 10, 290, 35);
         centerPanel.add(one);
         
-        JLabel todoGruop = new JLabel("그룹", JLabel.CENTER);
-        todoGruop.setBounds(5,5,50,25);
-        one.add(todoGruop);
+        JLabel todoGroup = new JLabel("그룹", JLabel.CENTER);
+        todoGroup.setBounds(5,5,50,25);
+		todoGroup.setFont(buttonFont);
+        one.add(todoGroup);
         
-        JTextField txtGrop = new JTextField(item.getWork());
-        txtGrop.setBounds(60,5,220,25);
-        txtGrop.setBorder(new LineBorder(Color.BLACK, 1));
+        JTextField txtGroup = new JTextField(item.getWork());
+        txtGroup.setBounds(60,5,220,25);
+        txtGroup.setBorder(new LineBorder(Color.BLACK, 1));
         one.add(txtGrop);
-        
+txtGroup
         // 할 일 - 제목
         JPanel two = createNavPanel();
         two.setLayout(null);
@@ -70,6 +74,7 @@ public class todoModify extends JFrame {
         
         JLabel todoTitle = new JLabel("할 일", JLabel.CENTER);
         todoTitle.setBounds(5,5,50,25);
+		todoTitle.setFont(buttonFont);
         two.add(todoTitle);
         
         JTextField txt = new JTextField(item.getWork());
@@ -97,6 +102,7 @@ public class todoModify extends JFrame {
         
         JLabel daytitle = new JLabel("날짜", JLabel.CENTER);
         daytitle.setBounds(5,5,50,25);
+		daytitle.setFont(buttonFont);
         three.add(daytitle);
 
         JButton datebtn = new JButton(item.getDay());
@@ -117,6 +123,7 @@ public class todoModify extends JFrame {
         
         JLabel timetitle = new JLabel("시간", JLabel.CENTER);
         timetitle.setBounds(5,5,50,25);
+		timetitle.setFont(buttonFont);
         four.add(timetitle);
 
         JButton timebtn = new JButton(item.getTime());
@@ -137,6 +144,7 @@ public class todoModify extends JFrame {
         
         JLabel importancetitle = new JLabel("중요도", JLabel.CENTER);
         importancetitle.setBounds(5,5,50,25);
+		importancetitle.setFont(buttonFont);
         five.add(importancetitle);
 
         // 별 아이콘
@@ -175,6 +183,7 @@ public class todoModify extends JFrame {
 
         JTextArea note = new JTextArea(item.getNote() != null ? item.getNote() : "메모");
         note.setBounds(60,12,220,150);
+		todoGroup.setFont(buttonFont);
         note.setBorder(new LineBorder(Color.BLACK, 1));
         note.setLineWrap(true);
         note.setWrapStyleWord(true);
@@ -306,4 +315,5 @@ public class todoModify extends JFrame {
 	  	return panel;
     }
 }
+
 
