@@ -30,7 +30,7 @@ public class todoModify extends JFrame {
         Font buttonFont = new Font("맑은 고딕", Font.BOLD, 16);
 		
         setTitle("할 일 수정");
-        setSize(400, 700);
+        setSize(350, 600);
         setLocationRelativeTo(null);
         setLayout(null);
 
@@ -315,6 +315,7 @@ public class todoModify extends JFrame {
 	  	return panel;
     }
 }
+
 
 
 
