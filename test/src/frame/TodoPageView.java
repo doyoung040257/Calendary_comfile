@@ -309,7 +309,7 @@ public class TodoPageView extends JFrame {
             dispose();
         });
 
-
+		FontManager.applyFontRecursively(this);
         loadTodoList();
     }
 
@@ -663,3 +663,4 @@ public class TodoPageView extends JFrame {
         return panel;
     }
 }
+
