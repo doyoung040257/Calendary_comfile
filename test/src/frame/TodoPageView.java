@@ -13,6 +13,7 @@ import java.util.Locale;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
+
 import Settings.FontManager;
 import Settings.SettingsMenu;
 import Settings.ThemeManager;
@@ -158,7 +159,6 @@ public class TodoPageView extends JFrame {
         add(centerPanel);
 
         todoListPanel = createNavPanel();
-        todoListPanel.setBorder(BorderFactory.createEmptyBorder(10,0,0,0));
         todoListPanel.setLayout(new BoxLayout(todoListPanel, BoxLayout.Y_AXIS));
         todoListPanel.setBackground(Color.WHITE);
 
@@ -306,8 +306,8 @@ public class TodoPageView extends JFrame {
             mainFrame.updateWeekView();
             dispose();
         });
-
-        FontManager.applyFontRecursively(this);
+        
+       
         loadTodoList();
     }
 
@@ -393,7 +393,7 @@ public class TodoPageView extends JFrame {
         completeButton.setOpaque(false);
         completeButton.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2));
         completeButton.setPreferredSize(new Dimension(60, 40));
-        completeButton.setFont(new Font("맑은 고딕", Font.BOLD, 18));
+        completeButton.setFont(new Font("Malgun Gothic", Font.BOLD, 18));
         completeButton.setFocusPainted(false);
         completeButton.addActionListener(e -> {
             todo.completed = !todo.completed;
@@ -643,8 +643,4 @@ public class TodoPageView extends JFrame {
         return panel;
     }
 }
-
-
-
-
 
