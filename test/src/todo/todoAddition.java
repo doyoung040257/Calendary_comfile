@@ -14,6 +14,7 @@ import javax.swing.*;
 import frame.CalendarFrame01; // 캘린더 데이터 접근을 위해 import
 import frame.DateParser;      // 날짜 파싱 유틸리티 import
 import frame.TodoPageView;
+import javax.swing.border.LineBorder;
 
 public class todoAddition extends JFrame {
 
@@ -352,4 +353,5 @@ public JPanel createNavPanel() {
   	return panel;
 }
 }
+
 
