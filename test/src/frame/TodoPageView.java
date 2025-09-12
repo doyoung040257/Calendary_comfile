@@ -13,7 +13,7 @@ import java.util.Locale;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
-
+import Settings.FontManager;
 import Settings.SettingsMenu;
 import Settings.ThemeManager;
 import lg.SessionManager;
@@ -643,6 +643,7 @@ public class TodoPageView extends JFrame {
         return panel;
     }
 }
+
 
 
 
