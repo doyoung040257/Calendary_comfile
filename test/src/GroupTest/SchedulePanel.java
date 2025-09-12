@@ -88,7 +88,7 @@ public class SchedulePanel extends JPanel {
         });
 
         table.setRowHeight(30);
-        table.setFont(new Font("맑은 고딕", Font.PLAIN, 14));
+        table.setFont(new Font("맑은 고딕", Font.BOLD, 14));
         table.getColumnModel().getColumn(0).setPreferredWidth(50);
         table.getColumnModel().getColumn(1).setPreferredWidth(400);
         table.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
@@ -291,3 +291,4 @@ public class SchedulePanel extends JPanel {
 
     public String getGroupName() { return groupName; }
 }
+
