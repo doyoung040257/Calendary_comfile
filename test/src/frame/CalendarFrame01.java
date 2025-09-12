@@ -513,6 +513,10 @@ public class CalendarFrame01 extends JPanel {
         progressBar.setOpaque(false);
         return progressBar;
     }
+
+	public User getUser() {
+		return this.user; 
+	}
 }
 
 
@@ -556,4 +560,5 @@ public class CalendarFrame01 extends JPanel {
 //            ))
 //        );
 //    }
+
 
