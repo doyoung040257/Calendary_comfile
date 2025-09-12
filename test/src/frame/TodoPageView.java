@@ -337,13 +337,12 @@ public class TodoPageView extends JFrame {
         todoListPanel.revalidate();
         todoListPanel.repaint();
     }
-
+        // --- 개별 할 일 패널 생성 ---
     private JPanel createTodoItemPanel(final CalendarFrame01.TodoEntry todo) {
-        JPanel todoItemPanel = new JPanel(new BorderLayout(5, 0));
-        todoItemPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        JPanel todoItemPanel = createNavPanel();
+        todoItemPanel.setLayout(new BoxLayout(todoItemPanel, BoxLayout.X_AXIS));
         todoItemPanel.setMaximumSize(new Dimension(400, 50));
-        todoItemPanel.setBorder(new LineBorder(Color.BLACK, 2));
-        todoItemPanel.setBackground(Color.WHITE);
+        todoItemPanel.setBackground(Color.GRAY);
 
         if (isDeleteMode) {
             JCheckBox checkBox = new JCheckBox();
@@ -353,7 +352,7 @@ public class TodoPageView extends JFrame {
         }
 
         JLabel todoLabel = new JLabel();
-        todoLabel.setFont(new Font("Malgun Gothic", Font.PLAIN, 18));
+        todoLabel.setFont(new Font("맑은 고딕", Font.BOLD, 18));
         todoLabel.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
         int importance = 0;
@@ -378,6 +377,7 @@ public class TodoPageView extends JFrame {
             todoLabel.setForeground(Color.BLACK);
         }
 
+        // ★ MouseListener 오류 수정: final todo 사용
         todoLabel.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -385,12 +385,12 @@ public class TodoPageView extends JFrame {
             }
         });
 
-        JButton completeButton = createNavButton(todo.completed ? "취소" : "완료", new Font("Malgun Gothic", Font.BOLD, 18));
+        JButton completeButton = createNavButton(todo.completed ? "취소" : "완료", new Font("맑은 고딕", Font.BOLD, 18));
         completeButton.setBackground(Color.WHITE);
         completeButton.setForeground(Color.BLACK);
-        completeButton.setOpaque(true);
+        completeButton.setOpaque(false);
         completeButton.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2));
-        completeButton.setPreferredSize(new Dimension(100, 40));
+        completeButton.setPreferredSize(new Dimension(60, 40));
         completeButton.setFont(new Font("Malgun Gothic", Font.BOLD, 18));
         completeButton.setFocusPainted(false);
         completeButton.addActionListener(e -> {
@@ -400,8 +400,12 @@ public class TodoPageView extends JFrame {
             mainFrame.updateProgressBar();
         });
 
-        todoItemPanel.add(todoLabel, BorderLayout.CENTER);
-        todoItemPanel.add(completeButton, BorderLayout.EAST);
+        todoItemPanel.add(Box.createHorizontalStrut(10));
+        todoItemPanel.add(todoLabel);
+        todoItemPanel.add(Box.createHorizontalGlue());
+        todoItemPanel.add(completeButton);
+        todoItemPanel.add(Box.createHorizontalStrut(10));
+        
         return todoItemPanel;
     }
 
@@ -637,3 +641,4 @@ public class TodoPageView extends JFrame {
         return panel;
     }
 }
+
