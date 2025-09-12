@@ -341,6 +341,8 @@ public class TodoPageView extends JFrame {
                 .getOrDefault(currentDate, "예시: 오늘 하루도 멋지게 완수!"));
         todoListPanel.revalidate();
         todoListPanel.repaint();
+        
+        FontManager.applyFontRecursively(TodoPageView.this, GlobalFont.currentFont);
     }
         // --- 개별 할 일 패널 생성 ---
     private JPanel createTodoItemPanel(final CalendarFrame01.TodoEntry todo) {
@@ -374,13 +376,16 @@ public class TodoPageView extends JFrame {
         for (int i = 0; i < importance; i++) stars += "★";
         if (!stars.isEmpty()) stars = " " + stars;
 
+        todoLabel.setText(todo.title + stars); // 문자열 그대로 표시
+
         if (todo.completed) {
-            todoLabel.setText("<html><strike>" + todo.title + stars + "</strike></html>");
-            todoLabel.setForeground(Color.GRAY);
+            todoLabel.setForeground(Color.GRAY); // 완료된 항목 색상 회색
+            todoLabel.setFont(GlobalFont.currentFont.deriveFont(Font.BOLD | Font.ITALIC, 18f)); 
         } else {
-            todoLabel.setText(todo.title + stars);
-            todoLabel.setForeground(Color.BLACK);
+            todoLabel.setForeground(Color.BLACK); // 일반 항목 검정색
+            todoLabel.setFont(GlobalFont.currentFont.deriveFont(Font.BOLD, 18f));
         }
+
 
         // ★ MouseListener 오류 수정: final todo 사용
         todoLabel.addMouseListener(new MouseAdapter() {
