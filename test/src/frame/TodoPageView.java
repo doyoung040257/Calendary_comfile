@@ -122,10 +122,14 @@ public class TodoPageView extends JFrame {
         JButton settingsButton = createNavButton("설정", new Font("맑은 고딕", Font.BOLD, 16));
         settingsButton.setPreferredSize(new Dimension(80, 40));
         settingsButton.addActionListener(e -> {
+            User currentUser = mainFrame.getUser(); // CalendarFrame01에서 가져오기
+            if (currentUser == null) {
+                JOptionPane.showMessageDialog(this, "로그인 정보가 없습니다.");
+                return;
+            }
             JOptionPane.showMessageDialog(this, "설정 화면으로 이동합니다.");
-            new SettingsMenu(this.user).setVisible(true);
-            dispose();
-        });
+            new SettingsMenu(currentUser).setVisible(true);
+        }); 
         rightPanel.add(settingsButton);
 
         dateNavigationPanel.add(leftPanel);
@@ -651,4 +655,5 @@ public class TodoPageView extends JFrame {
         return panel;
     }
 }
+
 
