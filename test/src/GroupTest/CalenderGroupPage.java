@@ -1,4 +1,4 @@
-/*
+
 package GroupTest;
 //사용하지 않는 코드
 import javax.swing.JOptionPane;
@@ -12,7 +12,7 @@ public class CalenderGroupPage {
     private CalenderGroupPage() {
         // 의도적으로 비워둠
     }
-
+/*
     public static void main(String[] args) {
         String loginUser;
 
@@ -46,6 +46,7 @@ public class CalenderGroupPage {
     public void setVisible(boolean b) {}
     */
 }
+
 
 
 
