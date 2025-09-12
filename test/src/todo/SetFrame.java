@@ -71,17 +71,17 @@ public class SetFrame extends JFrame {
 		bottomPanel.add(groupButton);
 	    
 	    homeButton.addActionListener(e -> {
-	    	JOptionPane.showMessageDialog(this,"");
+	    	JOptionPane.showMessageDialog(this,"홈 입니다");
 	    	cardLayout.show(cardPanel,"HOME");
 	    });
 	
 	    todoButton.addActionListener(e -> {
-	    	JOptionPane.showMessageDialog(this, "");
+	    	JOptionPane.showMessageDialog(this, "할 일 페이지로 이동합니다");
 	    	cardLayout.show(cardPanel,"TODO");
 	    });
 
         groupButton.addActionListener(e -> {
-            JOptionPane.showMessageDialog(this, "");
+            JOptionPane.showMessageDialog(this, "그룹 페이지로 이동합니다");
             cardLayout.show(cardPanel,"GROUP");
         });
 
@@ -218,5 +218,6 @@ public class SetFrame extends JFrame {
         return new ImageIcon(scaled);
     }
 }
+
 
 
