@@ -64,8 +64,8 @@ public class todoModify extends JFrame {
         JTextField txtGroup = new JTextField(item.getWork());
         txtGroup.setBounds(60,5,220,25);
         txtGroup.setBorder(new LineBorder(Color.BLACK, 1));
-        one.add(txtGrop);
-txtGroup
+        one.add(txtGroup);
+
         // 할 일 - 제목
         JPanel two = createNavPanel();
         two.setLayout(null);
@@ -315,5 +315,6 @@ txtGroup
 	  	return panel;
     }
 }
+
 
 
