@@ -40,8 +40,8 @@ public class MainPanel extends JPanel {
    	setLayout(null);
         setBackground(Color.BLACK);
 
-        Font titleFont = new Font("SansSerif", Font.BOLD, 22);
-        Font buttonFont = new Font("SansSerif", Font.BOLD, 16);
+        Font titleFont = new Font("맑은 고딕", Font.BOLD, 22);
+        Font buttonFont = new Font("맑은 고딕", Font.BOLD, 16);
         
         // ----------------- 상단 -----------------
         JPanel topPanel = createNavPanel();
@@ -977,6 +977,7 @@ public class MainPanel extends JPanel {
     public void removeGroup(String groupName) { loadExistingGroups(); }
 }
 */
+
 
 
 
