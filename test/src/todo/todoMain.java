@@ -49,8 +49,8 @@ public class todoMain extends JPanel{
 		setLayout(null);
 		setBackground(Color.BLACK);
 		
-        Font titleFont = new Font("SansSerif", Font.BOLD, 22);
-        Font buttonFont = new Font("SansSerif", Font.BOLD, 16);
+        Font titleFont = new Font("맑은 고딕", Font.BOLD, 22);
+        Font buttonFont = new Font("맑은 고딕", Font.BOLD, 16);
 
 		
 		//상단패널
@@ -293,3 +293,4 @@ public class todoMain extends JPanel{
         return userList;
     }
 }
+
