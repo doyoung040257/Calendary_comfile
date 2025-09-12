@@ -9,10 +9,9 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
-
+import Settings.FontManager;
 import Settings.SettingsMenu;
 import Settings.ThemeManager;
 import lg.User;
@@ -271,6 +270,7 @@ public class MonthlyCalendarView extends JFrame {
         return panel;
     }
 }
+
 
 
 
