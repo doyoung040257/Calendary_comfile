@@ -51,7 +51,7 @@ public class MonthlyCalendarView extends JFrame {
         ThemeManager.applyTheme(topPanel);
 
         monthLabel = new JLabel();
-        monthLabel.setFont(new Font("SansSerif", Font.BOLD, 22));
+        monthLabel.setFont(new Font("맑은 고딕", Font.BOLD, 22));
 
         JButton prevMonthButton = createNavButton2("◀", new Font("SansSerif", Font.BOLD, 16));
         prevMonthButton.setPreferredSize(new Dimension(40, 40));
@@ -100,7 +100,7 @@ public class MonthlyCalendarView extends JFrame {
         JPanel buttonPanel = new JPanel(new GridLayout(1, 2, 20, 0));
         buttonPanel.setBorder(new EmptyBorder(10, 0, 0, 0));
 
-        JButton mainButton = createNavButton("메인 페이지", new Font("Malgun Gothic", Font.BOLD, 16));
+        JButton mainButton = createNavButton("메인 페이지", new Font("맑은 고딕", Font.BOLD, 16));
         mainButton.addActionListener(e -> {
             mainFrame.currentDate = currentDate;
             mainFrame.updateWeekView();
@@ -108,7 +108,7 @@ public class MonthlyCalendarView extends JFrame {
             dispose();
         });
 
-        JButton settingsButton = createNavButton("설정 페이지", new Font("Malgun Gothic", Font.BOLD, 16));
+        JButton settingsButton = createNavButton("설정 페이지", new Font("맑은 고딕", Font.BOLD, 16));
         settingsButton.addActionListener(e -> {
             JOptionPane.showMessageDialog(this, "설정 화면으로 이동합니다.");
             new SettingsMenu(this.user).setVisible(true);
@@ -193,7 +193,7 @@ public class MonthlyCalendarView extends JFrame {
             JLabel todoLabel = new JLabel(todo.title);
             todoLabel.setOpaque(true);
             todoLabel.setBackground(todo.color);
-            todoLabel.setFont(new Font("Malgun Gothic", Font.PLAIN, 10));
+            todoLabel.setFont(new Font("맑은 고딕", Font.BOLD, 10));
             todoLabel.setBorder(new EmptyBorder(2, 4, 2, 4));
             if (todo.completed) todoLabel.setText("√ " + todo.title);
             eventsPanel.add(todoLabel);
@@ -271,6 +271,7 @@ public class MonthlyCalendarView extends JFrame {
         return panel;
     }
 }
+
 
 
 
