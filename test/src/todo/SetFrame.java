@@ -1,6 +1,8 @@
 package todo;
 
 import java.awt.*;
+import java.time.YearMonth;
+
 import javax.swing.*;
 
 import GroupTest.MainFrame;
@@ -8,6 +10,8 @@ import GroupTest.MainPanel;
 import GroupTest.MemberPanel;
 import frame.CalendarFrame01;
 import lg.User;
+import statistics.staticController;
+import statistics.statisticsPanel;
 
 public class SetFrame extends JFrame {
 	
@@ -16,12 +20,22 @@ public class SetFrame extends JFrame {
     private CardLayout cardLayout;; 
 	private MainFrame groupFrame;
 	
+	public JPanel getCardPanel() {
+	    return cardPanel;
+	}
+
+	public CardLayout getCardLayout() {
+	    return cardLayout;
+	}
+	
     public SetFrame(User user) {
         this.currentUser = user;
         initComponents();
     }
 
     private void initComponents() {
+    	todoListMake todoListData = currentUser.getTodolist();
+    	
     	setTitle("프로그램 이름");
 		setSize(480,800);
 		getContentPane().setBackground(Color.white);
@@ -31,8 +45,6 @@ public class SetFrame extends JFrame {
 		
         Font titleFont = new Font("맑은 고딕", Font.BOLD, 22);
         Font buttonFont = new Font("맑은 고딕", Font.BOLD, 16);
-		
-		todoMain panel = new todoMain(currentUser);
         
         //카드레이아웃적용패널
         cardLayout = new CardLayout();
@@ -43,7 +55,7 @@ public class SetFrame extends JFrame {
         
 		// 카드 추가
         cardPanel.add(new CalendarFrame01(), "HOME");
-        cardPanel.add(new todoMain(currentUser), "TODO");
+        cardPanel.add(new statisticsPanel(cardPanel, cardLayout, todoListData, this), "STATISTICS");
         cardPanel.add(groupPanel, "GROUP");
         
         add(cardPanel, BorderLayout.CENTER);;
@@ -76,8 +88,8 @@ public class SetFrame extends JFrame {
 	    });
 	
 	    todoButton.addActionListener(e -> {
-	    	JOptionPane.showMessageDialog(this, "할 일 페이지로 이동합니다");
-	    	cardLayout.show(cardPanel,"TODO");
+	    	JOptionPane.showMessageDialog(this, "통계 페이지로 이동합니다");
+	    	cardLayout.show(cardPanel,"STATISTICS");
 	    });
 
         groupButton.addActionListener(e -> {
@@ -217,8 +229,22 @@ public class SetFrame extends JFrame {
         Image scaled = img.getScaledInstance(w, h, Image.SCALE_SMOOTH);
         return new ImageIcon(scaled);
     }
+    
+    public void showCategoryPanel(String category, YearMonth ym) {
+        String key = "Category_" + category + "_" + ym;
+
+        for (Component comp : cardPanel.getComponents()) {
+            if (key.equals(comp.getName())) {
+                cardLayout.show(cardPanel, key);
+                return;
+            }
+        }
+
+        JPanel panel = new staticController(category, ym, currentUser.getTodolist(), this);
+        panel.setName(key); // ★ 컴포넌트 이름 지정
+        cardPanel.add(panel, key);
+
+        // 해당 패널 보여주기
+        cardLayout.show(cardPanel, key);
+    }
 }
-
-
-
-
