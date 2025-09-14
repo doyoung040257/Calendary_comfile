@@ -23,7 +23,6 @@ import Settings.ThemeManager;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import lg.User; // User 클래스 임포트 추가
-import todo.todoMain;
 import Settings.GlobalFont;
 
 public class CalendarFrame01 extends JPanel {
@@ -560,5 +559,6 @@ public class CalendarFrame01 extends JPanel {
 //            ))
 //        );
 //    }
+
 
 
