@@ -61,6 +61,17 @@ public class todoModify extends JFrame {
 		todoGroup.setFont(buttonFont);
         one.add(todoGroup);
         
+        String[] items = {"업무", "건강", "공부", "취미", "금융", "기타"};
+        JComboBox<String> groupbox = new JComboBox<String>(items);
+        groupbox.setBounds(60,5,220,25);
+        groupbox.setSelectedItem(item.getGroup());
+        one.add(groupbox);
+        
+        groupbox.addActionListener(e -> {
+            String selected = (String) groupbox.getSelectedItem();
+            System.out.println("선택된 항목: " + selected);
+        });
+        
         JTextField txtGroup = new JTextField(item.getWork());
         txtGroup.setBounds(60,5,220,25);
         txtGroup.setBorder(new LineBorder(Color.BLACK, 1));
@@ -184,7 +195,7 @@ public class todoModify extends JFrame {
 
         JTextArea note = new JTextArea(item.getNote() != null ? item.getNote() : "메모");
         note.setBounds(60,12,220,150);
-		todoGroup.setFont(buttonFont);
+        note.setFont(buttonFont);
         note.setBorder(new LineBorder(Color.BLACK, 1));
         note.setLineWrap(true);
         note.setWrapStyleWord(true);
@@ -216,12 +227,14 @@ public class todoModify extends JFrame {
         bottomPanel.add(save);
 
         save.addActionListener(e -> {
+        	String groupStr = (String) groupbox.getSelectedItem();
             String workStr = txt.getText().trim();
             String dayStr = datebtn.getText();
             String timeStr = timebtn.getText();
             String memoStr = note.getText().trim();
 
             // 아이템 업데이트
+            item.setGroup(groupStr);
             item.setWork(workStr);
             item.setDay(dayStr);
             item.setTime(timeStr);
@@ -316,10 +329,3 @@ public class todoModify extends JFrame {
 	  	return panel;
     }
 }
-
-
-
-
-
-
-
