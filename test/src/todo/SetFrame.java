@@ -1,269 +1,165 @@
 package todo;
 
 import java.awt.*;
-import java.awt.event.*;
-import java.awt.image.BufferedImage;
+import java.time.YearMonth;
+
 import javax.swing.*;
-import javax.swing.border.LineBorder;
 
-public class todoModify extends JFrame {
+import GroupTest.MainFrame;
+import GroupTest.MainPanel;
+import GroupTest.MemberPanel;
+import frame.CalendarFrame01;
+import lg.User;
+import statistics.staticController;
+import statistics.statisticsPanel;
 
-    private final todoListMake list;   // 공유 리스트
-    private final int index;           // 수정할 리스트의 인덱스
-    private final Runnable afterSave;  // 저장 후 호출(리스트 리렌더)
+public class SetFrame extends JFrame {
+	
+	private JPanel cardPanel;
+    private User currentUser;
+    private CardLayout cardLayout;; 
+	private MainFrame groupFrame;
+	
+	public JPanel getCardPanel() {
+	    return cardPanel;
+	}
 
-    private JLabel[] starLabels = new JLabel[3]; // 중요도 별
-    private int selectedImportance = 0;          // 선택된 중요도 값
-
-    public todoModify(todoListMake list, int index, Runnable afterSave) {
-        this.list = list;
-        this.index = index;
-        this.afterSave = afterSave;
+	public CardLayout getCardLayout() {
+	    return cardLayout;
+	}
+	
+    public SetFrame(User user) {
+        this.currentUser = user;
+        initComponents();
     }
 
-    public void open() {
-        // 기존 아이템 가져오기
-        todoList item = list.getTodolist().get(index);
-        selectedImportance = item.getImportance();
-
-		Font titleFont = new Font("맑은 고딕", Font.BOLD, 25);
-        Font buttonFont = new Font("맑은 고딕", Font.BOLD, 14);
+    private void initComponents() {
+    	todoListMake todoListData = currentUser.getTodolist();
+    	
+    	setTitle("프로그램 이름");
+		setSize(480,800);
+		getContentPane().setBackground(Color.white);
+		setLayout(new BorderLayout());
+		setLocationRelativeTo(null);
+		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		
-        setTitle("할 일 수정");
-        setSize(350, 600);
-        setLocationRelativeTo(null);
-        setLayout(null);
+        Font titleFont = new Font("맑은 고딕", Font.BOLD, 22);
+        Font buttonFont = new Font("맑은 고딕", Font.BOLD, 16);
+        
+        //카드레이아웃적용패널
+        cardLayout = new CardLayout();
+        cardPanel = new JPanel(cardLayout);
 
-        // 상단 제목
-        JPanel title = createNavPanel();
-        title.setBounds(10, 10, 313, 50);
-        title.setBackground(Color.LIGHT_GRAY);
+        this.groupFrame = new MainFrame(currentUser);
+        MainPanel groupPanel = new MainPanel(groupFrame, this, currentUser); // ★ this 전달
         
-        JLabel todo = new JLabel("할 일 수정하기", JLabel.CENTER);
-        todo.setFont(titleFont);
-        title.add(todo);
-        add(title);
+		// 카드 추가
+        cardPanel.add(new CalendarFrame01(), "HOME");
+        cardPanel.add(new statisticsPanel(cardPanel, cardLayout, todoListData, this), "STATISTICS");
+        cardPanel.add(groupPanel, "GROUP");
         
-        JPanel centerPanel = createNavPanel();
-        centerPanel.setLayout(null);
-        centerPanel.setBounds(10,70,313,420);
-        centerPanel.setBackground(Color.WHITE);
-        add(centerPanel);
+        add(cardPanel, BorderLayout.CENTER);;
         
-        // 할 일 - 그룹
-        JPanel one = createNavPanel();
-        one.setLayout(null);
-        one.setBounds(10, 10, 290, 35);
-        centerPanel.add(one);
+        cardLayout.show(cardPanel, "HOME");
         
-        JLabel todoGroup = new JLabel("그룹", JLabel.CENTER);
-        todoGroup.setBounds(5,5,50,25);
-		todoGroup.setFont(buttonFont);
-        one.add(todoGroup);
-        
-        String[] items = {"업무", "건강", "공부", "취미", "금융", "기타"};
-        JComboBox<String> groupbox = new JComboBox<String>(items);
-        groupbox.setBounds(60,5,220,25);
-        groupbox.setSelectedItem(item.getGroup());
-        one.add(groupbox);
-        
-        groupbox.addActionListener(e -> {
-            String selected = (String) groupbox.getSelectedItem();
-            System.out.println("선택된 항목: " + selected);
-        });
-        
-        JTextField txtGroup = new JTextField(item.getWork());
-        txtGroup.setBounds(60,5,220,25);
-        txtGroup.setBorder(new LineBorder(Color.BLACK, 1));
-        one.add(txtGroup);
-
-        // 할 일 - 제목
-        JPanel two = createNavPanel();
-        two.setLayout(null);
-        two.setBounds(10, 55, 290, 35);
-        centerPanel.add(two);
-        
-        JLabel todoTitle = new JLabel("할 일", JLabel.CENTER);
-        todoTitle.setBounds(5,5,50,25);
-		todoTitle.setFont(buttonFont);
-        two.add(todoTitle);
-        
-        JTextField txt = new JTextField(item.getWork());
-        txt.setBounds(60,5,220,25);
-        txt.setBorder(new LineBorder(Color.BLACK, 1));
-        two.add(txt);
-
-        // placeholder 효과
-        txt.addFocusListener(new FocusListener() {
-            @Override
-            public void focusGained(FocusEvent e) {
-                if (txt.getText().equals("할 일 입력")) txt.setText("");
-            }
-            @Override
-            public void focusLost(FocusEvent e) {
-                if (txt.getText().isEmpty()) txt.setText("할 일 입력");
-            }
-        });
-        
-        // 할 일 - 날짜
-        JPanel three = createNavPanel();
-        three.setLayout(null);
-        three.setBounds(10, 100, 290, 35);
-        centerPanel.add(three);
-        
-        JLabel daytitle = new JLabel("날짜", JLabel.CENTER);
-        daytitle.setBounds(5,5,50,25);
-		daytitle.setFont(buttonFont);
-        three.add(daytitle);
-
-        JButton datebtn = new JButton(item.getDay());
-        datebtn.setBounds(100,5,130,25);
-        datebtn.setFocusPainted(false);
-        three.add(datebtn);
-        datebtn.addActionListener(e -> {
-            new todoCalendar((year, month, day, dayWeek) ->
-                datebtn.setText(year + "-" + month + "-" + day + "[" + dayWeek + "]")
-            );
-        });
-        
-        // 할 일 - 시간
-        JPanel four = createNavPanel();
-        four.setLayout(null);
-        four.setBounds(10, 145, 290, 35);
-        centerPanel.add(four);
-        
-        JLabel timetitle = new JLabel("시간", JLabel.CENTER);
-        timetitle.setBounds(5,5,50,25);
-		timetitle.setFont(buttonFont);
-        four.add(timetitle);
-
-        JButton timebtn = new JButton(item.getTime());
-        timebtn.setBounds(100,5,130,25);
-        timebtn.setFocusPainted(false);
-        four.add(timebtn);
-        timebtn.addActionListener(e -> {
-            new todoClock((hour, minute) ->
-                timebtn.setText(hour + "시 " + minute + "분")
-            );
-        });
-        
-        // 할 일 - 중요도
-        JPanel five = createNavPanel();
-        five.setLayout(null);
-        five.setBounds(10, 190, 290, 35);
-        centerPanel.add(five);
-        
-        JLabel importancetitle = new JLabel("중요도", JLabel.CENTER);
-        importancetitle.setBounds(5,5,50,25);
-		importancetitle.setFont(buttonFont);
-        five.add(importancetitle);
-
-        // 별 아이콘
-        BufferedImage img1 = todoStarMake.createStarImage(25,25); // 노란별
-        BufferedImage img2 = todoStarMake2.createStarImage(25,25); // 회색별
-        ImageIcon ystar = new ImageIcon(img1);
-        ImageIcon gstar = new ImageIcon(img2);
-
-        int x = 113;
-        for (int i = 0; i < starLabels.length; i++) {
-            final int starIndex = i;
-            starLabels[i] = new JLabel(gstar);
-            starLabels[i].setBounds(x, 5, 25, 25);
-            five.add(starLabels[i]);
-            x += 40;
-
-            starLabels[i].addMouseListener(new MouseAdapter() {
-                @Override
-                public void mouseClicked(MouseEvent e) {
-                    selectedImportance = starIndex + 1;
-                    updateStars(ystar, gstar);
-                }
-            });
-        }
-        updateStars(ystar, gstar); // 초기 상태
-
-        // 할 일 - 메모
-        JPanel six = createNavPanel();
-        six.setLayout(null);
-        six.setBounds(10, 235, 290, 175);
-        centerPanel.add(six);
-        
-        JLabel noteTitle = new JLabel("메모", JLabel.CENTER);
-		noteTitle.setFont(buttonFont);
-        noteTitle.setBounds(5,5,50,150);
-        six.add(noteTitle);
-
-        JTextArea note = new JTextArea(item.getNote() != null ? item.getNote() : "메모");
-        note.setBounds(60,12,220,150);
-        note.setFont(buttonFont);
-        note.setBorder(new LineBorder(Color.BLACK, 1));
-        note.setLineWrap(true);
-        note.setWrapStyleWord(true);
-        six.add(note);
-
-        // placeholder 효과
-        note.addFocusListener(new FocusListener() {
-            @Override
-            public void focusGained(FocusEvent e) {
-                if (note.getText().equals("메모를 입력하세요")) note.setText("");
-            }
-            @Override
-            public void focusLost(FocusEvent e) {
-                if (note.getText().isEmpty()) note.setText("메모를 입력하세요");
-            }
-        });
-        
-        // 하단 패널
         JPanel bottomPanel = createNavPanel();
-        bottomPanel.setLayout(new FlowLayout());
-        bottomPanel.setBounds(10, 500, 313, 50);
-        bottomPanel.setBackground(Color.WHITE);
-        add(bottomPanel);
-        
-        // 저장 버튼
-        JButton save = createNavButton("수정",buttonFont);
-        save.setPreferredSize(new Dimension(120, 40));
-//        save.setFocusPainted(false);
-        bottomPanel.add(save);
+        bottomPanel.setLayout(new GridLayout(1, 3, 10, 0));
+        bottomPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5)); 
+	    bottomPanel.setBackground(Color.decode("#D8BFD8"));
+	    bottomPanel.setPreferredSize(new Dimension(0, 70));
+	    add(bottomPanel, BorderLayout.SOUTH);
+	
+	    // ✅ 아이콘 불러오기 (resources/images 안에 넣어야 함)
+        ImageIcon homeIcon = resizeIcon(new ImageIcon(getClass().getResource("/images/hh.png")), 32, 32);
+        ImageIcon todoIcon = resizeIcon(new ImageIcon(getClass().getResource("/images/rr.png")), 32, 32);
+        ImageIcon groupIcon = resizeIcon(new ImageIcon(getClass().getResource("/images/gg.png")), 32, 32);
+	
+        JButton homeButton = createNavButton(homeIcon);
+        JButton todoButton = createNavButton(todoIcon);
+        JButton groupButton = createNavButton(groupIcon);
+		
+		bottomPanel.add(homeButton);
+		bottomPanel.add(todoButton);
+		bottomPanel.add(groupButton);
+	    
+	    homeButton.addActionListener(e -> {
+	    	JOptionPane.showMessageDialog(this,"홈 입니다");
+	    	cardLayout.show(cardPanel,"HOME");
+	    });
+	
+	    todoButton.addActionListener(e -> {
+	    	JOptionPane.showMessageDialog(this, "통계 페이지로 이동합니다");
+	    	cardLayout.show(cardPanel,"STATISTICS");
+	    });
 
-        save.addActionListener(e -> {
-        	String groupStr = (String) groupbox.getSelectedItem();
-            String workStr = txt.getText().trim();
-            String dayStr = datebtn.getText();
-            String timeStr = timebtn.getText();
-            String memoStr = note.getText().trim();
-
-            // 아이템 업데이트
-            item.setGroup(groupStr);
-            item.setWork(workStr);
-            item.setDay(dayStr);
-            item.setTime(timeStr);
-            item.setNote(memoStr);
-            item.setImportance(selectedImportance); // 중요도 반영
-
-            if (afterSave != null) afterSave.run();
-            dispose();
+        groupButton.addActionListener(e -> {
+            JOptionPane.showMessageDialog(this, "그룹 페이지로 이동합니다");
+            cardLayout.show(cardPanel,"GROUP");
         });
 
-        // 닫기 버튼
-        JButton cancel = createNavButton("닫기",buttonFont);
-        cancel.setPreferredSize(new Dimension(120, 40));
-//        cancel.setFocusPainted(false);
-        bottomPanel.add(cancel);
-        cancel.addActionListener(e -> dispose());
+		setVisible(true);
+    }
+    
+    public void showMemberPanel(String groupName) {
+        MemberPanel mp = new MemberPanel(groupFrame, groupName, groupFrame.getMainPanel(), currentUser, this);
+        cardPanel.add(mp, "Member_" + groupName);
+        cardLayout.show(cardPanel, "Member_" + groupName);
 
-        setVisible(true);
+        // 레이아웃 갱신 강제
+        cardPanel.revalidate();
+        cardPanel.repaint();
+    }
+    
+    // MemberPanel -> 이전 화면 (GROUP)
+    public void showGroupPanel() {
+        cardLayout.show(cardPanel, "GROUP");
     }
 
-    // 별 상태 업데이트
-    private void updateStars(ImageIcon ystar, ImageIcon gstar) {
-        for (int i = 0; i < starLabels.length; i++) {
-            starLabels[i].setIcon(i < selectedImportance ? ystar : gstar);
-        }
+    // 일정 보기 -> SchedulePanel 표시
+    public void showSchedulePanel(String groupName, String member, JPanel schedulePanel) {
+        cardPanel.add(schedulePanel, "Schedule_" + groupName + "_" + member);
+        cardLayout.show(cardPanel, "Schedule_" + groupName + "_" + member);
     }
 
-        private JButton createNavButton(String string, Font font) {
-        JButton button = new JButton(string) {
+    
+	
+	// 스크롤 패널 사용 시 사용
+    private JScrollPane listScrollBox() {
+        JScrollPane scrollPane = new JScrollPane() {
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g); // ← 기존 배경을 지우고 시작
+                Graphics2D g2 = (Graphics2D) g.create();
+                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+
+                // 둥근 배경 채우기
+                g2.setColor(getBackground());
+                g2.fillRoundRect(0, 0, getWidth(), getHeight(), 30, 30);
+
+                // 테두리
+                g2.setColor(Color.GRAY);
+                g2.drawRoundRect(0, 0, getWidth() - 1, getHeight() - 1, 30, 30);
+
+                g2.dispose();
+            }
+        };
+
+        scrollPane.setBorder(null);
+        scrollPane.setOpaque(false);
+        scrollPane.getViewport().setOpaque(false);
+
+        // 스크롤바를 완전히 숨김
+        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
+        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+
+        // 마우스 휠 스크롤만 가능
+        scrollPane.getVerticalScrollBar().setUnitIncrement(20);
+
+        return scrollPane;
+    }
+	
+    private JButton createNavButton(ImageIcon icon) {
+        JButton button = new JButton(icon) {
         
         @Override
         protected void paintComponent(Graphics g) {
@@ -291,7 +187,6 @@ public class todoModify extends JFrame {
             g2.dispose();
         }
     };
-    	button.setFont(font);
 	    button.setBackground(Color.WHITE);
 	    button.setForeground(Color.BLACK);
 	
@@ -327,5 +222,29 @@ public class todoModify extends JFrame {
 	  };
 	  	panel.setOpaque(false); // 네모난 기본 배경 칠하지 않도록
 	  	return panel;
+    }
+        // 아이콘 크기 조정
+    private ImageIcon resizeIcon(ImageIcon icon, int w, int h) {
+        Image img = icon.getImage();
+        Image scaled = img.getScaledInstance(w, h, Image.SCALE_SMOOTH);
+        return new ImageIcon(scaled);
+    }
+    
+    public void showCategoryPanel(String category, YearMonth ym) {
+        String key = "Category_" + category + "_" + ym;
+
+        for (Component comp : cardPanel.getComponents()) {
+            if (key.equals(comp.getName())) {
+                cardLayout.show(cardPanel, key);
+                return;
+            }
+        }
+
+        JPanel panel = new staticController(category, ym, currentUser.getTodolist(), this);
+        panel.setName(key); // ★ 컴포넌트 이름 지정
+        cardPanel.add(panel, key);
+
+        // 해당 패널 보여주기
+        cardLayout.show(cardPanel, key);
     }
 }
