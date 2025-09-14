@@ -72,7 +72,7 @@ public class MainPanel extends JPanel {
 
         // ----------------- 그룹 버튼 컨테이너 -----------------
         JScrollPane scrollPane = listScrollBox();
-        scrollPane.setBounds(10, 70, 445, 570);
+        scrollPane.setBounds(10, 70, 445, 550);
         
         groupButtonContainer = createNavPanel();
         groupButtonContainer.setLayout(new BoxLayout(groupButtonContainer, BoxLayout.Y_AXIS));
@@ -93,12 +93,14 @@ public class MainPanel extends JPanel {
 
         RoundedButton createBtn = new RoundedButton("그룹 만들기", 20);
         createBtn.setFont(buttonFont);
+		createBtn.setPreferredSize(new Dimension(140, 55));
         createBtn.setBackground(new Color(180, 150, 200));
 //        createBtn.setForeground(Color.WHITE);
 //        addHoverClickEffect(createBtn, new Color(180, 150, 200));
 
         RoundedButton deleteBtn = new RoundedButton("그룹 삭제", 20);
         deleteBtn.setFont(buttonFont);
+		deleteBtn.setPreferredSize(new Dimension(140, 55));
         deleteBtn.setBackground(new Color(180, 150, 200));
 //        deleteBtn.setForeground(Color.WHITE);
 //        addHoverClickEffect(deleteBtn, new Color(180, 150, 200));
@@ -445,3 +447,4 @@ public class MainPanel extends JPanel {
 	  	return panel;
     }
 }
+
