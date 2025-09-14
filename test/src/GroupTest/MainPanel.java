@@ -6,11 +6,9 @@ import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
 import java.util.List;
-
 import Settings.SettingsMenu;
 import lg.User;
 import todo.SetFrame;
-import todo.todoMain;
 import frame.CalendarFrame01;
 
 public class MainPanel extends JPanel {
@@ -447,4 +445,5 @@ public class MainPanel extends JPanel {
 	  	return panel;
     }
 }
+
 
