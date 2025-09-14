@@ -7,8 +7,8 @@ public class todoListMake implements Serializable {
 
 	private ArrayList<todoList> todolist = new ArrayList<>();
 	
-	public void addTodo(String work, String day, String time, String note, int importance) {
-		todoList onetodo = new todoList(work, day, time, note, importance);
+	public void addTodo(String group, String work, String day, String time, String note, int importance) {
+		todoList onetodo = new todoList(group, work, day, time, note, importance);
 		todolist.add(onetodo);
 	}
 	
@@ -32,5 +32,4 @@ public class todoListMake implements Serializable {
 	public String toString() {
 	    return "TodoList: " + todolist; // todolist가 ArrayList라면 요소들이 문자열로 출력됨
 	}
-	
 }
