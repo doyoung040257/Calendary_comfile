@@ -68,10 +68,15 @@ public class todoAddition extends JFrame {
 		todoGroup.setFont(buttonFont);
         one.add(todoGroup);
         
-        JTextField txtGroup = new JTextField();
-        txtGroup.setBounds(60,5,220,25);
-        txtGroup.setBorder(new LineBorder(Color.BLACK, 1));
-        one.add(txtGroup);
+        String[] items = {"업무", "건강", "공부", "취미", "금융", "기타"};
+        JComboBox<String> groupbox = new JComboBox<String>(items);
+        groupbox.setBounds(60,5,220,25);
+        one.add(groupbox);
+        
+        groupbox.addActionListener(e -> {
+            String selected = (String) groupbox.getSelectedItem();
+            System.out.println("선택된 항목: " + selected);
+        });
         
         // 할 일 - 제목
         JPanel two = createNavPanel();
@@ -235,6 +240,7 @@ public class todoAddition extends JFrame {
         addition.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+            	String groupStr = (String) groupbox.getSelectedItem();
                 String workStr = txt.getText().trim();
                 String dayStr = datebtn.getText();
                 String timeStr = timebtn.getText();
@@ -246,7 +252,7 @@ public class todoAddition extends JFrame {
                 }
 
                 // 1. 기존 todoListMake에 추가
-                list.addTodo(workStr, dayStr, timeStr, memoStr, importance);
+                list.addTodo(groupStr, workStr, dayStr, timeStr, memoStr, importance);
                 String uuid = list.getTodolist().get(list.getTodolist().size()-1).getId();
                 
                 LocalDate todoDate = frame.DateParser.parseDate(dayStr);
@@ -329,28 +335,28 @@ public class todoAddition extends JFrame {
     return button;
 }
 
-public JPanel createNavPanel() {
-    JPanel panel = new JPanel() {
-        @Override
-        protected void paintComponent(Graphics g) {
-            super.paintComponent(g);
-            Graphics2D g2 = (Graphics2D) g.create();
-            // 안티앨리어싱 (부드럽게)
-            g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-            // 배경을 둥근 사각형으로 채우기
-            g2.setColor(getBackground());
-            g2.fillRoundRect(0, 0, getWidth(), getHeight(), 30, 30); 
-            // (x, y, w, h, arcW, arcH)
-            g2.dispose();
-        }
-      @Override
-      protected void paintBorder(Graphics g) {
-          Graphics2D g2 = (Graphics2D) g.create();
-          g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-          g2.dispose();
-      }
-  };
-  	panel.setOpaque(false); // 네모난 기본 배경 칠하지 않도록
-  	return panel;
-}
+	public JPanel createNavPanel() {
+	    JPanel panel = new JPanel() {
+	        @Override
+	        protected void paintComponent(Graphics g) {
+	            super.paintComponent(g);
+	            Graphics2D g2 = (Graphics2D) g.create();
+	            // 안티앨리어싱 (부드럽게)
+	            g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+	            // 배경을 둥근 사각형으로 채우기
+	            g2.setColor(getBackground());
+	            g2.fillRoundRect(0, 0, getWidth(), getHeight(), 30, 30); 
+	            // (x, y, w, h, arcW, arcH)
+	            g2.dispose();
+	        }
+	      @Override
+	      protected void paintBorder(Graphics g) {
+	          Graphics2D g2 = (Graphics2D) g.create();
+	          g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+	          g2.dispose();
+	      }
+	  };
+	  	panel.setOpaque(false); // 네모난 기본 배경 칠하지 않도록
+	  	return panel;
+	}
 }
