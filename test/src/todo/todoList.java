@@ -6,6 +6,7 @@ import java.util.UUID;
 
 public class todoList implements Serializable{
 
+	private String group;
 	private String work;
     private String day;
     private String time;
@@ -14,7 +15,8 @@ public class todoList implements Serializable{
     
     private final String id;
     
-    public todoList(String work, String day, String time, String note, int importance) {
+    public todoList(String group, String work, String day, String time, String note, int importance) {
+    	this.group = group;
     	this.work = work;
     	this.day = day;
     	this.time = time;
@@ -37,6 +39,9 @@ public class todoList implements Serializable{
 	public void setImportance(int importance) {
 		this.importance = importance;
 	}
+	public void setGroup(String group) {
+		this.group = group;
+	}
 	public String getWork() {
 		return work;
 	}
@@ -55,7 +60,10 @@ public class todoList implements Serializable{
 	public String getId() {
 		return id;
 	}
-	
+	public String getGroup() {
+		return group;
+	}
+
 	@Override
 	public boolean equals(Object obj) {
 	    if (this == obj) return true;
