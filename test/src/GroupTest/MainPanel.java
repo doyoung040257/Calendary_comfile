@@ -83,7 +83,7 @@ public class MainPanel extends JPanel {
         // ----------------- 하단 버튼 -----------------
         JPanel bottomPanel = new JPanel(new BorderLayout());
         bottomPanel.setOpaque(false);
-        bottomPanel.setBounds(10, 636, 445, 50);
+        bottomPanel.setBounds(10, 617, 445, 70);
 
         JPanel groupButtonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 10));
         groupButtonPanel.setOpaque(false);
@@ -91,14 +91,14 @@ public class MainPanel extends JPanel {
 
         RoundedButton createBtn = new RoundedButton("그룹 만들기", 20);
         createBtn.setFont(buttonFont);
-		createBtn.setPreferredSize(new Dimension(140, 55));
+		createBtn.setPreferredSize(new Dimension(140, 50));
         createBtn.setBackground(new Color(180, 150, 200));
 //        createBtn.setForeground(Color.WHITE);
 //        addHoverClickEffect(createBtn, new Color(180, 150, 200));
 
         RoundedButton deleteBtn = new RoundedButton("그룹 삭제", 20);
         deleteBtn.setFont(buttonFont);
-		deleteBtn.setPreferredSize(new Dimension(140, 55));
+		deleteBtn.setPreferredSize(new Dimension(140, 50));
         deleteBtn.setBackground(new Color(180, 150, 200));
 //        deleteBtn.setForeground(Color.WHITE);
 //        addHoverClickEffect(deleteBtn, new Color(180, 150, 200));
@@ -445,5 +445,6 @@ public class MainPanel extends JPanel {
 	  	return panel;
     }
 }
+
 
 
