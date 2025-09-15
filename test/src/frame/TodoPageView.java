@@ -145,7 +145,6 @@ public class TodoPageView extends JFrame {
         progressBar.setFont(new Font("맑은 고딕", Font.BOLD, 18));
         progressBar.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
         progressBar.setBackground(Color.LIGHT_GRAY);
-        progressBar.setForeground(Color.BLACK);
 
         JLabel progressLabel = new JLabel("진행율", SwingConstants.CENTER);
         progressLabel.setFont(new Font("맑은 고딕", Font.BOLD, 16));
@@ -555,7 +554,7 @@ public class TodoPageView extends JFrame {
                 FontMetrics fm = g2.getFontMetrics();
                 int textWidth = fm.stringWidth(text);
                 int textHeight = fm.getAscent();
-                g2.setColor(Color.BLUE);
+                g2.setColor(Color.BLACK);
                 g2.drawString(text, (width - textWidth) / 2, (height + textHeight) / 2 - 2);
 
                 g2.dispose();
@@ -668,6 +667,7 @@ public class TodoPageView extends JFrame {
         return panel;
     }
 }
+
 
 
 
