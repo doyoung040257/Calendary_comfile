@@ -13,7 +13,7 @@ public class statisticsGraph extends JPanel {
 	}
 
 	// 생성자
-    public staticGraph(double[] values, Color[] colors) {
+    public statisticsGraph(double[] values, Color[] colors) {
         this.values = values;
         this.colors = colors;
         setOpaque(false);
@@ -69,5 +69,4 @@ public class statisticsGraph extends JPanel {
 
     }
 }
-
 
