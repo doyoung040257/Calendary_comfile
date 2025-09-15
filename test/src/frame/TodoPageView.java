@@ -311,10 +311,14 @@ public class TodoPageView extends JFrame {
             dispose();
         });
         
-       
         loadTodoList();
         FontManager.applyFontRecursively(this, GlobalFont.currentFont);
         //Settings.FontManager.applyFontRecursively(this);
+    }
+
+    // 테마 적용 메서드
+    private void applyTheme() {
+        ThemeManager.applyTheme(this);
     }
 
     private void saveReview() {
@@ -663,6 +667,7 @@ public class TodoPageView extends JFrame {
         return panel;
     }
 }
+
 
 
 
