@@ -167,18 +167,31 @@ public class SetFrame extends JFrame {
         protected void paintComponent(Graphics g) {
             Graphics2D g2 = (Graphics2D) g.create();
             g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-            // 배경 색상 (눌렸을 때 어둡게)
-            if (getModel().isArmed()) {
-                g2.setColor(getBackground().darker());
-            } else {
-                g2.setColor(getBackground());
+            Color bg = getBackground();
+
+            // 🔹 Hover 상태일 때 배경색 변경
+            if (getModel().isRollover()) {
+                bg = new Color(173, 216, 230); // 연한 파랑 (hover 색상)
             }
+
+            // 🔹 눌렸을 때는 조금 더 어둡게
+            if (getModel().isArmed()) {
+                bg = bg.darker();
+            }
+
+            // 배경 그리기
+            g2.setColor(bg);
+            g2.fillRoundRect(0, 0, getWidth(), getHeight(), 30, 30);
+            g2.dispose();
+            
             // 둥근 사각형 배경
             g2.fillRoundRect(0, 0, getWidth(), getHeight(), 30, 30);
             g2.dispose();
+            
             // 버튼 텍스트 그대로 출력
             super.paintComponent(g);
         }
+
 
         @Override
         protected void paintBorder(Graphics g) {
@@ -250,3 +263,4 @@ public class SetFrame extends JFrame {
         cardLayout.show(cardPanel, key);
     }
 }
+
