@@ -10,11 +10,11 @@ import todo.SetFrame;
 import todo.todoList;
 import todo.todoListMake;
 
-public class staticController extends JPanel {
+public class statisticsController extends JPanel {
 	
 	private JPanel list;
 	
-	public staticController(String category, YearMonth ym, todoListMake todoListData, SetFrame parentFrame) {
+	public statisticsController(String category, YearMonth ym, todoListMake todoListData, SetFrame parentFrame) {
 		statisticsPart part = new statisticsPart();
 		
 	    Font titleFont = new Font("맑은 고딕", Font.BOLD, 22);
