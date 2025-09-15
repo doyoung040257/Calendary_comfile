@@ -43,9 +43,10 @@ public class TodoPageView extends JFrame {
     public String getToDate() { return toDate; }
     public void setToDate(String toDate) { this.toDate = toDate; }
 
-    public TodoPageView(LocalDate date, CalendarFrame01 mainFrame) {
+    public TodoPageView(LocalDate date, CalendarFrame01 mainFrame, ThemeManager themeManager) {
         this.currentDate = date;
         this.mainFrame = mainFrame;
+        this.themeManager = themeManager;
 
         setTitle("할 일 페이지");
         setSize(480,800);
@@ -667,6 +668,7 @@ public class TodoPageView extends JFrame {
         return panel;
     }
 }
+
 
 
 
