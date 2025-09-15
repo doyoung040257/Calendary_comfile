@@ -165,6 +165,7 @@ public class TodoPageView extends JFrame {
         add(centerPanel);
 
         todoListPanel = createNavPanel();
+        todoListPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         todoListPanel.setLayout(new BoxLayout(todoListPanel, BoxLayout.Y_AXIS));
         todoListPanel.setBackground(Color.WHITE);
 
@@ -667,6 +668,7 @@ public class TodoPageView extends JFrame {
         return panel;
     }
 }
+
 
 
 
