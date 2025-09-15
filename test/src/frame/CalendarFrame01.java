@@ -188,7 +188,7 @@ public class CalendarFrame01 extends JPanel {
         button.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseEntered(MouseEvent e) {
-                button.setForeground(Color.RED);
+                button.setForeground((new Color(173, 216, 230)));
             }
             @Override
             public void mouseExited(MouseEvent e) {
@@ -373,7 +373,7 @@ public class CalendarFrame01 extends JPanel {
                 Object selected = getClientProperty("selected");
 
                 if (selected != null && (boolean) selected) {
-                    bg = new Color(255, 100, 100); 
+                    bg = new Color(200, 230, 255); 
                 } else if (getModel().isRollover()) {
                     bg = new Color(200, 230, 255); // Hover 색상
                 }
@@ -446,7 +446,7 @@ public class CalendarFrame01 extends JPanel {
                 FontMetrics fm = g2.getFontMetrics();
                 int textWidth = fm.stringWidth(text);
                 int textHeight = fm.getAscent();
-                g2.setColor(Color.BLUE);
+                g2.setColor(Color.BLACK);
                 g2.drawString(text, (width - textWidth) / 2, (height + textHeight) / 2 - 2);
 
                 g2.dispose();
@@ -465,3 +465,4 @@ public class CalendarFrame01 extends JPanel {
         return this.user;
     }
 }
+
