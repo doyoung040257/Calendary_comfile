@@ -188,7 +188,7 @@ public class MonthlyCalendarView extends JFrame {
             public void mouseClicked(java.awt.event.MouseEvent e) {
                 if (isCurrentMonth) {
                     // TodoPageView에도 ThemeManager 전달
-                    TodoPageView todoPage = new TodoPageView(date, mainFrame); 
+                    TodoPageView todoPage = new TodoPageView(date, mainFrame, themeManager); 
                     todoPage.setVisible(true);
                     dispose();
                 }
@@ -299,3 +299,4 @@ public class MonthlyCalendarView extends JFrame {
         return panel;
     }
 }
+
