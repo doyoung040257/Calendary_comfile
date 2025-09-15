@@ -22,6 +22,7 @@ public class MonthlyCalendarView extends JFrame {
     private JLabel monthLabel;
     private JPanel dateGridPanel;
     private CalendarFrame01 mainFrame;
+    private ThemeManager themeManager; // Add ThemeManager field
     private User user;
 
     public MonthlyCalendarView() {
@@ -29,9 +30,15 @@ public class MonthlyCalendarView extends JFrame {
     }
 
     public MonthlyCalendarView(CalendarFrame01 mainFrame) {
+        this(mainFrame, new ThemeManager()); // 기본 ThemeManager 인스턴스 사용
+    }
+
+    // 수정된 생성자: ThemeManager를 파라미터로 받음
+    public MonthlyCalendarView(CalendarFrame01 mainFrame, ThemeManager themeManager) {
         this.mainFrame = mainFrame;
         this.currentDate = mainFrame.currentDate;
-
+        this.themeManager = themeManager; // ThemeManager 인스턴스 초기화
+        
         // 안전하게 user 초기화
 		if (mainFrame != null) {
 			// getter가 있으면 getUser() 사용 권장
@@ -51,6 +58,7 @@ public class MonthlyCalendarView extends JFrame {
         setSize(800, 800);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null);
+        applyTheme(); // 테마 적용
 
         Container contentPane = getContentPane();
         contentPane.setLayout(new BorderLayout(10, 10));
@@ -124,7 +132,7 @@ public class MonthlyCalendarView extends JFrame {
         JButton settingsButton = createNavButton("설정 페이지", new Font("맑은 고딕", Font.BOLD, 16));
         settingsButton.addActionListener(e -> {
             JOptionPane.showMessageDialog(this, "설정 화면으로 이동합니다.");
-            new SettingsMenu(this.user).setVisible(true);
+            new SettingsMenu(this.user, this.themeManager).setVisible(true); // ThemeManager 전달
             dispose();
         });
 
@@ -134,6 +142,12 @@ public class MonthlyCalendarView extends JFrame {
 
         FontManager.applyFontRecursively(this);
         updateCalendar();
+    }
+
+    private void applyTheme() {
+        if (themeManager != null) {
+            themeManager.applyTheme(this);
+        }
     }
 
     private void updateCalendar() {
@@ -173,7 +187,8 @@ public class MonthlyCalendarView extends JFrame {
             @Override
             public void mouseClicked(java.awt.event.MouseEvent e) {
                 if (isCurrentMonth) {
-                    TodoPageView todoPage = new TodoPageView(date, mainFrame);
+                    // TodoPageView에도 ThemeManager 전달
+                    TodoPageView todoPage = new TodoPageView(date, mainFrame, themeManager); 
                     todoPage.setVisible(true);
                     dispose();
                 }
@@ -284,11 +299,3 @@ public class MonthlyCalendarView extends JFrame {
         return panel;
     }
 }
-
-
-
-
-
-
-
-
