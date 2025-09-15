@@ -43,33 +43,23 @@ public class SchedulePanel extends JPanel {
 
     // ----------------- 공통 UI 초기화 -----------------
     private void initUI(MainFrame frame, todoListMake todoData) {
+        User currentUser = UserDatabase.getUser(memberName); // memberName == User ID
         setLayout(new BorderLayout(10, 10));
         Color highlightColor = new Color(180, 150, 200);
 
         // 상단 타이틀
-        JLabel title = new JLabel(groupName + " - " + memberName + " 일정", JLabel.CENTER);
+        JLabel title = new JLabel(groupName + " - " + currentUser.getName() + " 일정", JLabel.CENTER);
         title.setFont(new Font("맑은 고딕", Font.BOLD, 20));
+        title.setBorder(BorderFactory.createEmptyBorder(10, 0, 0, 0));
         add(title, BorderLayout.NORTH);
 
-        // 상단 버튼
-        JPanel topPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 10));
-        RoundedButton addBtn = new RoundedButton("일정 추가", 20);
-        RoundedButton editBtn = new RoundedButton("일정 수정/삭제", 20);
-        styleButton(addBtn, highlightColor);
-        styleButton(editBtn, highlightColor);
-
-        if (!isGroup) {
-            topPanel.add(addBtn);
-            topPanel.add(editBtn);
-        }
-        add(topPanel, BorderLayout.NORTH);
 
         // ---------------------------
         // 1. users.dat 불러오기
         UserDatabase.loadUsers();
 
         // 2. 현재 사용자(User) 가져오기
-        User currentUser = UserDatabase.getUser(memberName); // memberName == User ID
+
         if (currentUser != null) {
             System.out.println("User 데이터 로드 성공:");
             System.out.println("ID: " + currentUser.getId());
@@ -176,11 +166,7 @@ public class SchedulePanel extends JPanel {
         }
 
 
-        // 버튼 기능
-        if (!isGroup) {
-            addBtn.addActionListener(e -> addEventAction());
-            editBtn.addActionListener(e -> editOrDeleteAction());
-        }
+
 
         // 하단 이전 화면 버튼
         JPanel bottomPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 10));
