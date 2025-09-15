@@ -10,7 +10,8 @@ import GroupTest.MainPanel;
 import GroupTest.MemberPanel;
 import frame.CalendarFrame01;
 import lg.User;
-import statistics.staticController;
+
+import statistics.statisticsController;
 import statistics.statisticsPanel;
 
 public class SetFrame extends JFrame {
@@ -241,7 +242,7 @@ public class SetFrame extends JFrame {
             }
         }
 
-        JPanel panel = new staticController(category, ym, currentUser.getTodolist(), this);
+        JPanel panel = new statisticsController(category, ym, currentUser.getTodolist(), this);
         panel.setName(key); // ★ 컴포넌트 이름 지정
         cardPanel.add(panel, key);
 
@@ -249,4 +250,3 @@ public class SetFrame extends JFrame {
         cardLayout.show(cardPanel, key);
     }
 }
-
