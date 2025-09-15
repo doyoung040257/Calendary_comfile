@@ -86,7 +86,7 @@ public class statisticsPart {
         button.setOpaque(false);
 
         // 🚩 hover 활성화
-        button.setRolloverEnabled(true);
+        button.setRolloverEnabled(false);
 
         return button;
     }
@@ -117,4 +117,5 @@ public class statisticsPart {
 	  	return panel;
     }
 }
+
 
