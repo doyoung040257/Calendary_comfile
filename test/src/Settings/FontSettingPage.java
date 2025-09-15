@@ -17,7 +17,7 @@ public class FontSettingPage extends JFrame {
         this.parentMenu = parentMenu;
 
         setTitle("글꼴 설정");
-        setSize(400, 300);
+        setSize(280, 255);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null);
 
@@ -58,9 +58,14 @@ public class FontSettingPage extends JFrame {
         previewLabel = new JLabel("가나다 ABC 123 Preview", SwingConstants.CENTER);
         previewLabel.setFont(new Font("맑은 고딕", Font.PLAIN, 20));
 
-        JButton applyBtn = new JButton("적용");
+        JPanel bottom = new JPanel();
+        bottom.setOpaque(false);
+        
+        JButton applyBtn = createNavButton("적용");
+        applyBtn.setPreferredSize(new Dimension(100,40));
         applyBtn.setFont(defaultFont);
         applyBtn.setAlignmentX(Component.CENTER_ALIGNMENT);
+        bottom.add(applyBtn);
 
         applyBtn.addActionListener(e -> {
             Font appliedFont = previewLabel.getFont();
@@ -81,21 +86,21 @@ public class FontSettingPage extends JFrame {
 
 
         JPanel topPanel = new JPanel(new GridLayout(3, 2, 5, 5));
-        topPanel.add(new JLabel("글꼴 이름:"));
+        topPanel.add(new JLabel("글꼴 이름:", SwingConstants.CENTER));
         topPanel.add(fontCombo);
-        topPanel.add(new JLabel("글꼴 크기:"));
+        topPanel.add(new JLabel("글꼴 크기:", SwingConstants.CENTER));
         topPanel.add(sizeCombo);
 
         JPanel stylePanel = new JPanel();
         stylePanel.add(plainBtn);
         stylePanel.add(boldBtn);
         stylePanel.add(italicBtn);
-        topPanel.add(new JLabel("스타일:"));
+        topPanel.add(new JLabel("스타일:", SwingConstants.CENTER));
         topPanel.add(stylePanel);
 
         add(topPanel, BorderLayout.NORTH);
         add(previewLabel, BorderLayout.CENTER);
-        add(applyBtn, BorderLayout.SOUTH);
+        add(bottom, BorderLayout.SOUTH);
 
         ActionListener updatePreview = e -> updateFontPreview();
         fontCombo.addActionListener(updatePreview);
@@ -139,3 +144,4 @@ public class FontSettingPage extends JFrame {
         container.setFont(font);
     }
 }
+
