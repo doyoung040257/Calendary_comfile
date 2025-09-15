@@ -26,25 +26,22 @@ public class SettingsMenu extends JFrame {
 	private User user;
 	private todoListMake listMaker;
 	private String source; // 📌 출처 구분 ("calendar" or "group")
+	private ThemeManager themeManager; // ThemeManager 필드 추가
 
 	// User를 받는 생성자
 	public SettingsMenu(User currentUser) {
 	    this.user = currentUser;
 	    this.source = "calendar";
-
-	    initComponents(); // 컴포넌트 생성
-	    
-	    // 현재 설정된 전역 글꼴 적용
-	    if (GlobalFont.currentFont != null) {
-	        GlobalFont.applyFontRecursively(this.getContentPane(), GlobalFont.currentFont);
-	    }
+	    this.themeManager = new ThemeManager(); // 기본값
+	    initComponents();
 	}
-
+	
 	// ✅ 그룹 페이지에서 열 때 호출하는 생성자
 	public SettingsMenu(User currentUser, String source, JPanel parentFrame) {
 		this.user = currentUser;
 		this.source = source;
-		this.parentFrame = parentFrame; // ✅ 부모 저장
+		this.parentFrame = parentFrame;
+		this.themeManager = new ThemeManager();
 		initComponents();
 	}
 
@@ -52,8 +49,17 @@ public class SettingsMenu extends JFrame {
 		this.user = currentUser;
 		this.listMaker = listMaker;
 		this.source = "calendar"; // 기본값
+		this.themeManager = new ThemeManager();
 		initComponents();
 	}
+	
+    // ThemeManager를 받는 생성자 추가
+    public SettingsMenu(User currentUser, ThemeManager themeManager) {
+        this.user = currentUser;
+        this.themeManager = themeManager;
+        this.source = "calendar";
+        initComponents();
+    }
 
 	public void initComponents() {
 		Design design = new Design(); // 수정
@@ -63,6 +69,7 @@ public class SettingsMenu extends JFrame {
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setLocationRelativeTo(null);
 		setLayout(new FlowLayout());
+        applyTheme(); // 테마 적용
 
 		Font buttonFont = new Font("맑은 고딕", Font.BOLD, 16);
 
@@ -170,4 +177,10 @@ public class SettingsMenu extends JFrame {
 		add(panel);
 		setVisible(true);
 	}
+	
+    private void applyTheme() {
+        if (themeManager != null) {
+            themeManager.applyTheme(this);
+        }
+    }
 }
