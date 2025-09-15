@@ -1,7 +1,10 @@
 package statistics;
 
 import java.awt.*;
+import java.time.LocalDate;
 import java.time.YearMonth;
+import java.time.format.DateTimeFormatter;
+
 import javax.swing.*;
 import todo.todoListMake;
 import todo.SetFrame;
@@ -333,8 +336,12 @@ public class statisticsPanel extends JPanel{
 
 		for (todoList item : todoListData.getTodolist()) {
 			try {
-				String dateStr = item.getDay().split("\\[")[0]; // "2025-09-01[Mon]" → "2025-09-01"
-				YearMonth itemYM = YearMonth.parse(dateStr.substring(0,7)); // yyyy-MM
+			    String dateStr = item.getDay().split("\\[")[0]; // "2025-09-01" 또는 "2025-9-9"
+
+			    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-M-d");
+			    LocalDate localDate = LocalDate.parse(dateStr, formatter);
+
+			    YearMonth itemYM = YearMonth.from(localDate);
 
 				if (itemYM.equals(currentYearMonth)) {
 					switch (item.getGroup()) {
