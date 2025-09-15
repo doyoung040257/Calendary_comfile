@@ -541,7 +541,7 @@ public class TodoPageView extends JFrame {
                 int height = getHeight();
                 int arc = 30;
 
-                g2.setColor(Color.LIGHT_GRAY);
+                g2.setColor(Color.WHITE);
                 g2.fillRoundRect(0, 0, width, height, arc, arc);
 
                 int progressWidth = (int) (width * getPercentComplete());
@@ -552,7 +552,7 @@ public class TodoPageView extends JFrame {
                 FontMetrics fm = g2.getFontMetrics();
                 int textWidth = fm.stringWidth(text);
                 int textHeight = fm.getAscent();
-                g2.setColor(Color.BLUE);
+                g2.setColor(Color.BLACK);
                 g2.drawString(text, (width - textWidth) / 2, (height + textHeight) / 2 - 2);
 
                 g2.dispose();
@@ -656,6 +656,7 @@ public class TodoPageView extends JFrame {
         return panel;
     }
 }
+
 
 
 
