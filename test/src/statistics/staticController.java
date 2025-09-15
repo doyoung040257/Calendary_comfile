@@ -1,7 +1,10 @@
 package statistics;
 
 import java.awt.*;
+import java.time.LocalDate;
 import java.time.YearMonth;
+import java.time.format.DateTimeFormatter;
+
 import javax.swing.*;
 import todo.SetFrame;
 import todo.todoList;
@@ -54,7 +57,13 @@ public class staticController extends JPanel {
         for (todoList item : todoListData.getTodolist()) {
             try {
                 String dateStr = item.getDay();
-                YearMonth itemYM = YearMonth.parse(dateStr.substring(0, 7)); // yyyy-MM
+                if (dateStr.contains("[")) {
+                    dateStr = dateStr.substring(0, dateStr.indexOf("[")); 
+                }
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-M-d");
+                LocalDate localDate = LocalDate.parse(dateStr, formatter);
+                YearMonth itemYM = YearMonth.from(localDate);
+
 
                 if (item.getGroup().equals(category) && itemYM.equals(ym)) {
                     JLabel todoLabel = new JLabel(" " + item.getWork() + " | " + item.getDay() + " | " + item.getTime());
