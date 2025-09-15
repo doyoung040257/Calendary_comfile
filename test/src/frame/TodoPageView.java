@@ -70,7 +70,8 @@ public class TodoPageView extends JFrame {
         JButton calendarButton = createNavButton("달력", new Font("맑은 고딕", Font.BOLD, 16));
         calendarButton.setPreferredSize(new Dimension(80, 40));
         calendarButton.addActionListener(e -> {
-            new MonthlyCalendarView(mainFrame).setVisible(true);
+        	// MonthlyCalendarView에 ThemeManager 전달
+            new MonthlyCalendarView(mainFrame, themeManager).setVisible(true);
             dispose();
         });
         leftPanel.add(calendarButton);
@@ -130,7 +131,8 @@ public class TodoPageView extends JFrame {
                 return;
             }
             JOptionPane.showMessageDialog(this, "설정 화면으로 이동합니다.");
-            new SettingsMenu(currentUser).setVisible(true);
+         // SettingsMenu에 ThemeManager 전달
+            new SettingsMenu(currentUser, themeManager).setVisible(true);
         }); 
         rightPanel.add(settingsButton);
 
