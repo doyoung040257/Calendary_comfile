@@ -31,6 +31,7 @@ public class TodoPageView extends JFrame {
     private LocalDate currentDate;
     private JLabel dateLabel;
     private JTextField oneLineReviewField;
+    private ThemeManager themeManager;
 
     private boolean isDeleteMode = false;
     private List<JCheckBox> deleteCheckboxes = new ArrayList<>();
@@ -662,5 +663,6 @@ public class TodoPageView extends JFrame {
         return panel;
     }
 }
+
 
 
