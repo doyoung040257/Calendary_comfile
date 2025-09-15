@@ -91,6 +91,12 @@ public class SetFrame extends JFrame {
 	
 	    todoButton.addActionListener(e -> {
 	    	JOptionPane.showMessageDialog(this, "통계 페이지로 이동합니다");
+	        for (Component comp : cardPanel.getComponents()) {
+	            if (comp instanceof statisticsPanel) {
+	                ((statisticsPanel) comp).updateStatistics(); // ★ 갱신
+	                break;
+	            }
+			}
 	    	cardLayout.show(cardPanel,"STATISTICS");
 	    });
 
@@ -263,4 +269,5 @@ public class SetFrame extends JFrame {
         cardLayout.show(cardPanel, key);
     }
 }
+
 
