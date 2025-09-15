@@ -122,17 +122,18 @@ public class MainPanel extends JPanel {
         // 그룹 이름 입력 필드
         JTextField groupNameField = new JTextField();
 
-        // 사용자 목록 불러오기 (currentUser 제외)
-        java.util.List<String> userIds = new ArrayList<>(lg.UserDatabase.userDatabase.keySet());
-        userIds.remove(currentUser.getId());
+     // 사용자 목록 불러오기 (currentUser 제외)
+        java.util.List<User> users = new ArrayList<>(lg.UserDatabase.userDatabase.values());
+        users.remove(currentUser);
 
-        // 테이블 모델 생성 (아이디 + 체크박스)
-        String[] columnNames = {"사용자 ID", "선택"};
-        Object[][] data = new Object[userIds.size()][2];
-        for (int i = 0; i < userIds.size(); i++) {
-            data[i][0] = userIds.get(i);  // 사용자 아이디
-            data[i][1] = false;           // 기본은 미선택
+        // 테이블 모델 생성 (이름 + 체크박스)
+        String[] columnNames = {"사용자 이름", "선택"};
+        Object[][] data = new Object[users.size()][2];
+        for (int i = 0; i < users.size(); i++) {
+            data[i][0] = users.get(i).getName();  // ✅ 이름 표시
+            data[i][1] = false;
         }
+
         javax.swing.table.DefaultTableModel model = new javax.swing.table.DefaultTableModel(data, columnNames) {
             @Override
             public Class<?> getColumnClass(int columnIndex) {
@@ -140,11 +141,12 @@ public class MainPanel extends JPanel {
             }
             @Override
             public boolean isCellEditable(int row, int column) {
-                return column == 1; // 체크박스만 수정 가능
+                return column == 1;
             }
         };
 
         JTable table = new JTable(model);
+
         JScrollPane scrollPane = new JScrollPane(table);
         scrollPane.setPreferredSize(new Dimension(300, 200));
 
@@ -174,7 +176,8 @@ public class MainPanel extends JPanel {
             for (int i = 0; i < model.getRowCount(); i++) {
                 Boolean checked = (Boolean) model.getValueAt(i, 1);
                 if (checked != null && checked) {
-                    selectedMembers.add((String) model.getValueAt(i, 0));
+                	 User selectedUser = users.get(i);    // ✅ 인덱스로 User 가져오기
+                     selectedMembers.add(selectedUser.getId()); // 내부 저장은 ID
                 }
             }
 
@@ -445,6 +448,5 @@ public class MainPanel extends JPanel {
 	  	return panel;
     }
 }
-
 
 
