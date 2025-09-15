@@ -73,7 +73,7 @@ public class MemberPanel extends JPanel {
         bottomPanel.add(buttonPanel, BorderLayout.NORTH);
         add(bottomPanel, BorderLayout.SOUTH);
     }
-
+    
     // ----------------- 멤버 목록 갱신 -----------------
     public void updateMemberList() {
         memberPanel.removeAll();
@@ -81,16 +81,22 @@ public class MemberPanel extends JPanel {
         if (currentUser.getGroupList() == null) return;
         Group g = currentUser.getGroupList().getGroupByName(groupName);
         if (g != null) {
-            List<String> members = g.getMembers();
-            for (String m : members) {
+            List<String> members = g.getMembers(); // 멤버 ID 리스트
+            for (String memberId : members) {
+                final String id = memberId; // 람다 캡처용
+
+                // ID → User 조회 후 이름 가져오기
+                User memberUser = lg.UserDatabase.getUser(id);
+                String displayName = (memberUser != null) ? memberUser.getName() : id;
+
                 JPanel row = new JPanel(new BorderLayout(10, 5));
                 row.setBackground(Color.WHITE);
                 row.setBorder(new LineBorder(Color.GRAY, 1, true));
                 row.setMaximumSize(new Dimension(Integer.MAX_VALUE, 40));
 
-                // 멤버 이름에 리더 표시
-                String labelText = m;
-                if (g.getLeader().equals(m)) labelText += " (리더)";
+                // 이름 + 리더 표시
+                String labelText = displayName;
+                if (g.getLeader() != null && g.getLeader().equals(id)) labelText += " (리더)";
                 JLabel memberLabel = new JLabel(labelText);
                 memberLabel.setPreferredSize(new Dimension(150, 25));
 
@@ -98,25 +104,11 @@ public class MemberPanel extends JPanel {
                 styleButton(scheduleBtn, BUTTON_COLOR);
                 scheduleBtn.setPreferredSize(new Dimension(120, 30));
 
-                
-//                scheduleBtn.addActionListener(e -> {
-//                    User memberUser = getUserByName(m);
-//                    if (memberUser == null) memberUser = currentUser;
-//
-//                    todoListMake memberTodo = memberUser.getTodolist();
-//                    if (memberTodo == null) memberTodo = new todoListMake();
-//
-//                    frame.switchPanel(
-//                        "Schedule_" + groupName + "_" + m,
-//                        new SchedulePanel(frame, groupName, m, false, memberTodo)
-//                    );
-//                });
-                
+                // 버튼 액션: 내부적으로 ID 사용
                 scheduleBtn.addActionListener(e -> {
-                    SchedulePanel sp = new SchedulePanel(frame, groupName, m, false, parentFrame);
-                    parentFrame.showSchedulePanel(groupName, m, sp);
+                    SchedulePanel sp = new SchedulePanel(frame, groupName, id, false, parentFrame);
+                    parentFrame.showSchedulePanel(groupName, id, sp);
                 });
-
 
                 row.add(memberLabel, BorderLayout.WEST);
                 row.add(scheduleBtn, BorderLayout.EAST);
@@ -128,13 +120,6 @@ public class MemberPanel extends JPanel {
 
         memberPanel.revalidate();
         memberPanel.repaint();
-    }
-
-    // ----------------- 멤버 이름으로 User 가져오기 (실제 구현에 맞게 수정) -----------------
-    private User getUserByName(String name) {
-        if (currentUser.getName().equals(name)) return currentUser;
-        // 다른 멤버 리스트에 따른 검색 필요 시 구현
-        return null;
     }
 
     // ----------------- 버튼 스타일 -----------------
