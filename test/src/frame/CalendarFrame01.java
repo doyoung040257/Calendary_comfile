@@ -162,7 +162,7 @@ public class CalendarFrame01 extends JPanel {
         todoPanel.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                new TodoPageView(currentDate, CalendarFrame01.this).setVisible(true);
+                new TodoPageView(currentDate, CalendarFrame01.this,new ThemeManager()).setVisible(true);
             }
         });
         scrollPane.setViewportView(todoPanel);
@@ -469,5 +469,6 @@ public class CalendarFrame01 extends JPanel {
         return this.user;
     }
 }
+
 
 
