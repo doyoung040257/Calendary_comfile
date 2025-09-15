@@ -24,6 +24,8 @@ public class statisticsGraph extends JPanel {
         super.paintComponent(g);
         Graphics2D g2 = (Graphics2D) g;
 
+        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        
         int width = getWidth();
         int height = getHeight();
         int size = Math.min(width, height) - 40; // 바깥 원 크기
@@ -51,12 +53,26 @@ public class statisticsGraph extends JPanel {
             return;
         }
 
+        g2.setStroke(new BasicStroke(1.5f));
+        
+        int cx = width / 2;
+        int cy = height / 2;
+        
         // 도넛 파이 조각 그리기
         double curAngle = 0;
         for (int i = 0; i < values.length; i++) {
             double angle = 360 * values[i] / total;
             g2.setColor(colors[i % colors.length]); // 색상 순환
             g2.fillArc(x, y, size, size, (int) curAngle, (int) angle);
+            
+            g2.setColor(Color.BLACK);
+            g2.drawArc(x, y, size, size, (int) curAngle, (int) angle);
+            
+            double rad = Math.toRadians(curAngle);
+            int ex = cx + (int)(size / 2 * Math.cos(rad));
+            int ey = cy - (int)(size / 2 * Math.sin(rad));
+            g2.drawLine(cx, cy, ex, ey);
+
             curAngle += angle;
         }
 
@@ -66,7 +82,11 @@ public class statisticsGraph extends JPanel {
         int hy = (height - holeSize) / 2;
         g2.setColor(Color.WHITE);
         g2.fillOval(hx, hy, holeSize, holeSize);
-
+        
+        g2.setColor(Color.BLACK);
+        g2.drawOval(hx, hy, holeSize, holeSize);
+        
+        g2.dispose();
     }
 }
 
