@@ -73,16 +73,16 @@ public class CalendarFrame01 extends JPanel {
         Font buttonFont = new Font("맑은 고딕", Font.BOLD, 16);
 
         // 상단 패널
-        JPanel topPanel = createNavPanel();
+                JPanel topPanel = createNavPanel();
         topPanel.setLayout(new BorderLayout());
         topPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
         topPanel.setBounds(10, 10, 445, 50);
         add(topPanel);
 
-        JPanel monthControlPanel = createNavPanel();
-        monthControlPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
+        JPanel monthControlPanel = new JPanel();
+        monthControlPanel.setLayout(new BoxLayout(monthControlPanel, BoxLayout.X_AXIS));
         monthControlPanel.setOpaque(false);
-
+        
         ThemeManager.applyTheme(topPanel);
 
         JButton prevWeekButton = new JButton("◀");
@@ -97,6 +97,10 @@ public class CalendarFrame01 extends JPanel {
         });
 
         JButton nextWeekButton = new JButton("▶");
+        
+        prevWeekButton.setAlignmentY(Component.CENTER_ALIGNMENT);
+        monthLabel.setAlignmentY(Component.CENTER_ALIGNMENT);
+        nextWeekButton.setAlignmentY(Component.CENTER_ALIGNMENT);
 
         setupArrowButton(prevWeekButton, titleFont);
         setupArrowButton(nextWeekButton, titleFont);
@@ -465,4 +469,5 @@ public class CalendarFrame01 extends JPanel {
         return this.user;
     }
 }
+
 
