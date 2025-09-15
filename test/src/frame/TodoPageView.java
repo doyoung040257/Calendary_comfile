@@ -1,4 +1,4 @@
-// TodoPageView.java 2차수정 (MouseListener 오류 수정 + 하루 한 줄 리뷰 placeholder)
+// TodoPageView.java - 2차수정 (MouseListener 오류 수정 + 하루 한 줄 리뷰 placeholder)
 package frame;
 
 import java.awt.*;
@@ -11,8 +11,7 @@ import java.util.List;
 import java.util.Locale;
 
 import javax.swing.*;
-import javax.swing.border.EmptyBorder;
-import javax.swing.border.LineBorder;
+import javax.swing.border.*;
 
 import Settings.FontManager;
 import Settings.GlobalFont;
@@ -38,13 +37,16 @@ public class TodoPageView extends JFrame {
     private User user;
     private JButton deleteButton;
     private String toDate;
+    private ThemeManager themeManager; // ThemeManager 인스턴스 추가
 
     public String getToDate() { return toDate; }
     public void setToDate(String toDate) { this.toDate = toDate; }
 
-    public TodoPageView(LocalDate date, CalendarFrame01 mainFrame) {
+    // 생성자에 ThemeManager를 파라미터로 추가
+    public TodoPageView(LocalDate date, CalendarFrame01 mainFrame, ThemeManager themeManager) {
         this.currentDate = date;
         this.mainFrame = mainFrame;
+        this.themeManager = themeManager; // ThemeManager 인스턴스 초기화
 
         setTitle("할 일 페이지");
         setSize(480,800);
@@ -52,7 +54,9 @@ public class TodoPageView extends JFrame {
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null);
         setResizable(false);
-        setBackground(Color.BLACK);
+        
+        // 초기 테마 적용
+        applyTheme();
 
         JPanel topSectionPanel = createNavPanel();
         topSectionPanel.setLayout(new BoxLayout(topSectionPanel, BoxLayout.Y_AXIS));
@@ -68,7 +72,8 @@ public class TodoPageView extends JFrame {
         JButton calendarButton = createNavButton("달력", new Font("맑은 고딕", Font.BOLD, 16));
         calendarButton.setPreferredSize(new Dimension(80, 40));
         calendarButton.addActionListener(e -> {
-            new MonthlyCalendarView(mainFrame).setVisible(true);
+            // MonthlyCalendarView에 ThemeManager 전달
+            new MonthlyCalendarView(mainFrame, themeManager).setVisible(true);
             dispose();
         });
         leftPanel.add(calendarButton);
@@ -128,7 +133,8 @@ public class TodoPageView extends JFrame {
                 return;
             }
             JOptionPane.showMessageDialog(this, "설정 화면으로 이동합니다.");
-            new SettingsMenu(currentUser).setVisible(true);
+            // SettingsMenu에 ThemeManager 전달
+            new SettingsMenu(currentUser, themeManager).setVisible(true);
         }); 
         rightPanel.add(settingsButton);
 
@@ -165,7 +171,6 @@ public class TodoPageView extends JFrame {
 
         todoListPanel = createNavPanel();
         todoListPanel.setLayout(new BoxLayout(todoListPanel, BoxLayout.Y_AXIS));
-        todoListPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         todoListPanel.setBackground(Color.WHITE);
 
         JScrollPane todoListScrollPane = listScrollBox();
@@ -317,6 +322,11 @@ public class TodoPageView extends JFrame {
         loadTodoList();
         FontManager.applyFontRecursively(this, GlobalFont.currentFont);
         //Settings.FontManager.applyFontRecursively(this);
+    }
+    
+    // 테마 적용 메서드
+    private void applyTheme() {
+        ThemeManager.applyTheme(this);
     }
 
     private void saveReview() {
@@ -656,7 +666,3 @@ public class TodoPageView extends JFrame {
         return panel;
     }
 }
-
-
-
-
