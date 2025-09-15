@@ -51,6 +51,7 @@ public class TodoPageView extends JFrame {
         setTitle("할 일 페이지");
         setSize(480,800);
         setLayout(null);
+        setBackground(Color.BLACK);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null);
         setResizable(false);
@@ -58,17 +59,17 @@ public class TodoPageView extends JFrame {
         // 초기 테마 적용
         applyTheme();
 
-        JPanel topSectionPanel = createNavPanel();
-        topSectionPanel.setLayout(new BoxLayout(topSectionPanel, BoxLayout.Y_AXIS));
-        topSectionPanel.setBorder(new EmptyBorder(0, 0, 0, 0));
-        topSectionPanel.setBounds(10, 10, 445, 50);
-        add(topSectionPanel);
-
-        JPanel dateNavigationPanel = createNavPanel();
-        dateNavigationPanel.setLayout(new FlowLayout());
+        // 상단
+        JPanel topPanel = createNavPanel();
+        topPanel.setBounds(10, 10, 445, 60);
+        topPanel.setBackground(Color.GRAY);
+        topPanel.setLayout(new FlowLayout());
+        topPanel.setBorder(BorderFactory.createEmptyBorder(0, 0, 20, 0));
+        add(topPanel);
 
         JPanel leftPanel = new JPanel();
         leftPanel.setOpaque(false);
+        
         JButton calendarButton = createNavButton("달력", new Font("맑은 고딕", Font.BOLD, 16));
         calendarButton.setPreferredSize(new Dimension(80, 40));
         calendarButton.addActionListener(e -> {
@@ -138,12 +139,11 @@ public class TodoPageView extends JFrame {
         }); 
         rightPanel.add(settingsButton);
 
-        dateNavigationPanel.add(leftPanel);
-        dateNavigationPanel.add(dateCenterPanel);
-        dateNavigationPanel.add(rightPanel);
-        topSectionPanel.add(dateNavigationPanel);
-        topSectionPanel.add(Box.createVerticalStrut(10));
+        topPanel.add(leftPanel);
+        topPanel.add(dateCenterPanel);
+        topPanel.add(rightPanel);
 
+        //진행률
         progressBar = createRoundProgressBar(0, 100);
         progressBar.setPreferredSize(new Dimension(getWidth(), 30));
         progressBar.setStringPainted(true);
@@ -155,8 +155,9 @@ public class TodoPageView extends JFrame {
         JLabel progressLabel = new JLabel("진행율", SwingConstants.CENTER);
         progressLabel.setFont(new Font("맑은 고딕", Font.BOLD, 16));
 
-        JPanel progressPanel = createNavPanel();
+        JPanel progressPanel = new JPanel();
         progressPanel.setBounds(10, 70, 445, 50);
+        progressPanel.setOpaque(false);
         progressPanel.setLayout(new BorderLayout());
         progressPanel.add(progressBar, BorderLayout.CENTER);
         progressPanel.add(progressLabel, BorderLayout.NORTH);
@@ -164,24 +165,24 @@ public class TodoPageView extends JFrame {
 
         refreshDateDisplay();
 
-        JPanel centerPanel = createNavPanel();
-        centerPanel.setBounds(10, 130, 445, 430);
-        centerPanel.setLayout(new BorderLayout());
-        add(centerPanel);
-
+        // 중간
         todoListPanel = createNavPanel();
         todoListPanel.setLayout(new BoxLayout(todoListPanel, BoxLayout.Y_AXIS));
-        todoListPanel.setBackground(Color.WHITE);
+        todoListPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+        todoListPanel.setBackground(Color.gray);
+        
 
         JScrollPane todoListScrollPane = listScrollBox();
+        todoListScrollPane.setBounds(10, 130, 445, 430);
         todoListScrollPane.setViewportView(todoListPanel);
-        todoListScrollPane.setPreferredSize(new Dimension(400, 430));
         todoListScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-        centerPanel.add(todoListScrollPane);
-
+        add(todoListScrollPane);
+        
+        // 중간 버튼(추가 삭제)
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 10));
         buttonPanel.setBounds(10, 560, 445, 50);
         buttonPanel.setOpaque(false);
+        
         JButton addButton = createNavButton("추가", new Font("맑은 고딕", Font.BOLD, 16));
         deleteButton = createNavButton("삭제", new Font("맑은 고딕", Font.BOLD, 16));
         addButton.setPreferredSize(new Dimension(100, 40));
@@ -246,8 +247,9 @@ public class TodoPageView extends JFrame {
         });
 
         // --- 하루 한 줄 리뷰 (placeholder 적용) ---
-        JPanel reviewPanel = createNavPanel();
+        JPanel reviewPanel = new JPanel();
         reviewPanel.setBounds(10, 620, 445, 40);
+        reviewPanel.setOpaque(false);
         reviewPanel.setLayout(new BorderLayout());
 
         oneLineReviewField  = new JTextField(25);
@@ -300,14 +302,13 @@ public class TodoPageView extends JFrame {
         reviewPanel.setBorder(new EmptyBorder(10, 0, 0, 0));
         add(reviewPanel);
 
+        // 하단
         JPanel bottomPanel = new JPanel();
         bottomPanel.setBounds(10, 670, 445, 70);
+        bottomPanel.setOpaque(false);
+        
         JButton completeButton = createNavButton("완료", new Font("맑은 고딕", Font.BOLD, 24));
         completeButton.setPreferredSize(new Dimension(150, 60));
-        completeButton.setBackground(Color.WHITE);
-        completeButton.setForeground(Color.BLACK);
-        completeButton.setOpaque(true);
-        completeButton.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2));
         bottomPanel.add(completeButton);
         add(bottomPanel);
 
