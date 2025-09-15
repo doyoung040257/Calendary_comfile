@@ -42,6 +42,7 @@ public class SetFrame extends JFrame {
 		setLayout(new BorderLayout());
 		setLocationRelativeTo(null);
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		setResizable(false);
 		
         Font titleFont = new Font("맑은 고딕", Font.BOLD, 22);
         Font buttonFont = new Font("맑은 고딕", Font.BOLD, 16);
@@ -248,3 +249,4 @@ public class SetFrame extends JFrame {
         cardLayout.show(cardPanel, key);
     }
 }
+
