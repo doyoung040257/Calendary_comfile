@@ -1,4 +1,4 @@
-package GroupTest;
+package GroupTest;//할일 추가 수정버전
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -8,9 +8,14 @@ import java.util.*;
 import java.util.List;
 import todo.todoListMake;
 import todo.SetFrame;
+import todo.todoAddition;
 import todo.todoList;
 import lg.UserDatabase;
 import lg.User;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.Locale;
+
 
 public class SchedulePanel extends JPanel {
 
@@ -43,23 +48,39 @@ public class SchedulePanel extends JPanel {
 
     // ----------------- 공통 UI 초기화 -----------------
     private void initUI(MainFrame frame, todoListMake todoData) {
-        User currentUser = UserDatabase.getUser(memberName); // memberName == User ID
+    	User currentUser = UserDatabase.getUser(memberName); // memberName == User ID
         setLayout(new BorderLayout(10, 10));
         Color highlightColor = new Color(180, 150, 200);
 
         // 상단 타이틀
+        JPanel topPanel = new JPanel();
+        topPanel.setLayout(new BoxLayout(topPanel, BoxLayout.Y_AXIS));
+        topPanel.setOpaque(false); // 배경 투명
+        
         JLabel title = new JLabel(groupName + " - " + currentUser.getName() + " 일정", JLabel.CENTER);
         title.setFont(new Font("맑은 고딕", Font.BOLD, 20));
-        title.setBorder(BorderFactory.createEmptyBorder(10, 0, 0, 0));
-        add(title, BorderLayout.NORTH);
+        title.setAlignmentX(Component.CENTER_ALIGNMENT); // 중앙 정렬
+     // 오늘 날짜 가져오기
+        DateTimeFormatter fullFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd [EEE]", Locale.ENGLISH);
+        String todayFull = LocalDate.now().format(fullFormatter);
 
+        JLabel dateLabel = new JLabel(todayFull, JLabel.CENTER);
+        dateLabel.setFont(new Font("맑은 고딕", Font.PLAIN, 16));
+        dateLabel.setForeground(Color.DARK_GRAY);
+        dateLabel.setAlignmentX(Component.CENTER_ALIGNMENT); // 중앙 정렬
+        dateLabel.setBorder(BorderFactory.createEmptyBorder(5, 0, 10, 0)); // 타이틀과 간격
+        
+        topPanel.add(title);
+        topPanel.add(dateLabel);
+
+        add(topPanel, BorderLayout.NORTH);
 
         // ---------------------------
         // 1. users.dat 불러오기
         UserDatabase.loadUsers();
 
         // 2. 현재 사용자(User) 가져오기
-
+        
         if (currentUser != null) {
             System.out.println("User 데이터 로드 성공:");
             System.out.println("ID: " + currentUser.getId());
@@ -77,23 +98,34 @@ public class SchedulePanel extends JPanel {
 
         // events 초기화
         events = new ArrayList<>(Collections.nCopies(24, ""));
-
+        
+        LocalDate today = LocalDate.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd"); // 일정 날짜 포맷
+        String todayStr = today.format(formatter);
+        
         if (todoData != null) {
             for (todoList item : todoData.getTodolist()) {
+                // 1️⃣ 날짜 부분만 추출
+                String dateOnly = item.getDay().split("\\[")[0];
+
+                // 2️⃣ 오늘 날짜와 비교
+                if (!dateOnly.equals(todayStr)) continue;
+
+                // 3️⃣ 시간 추출 및 events 업데이트
                 String timeStr = item.getTime(); // "14시 30분"
                 int hour = 0;
                 try {
-                    hour = Integer.parseInt(timeStr.replaceAll("시.*", "")); // 시만 추출
+                    hour = Integer.parseInt(timeStr.replaceAll("시.*", ""));
                 } catch (Exception e) { e.printStackTrace(); }
 
-                // 기존 이벤트가 있으면 이어 붙이기
                 String current = events.get(hour);
                 if (current == null || current.isEmpty()) {
                     events.set(hour, item.getWork());
                 } else {
-                    events.set(hour, current + "\n" + item.getWork()); // 이어 붙이기
+                    events.set(hour, current + "\n" + item.getWork());
                 }
             }
+        
         } else {
             if (isGroup) {
                 events = frame.getGroupSchedules().getOrDefault(groupName, new ArrayList<>());
@@ -165,9 +197,6 @@ public class SchedulePanel extends JPanel {
             table.setRowHeight(row, maxHeight);
         }
 
-
-
-
         // 하단 이전 화면 버튼
         JPanel bottomPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 10));
         RoundedButton backBtn = new RoundedButton("이전 화면", 20);
@@ -193,28 +222,35 @@ public class SchedulePanel extends JPanel {
 
     // 일정 추가
     private void addEventAction() {
-        int[] selectedRows = table.getSelectedRows();
-        if (selectedRows.length == 0) { JOptionPane.showMessageDialog(this, "추가할 시간대를 선택해주세요."); return; }
+    	 int[] selectedRows = table.getSelectedRows();
+    	    if (selectedRows.length == 0) {
+    	        JOptionPane.showMessageDialog(this, "추가할 시간대를 선택해주세요.");
+    	        return;
+    	    }
 
-        for (int row : selectedRows) {
-            String cell = (String) table.getValueAt(row, 1);
-            if (cell != null && !cell.isEmpty()) { JOptionPane.showMessageDialog(this, "선택된 범위에 이미 일정이 존재합니다."); return; }
-        }
+    	    for (int row : selectedRows) {
+    	        String cell = (String) table.getValueAt(row, 1);
+    	        if (cell != null && !cell.isEmpty()) {
+    	            JOptionPane.showMessageDialog(this, "선택된 시간대에 이미 일정이 있습니다.");
+    	            return;
+    	        }
+    	    }
 
-        String newEvent = JOptionPane.showInputDialog(this, "추가할 일정 입력:");
-        if (newEvent == null || newEvent.isEmpty()) return;
+    	    // ✅ todoAddition 연결 부분
+    	    todoListMake todoData = null;
+    	    lg.User currentUser = lg.SessionManager.getCurrentUser();
+    	    if (currentUser != null) {
+    	        todoData = currentUser.getTodolist();
+    	    }
 
-        int confirm = JOptionPane.showConfirmDialog(this, "일정을 추가하시겠습니까?", "확인", JOptionPane.YES_NO_OPTION);
-        if (confirm != JOptionPane.YES_OPTION) return;
+    	    // 일정 추가 창 열기 (afterSave 콜백 안에서 테이블 갱신)
+    	    todoAddition addFrame = new todoAddition(todoData, () -> {
+    	        updateTableFromEvents(); // 새 일정 반영
+    	        table.repaint();
+    	    }, null);
 
-        for (int row : selectedRows) {
-            table.setValueAt(newEvent, row, 1);
-            events.add(newEvent + "(" + row + "시)");
-        }
-        table.clearSelection();
-        table.repaint();
-        JOptionPane.showMessageDialog(this, "일정이 추가되었습니다");
-    }
+    	    addFrame.todo_addition_page();
+    	}
 
     // 일정 수정/삭제
     private void editOrDeleteAction() {
