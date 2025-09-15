@@ -3,7 +3,7 @@ package statistics;
 import javax.swing.*;
 import java.awt.*;
 
-public class staticGraph extends JPanel {
+public class statisticsGraph extends JPanel {
     private double[] values;   // 외부에서 전달받는 데이터
     private Color[] colors;    // 색상 배열
     private String centerText; // 중앙에 표시할 문자열
@@ -69,4 +69,5 @@ public class staticGraph extends JPanel {
 
     }
 }
+
 
