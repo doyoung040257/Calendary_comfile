@@ -125,8 +125,9 @@ public class Notificationsetting extends JFrame {
 		add(panel);
 
 		FontManager.applyFontRecursively(this);
-		// 테마 적용
-		ThemeManager.applyTheme();
+		// 그룹 등록
+        ThemeManager.register("background", this);
+        ThemeManager.applyTheme();
 		setVisible(true);
 	}
 }
