@@ -48,36 +48,34 @@ public class MainPanel extends JPanel {
         Font buttonFont = new Font("맑은 고딕", Font.BOLD, 16);
         
 
-     // ----------------- 상단 -----------------
+         // ----------------- 상단 -----------------
         JPanel topPanel = createNavPanel();
         topPanel.setLayout(new BorderLayout());
         topPanel.setBackground(Color.WHITE);
         topPanel.setBounds(10, 10, 445, 50);
         topPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 
-
         // 타이틀
         JLabel title = new JLabel("그룹 관리", JLabel.CENTER);
         title.setFont(titleFont);
         topPanel.add(title, BorderLayout.CENTER);
-        
-        
 
-		// 네모난 기본 배경 칠하지 않도록
-		topPanel.putClientProperty("excludeTheme", Boolean.FALSE);
-		topPanel.putClientProperty("roundPanel", Boolean.TRUE);
-		ThemeManager.register("groupA", topPanel);
-		topPanel.setOpaque(false);
+        // 좌측에 빈 스페이서 추가 (설정 버튼과 같은 크기) -> 그룹 관리 타이틀 중앙으로 배치하기 위한 용도
+        JButton leftSpacer = new JButton();
+        leftSpacer.setOpaque(false);
+        leftSpacer.setContentAreaFilled(false);
+        leftSpacer.setBorderPainted(false);
+        leftSpacer.setPreferredSize(new Dimension(60, 50)); // 설정 버튼 크기와 맞추기
+        topPanel.add(leftSpacer, BorderLayout.WEST);
 
-        // 수정
-		JButton settingsViewButton = createNavButton("설정",buttonFont);
-		topPanel.add(settingsViewButton, BorderLayout.EAST);
+        // 설정 버튼
+        JButton settingsViewButton = createNavButton("설정", buttonFont);
+        topPanel.add(settingsViewButton, BorderLayout.EAST);
         settingsViewButton.addActionListener(e -> {
             JOptionPane.showMessageDialog(this, "설정 화면으로 이동합니다.");
             new SettingsMenu(this.currentUser).setVisible(true);
         });
-        
-//        addHoverClickEffect(settingsViewButton, new Color(100, 149, 237)); 나중에 추가
+
         add(topPanel, BorderLayout.NORTH);
 
         // ----------------- 그룹 버튼 컨테이너 -----------------
@@ -490,6 +488,7 @@ public class MainPanel extends JPanel {
 	  	return panel;
     }
 }
+
 
 
 
