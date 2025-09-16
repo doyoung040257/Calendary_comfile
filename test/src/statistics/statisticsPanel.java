@@ -61,8 +61,14 @@ public class statisticsPanel extends JPanel {
 		Font titleFont = new Font("맑은 고딕", Font.BOLD, 22);
 		Font buttonFont = new Font("맑은 고딕", Font.BOLD, 18);
 
-		Color[] colors = { Color.decode("#DC3912"), Color.decode("#FF9900"), Color.decode("#EDC948"),
-				Color.decode("#109618"), Color.decode("#3366CC"), Color.decode("#990099") };
+		Color[] colors = { 
+				Color.decode("#D32F2F"),
+				Color.decode("#F57C00"),
+				Color.decode("#FBC02D"),
+				Color.decode("#388E3C"),
+				Color.decode("#1976D2"), 
+				Color.decode("#7B1FA2")  
+		};
 		staticgraph = new statisticsGraph(new double[] { 0, 0, 0, 0, 0, 0 }, colors);
 		staticgraph.setPreferredSize(new Dimension(200, 200));
 
@@ -192,12 +198,12 @@ public class statisticsPanel extends JPanel {
 		JPanel colorFinance = new JPanel();
 		JPanel colorOthers = new JPanel();
 
-		colorWork.setBackground(Color.decode("#DC3912"));
-		colorHealth.setBackground(Color.decode("#FF9900"));
-		colorStudy.setBackground(Color.decode("#EDC948"));
-		colorHobby.setBackground(Color.decode("#109618"));
-		colorFinance.setBackground(Color.decode("#3366CC"));
-		colorOthers.setBackground(Color.decode("#990099"));
+		colorWork.setBackground(Color.decode("#D32F2F"));
+		colorHealth.setBackground(Color.decode("#F57C00"));
+		colorStudy.setBackground(Color.decode("#FBC02D"));
+		colorHobby.setBackground(Color.decode("#388E3C"));
+		colorFinance.setBackground(Color.decode("#1976D2"));
+		colorOthers.setBackground(Color.decode("#7B1FA2"));
 
 		JLabel work = new JLabel("업무");
 		JLabel health = new JLabel("건강");
@@ -325,12 +331,12 @@ public class statisticsPanel extends JPanel {
 		finance2.setIcon(financeicon);
 		others2.setIcon(othersicon);
 
-		work2.setBackground(Color.decode("#DC3912"));
-		health2.setBackground(Color.decode("#FF9900"));
-		study2.setBackground(Color.decode("#EDC948"));
-		hobby2.setBackground(Color.decode("#109618"));
-		finance2.setBackground(Color.decode("#3366CC"));
-		others2.setBackground(Color.decode("#990099"));
+		work2.setBackground(Color.decode("#D32F2F"));
+		health2.setBackground(Color.decode("#F57C00"));
+		study2.setBackground(Color.decode("#FBC02D"));
+		hobby2.setBackground(Color.decode("#388E3C"));
+		finance2.setBackground(Color.decode("#1976D2"));
+		others2.setBackground(Color.decode("#7B1FA2"));
 
 		// 버튼 이벤트
 		work2.addActionListener(e -> parentFrame.showCategoryPanel("업무", currentYearMonth));
