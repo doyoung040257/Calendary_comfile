@@ -46,7 +46,7 @@ public class LoginFrame extends JFrame {
 
 		// 구름 아이콘
 		ImageIcon cloudIcon = new ImageIcon(getClass().getResource("/images/CC.png"));
-		Image scaledImage = cloudIcon.getImage().getScaledInstance(200, 90, Image.SCALE_SMOOTH);
+		Image scaledImage = cloudIcon.getImage().getScaledInstance(300, 135, Image.SCALE_SMOOTH);
 		ImageIcon scaledIcon = new ImageIcon(scaledImage);
 
 		JLabel cloudLabel = new JLabel(scaledIcon);
@@ -253,5 +253,6 @@ class GlassButton2 extends JButton {
 		g2.dispose();
 	}
 }
+
 
 
