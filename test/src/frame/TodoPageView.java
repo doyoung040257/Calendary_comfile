@@ -61,7 +61,7 @@ public class TodoPageView extends JFrame {
 		setResizable(false);
 		// getContentPane().setBackground(Color.decode("#F0F8FF")); // 전체 배경색
 		ThemeManager.register("background", this);
-        ThemeManager.applyTheme(); 
+		ThemeManager.applyTheme();
 
 		JPanel topSectionPanel = createNavPanel();
 		topSectionPanel.setLayout(new BoxLayout(topSectionPanel, BoxLayout.Y_AXIS));
@@ -72,6 +72,11 @@ public class TodoPageView extends JFrame {
 		JPanel dateNavigationPanel = createNavPanel();
 		dateNavigationPanel.setLayout(new FlowLayout());
 		// dateNavigationPanel.setBackground(Color.LIGHT_GRAY); 상단 판넬
+		// 네모난 기본 배경 칠하지 않도록
+		dateNavigationPanel.putClientProperty("excludeTheme", Boolean.FALSE);
+		dateNavigationPanel.putClientProperty("roundPanel", Boolean.TRUE);
+		ThemeManager.register("groupA", dateNavigationPanel);
+		dateNavigationPanel.setOpaque(false);
 
 		JPanel leftPanel = new JPanel();
 		leftPanel.setOpaque(false);
@@ -173,14 +178,17 @@ public class TodoPageView extends JFrame {
 
 		JPanel centerPanel = createNavPanel();
 		centerPanel.setBounds(10, 130, 445, 430);
-		centerPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 		centerPanel.setLayout(new BorderLayout());
 		add(centerPanel);
 
 		todoListPanel = createNavPanel();
 		todoListPanel.setLayout(new BoxLayout(todoListPanel, BoxLayout.Y_AXIS));
-		todoListPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 		todoListPanel.setBackground(Color.WHITE);
+		// 네모난 기본 배경 칠하지 않도록
+		todoListPanel.putClientProperty("excludeTheme", Boolean.FALSE);
+		todoListPanel.putClientProperty("roundPanel", Boolean.TRUE);
+		ThemeManager.register("groupB", todoListPanel);
+		todoListPanel.setOpaque(false);
 
 		JScrollPane todoListScrollPane = listScrollBox();
 		todoListScrollPane.setViewportView(todoListPanel);
@@ -198,12 +206,12 @@ public class TodoPageView extends JFrame {
 		buttonPanel.add(addButton);
 		buttonPanel.add(deleteButton);
 		add(buttonPanel);
-		
+
 		// 🚀 ThemeManager 적용 후 버튼 색 유지
-        addButton.setBackground(Color.WHITE);
-        addButton.setForeground(Color.BLACK);
-        deleteButton.setBackground(Color.WHITE);
-        deleteButton.setForeground(Color.BLACK);
+		addButton.setBackground(Color.WHITE);
+		addButton.setForeground(Color.BLACK);
+		deleteButton.setBackground(Color.WHITE);
+		deleteButton.setForeground(Color.BLACK);
 
 		updateToDate();
 		addButton.addActionListener(e -> {
@@ -265,10 +273,12 @@ public class TodoPageView extends JFrame {
 		reviewPanel.setBounds(10, 620, 445, 40);
 		reviewPanel.setLayout(new BorderLayout());
 
+
 		oneLineReviewField = new JTextField(25);
 		oneLineReviewField.setBorder(new EmptyBorder(5, 5, 5, 5));
 		oneLineReviewField.setFont(new Font("맑은 고딕", Font.BOLD, 14));
-
+		oneLineReviewField.putClientProperty("excludeTheme", Boolean.TRUE);
+		
 		String placeholder = "예시: 오늘 하루도 멋지게 완수!";
 		oneLineReviewField
 				.setText(SessionManager.getCurrentUser().getDailyReviews().getOrDefault(currentDate, placeholder));
@@ -341,14 +351,16 @@ public class TodoPageView extends JFrame {
 		});
 
 		loadTodoList();
+//		ThemeManager.register("background", this);
+		ThemeManager.applyTheme();
 		FontManager.applyFontRecursively(this, GlobalFont.currentFont);
 		// Settings.FontManager.applyFontRecursively(this);
 	}
-
-	// 테마 적용 메서드
-	private void applyTheme() {
-		ThemeManager.applyTheme();
-	}
+//
+//	// 테마 적용 메서드
+//	private void applyTheme() {
+//		ThemeManager.applyTheme();
+//	}
 
 	private void saveReview() {
 		SessionManager.getCurrentUser().getDailyReviews().put(currentDate, oneLineReviewField.getText());
@@ -685,38 +697,31 @@ public class TodoPageView extends JFrame {
 
 	public JPanel createNavPanel() {
 		JPanel panel = new JPanel() {
-		    private boolean initialized = false;
-		    private Color initialBackground = null;
+			@Override
+			protected void paintComponent(Graphics g) {
 
-		    @Override
-		    protected void paintComponent(Graphics g) {
-		        if (!initialized) {
-		            initialBackground = getBackground(); // 최초 배경색 저장
-		            initialized = true;
-		        }
+				Graphics2D g2 = (Graphics2D) g.create();
+				g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
-		        Graphics2D g2 = (Graphics2D) g.create();
-		        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+				Color bg = getBackground();
+				if (bg == null) bg = new Color(0,0,0,0);
+				// 🚀 저장된 초기 배경색을 사용하도록 변경
+				g2.setColor(bg);
+				g2.fillRoundRect(0, 0, getWidth(), getHeight(), 30, 30);
 
-		        // 🚀 저장된 초기 배경색을 사용하도록 변경
-		        g2.setColor(initialBackground != null ? initialBackground : getBackground());
-		        g2.fillRoundRect(0, 0, getWidth(), getHeight(), 30, 30);
+				g2.dispose();
+			}
 
-		        g2.dispose();
-		    }
-
-		    @Override
-		    protected void paintBorder(Graphics g) {
-		        // 필요 시 테두리 처리
-		        Graphics2D g2 = (Graphics2D) g.create();
-		        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-		        g2.dispose();
-		    }
+			@Override
+			protected void paintBorder(Graphics g) {
+				// 필요 시 테두리 처리
+				Graphics2D g2 = (Graphics2D) g.create();
+				g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+				g2.dispose();
+			}
 		};
 
 		panel.setOpaque(false);
 		return panel;
 	}
 }
-
-
