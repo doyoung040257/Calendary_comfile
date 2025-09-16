@@ -120,6 +120,7 @@ public class MonthlyCalendarView extends JFrame {
         // --- 하단 (SOUTH): 페이지 버튼 ---
         JPanel buttonPanel = new JPanel(new GridLayout(1, 2, 20, 0));
         buttonPanel.setBorder(new EmptyBorder(10, 0, 0, 0));
+		buttonPanel.setOpaque(false);
 
         JButton mainButton = createNavButton("메인 페이지", new Font("맑은 고딕", Font.BOLD, 16));
         mainButton.addActionListener(e -> {
@@ -326,5 +327,6 @@ public class MonthlyCalendarView extends JFrame {
         return panel;
     }
 }
+
 
 
