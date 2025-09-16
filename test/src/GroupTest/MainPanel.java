@@ -41,21 +41,29 @@ public class MainPanel extends JPanel {
     
     public void initUI()  { //여기
    	setLayout(null);
-        setBackground(Color.BLACK);
+   	setBackground(new Color(240, 248, 255)); // AliceBlue
+
 
         Font titleFont = new Font("맑은 고딕", Font.BOLD, 22);
         Font buttonFont = new Font("맑은 고딕", Font.BOLD, 16);
         
-        // ----------------- 상단 -----------------
+
+     // ----------------- 상단 -----------------
         JPanel topPanel = createNavPanel();
         topPanel.setLayout(new BorderLayout());
         topPanel.setBackground(Color.WHITE);
         topPanel.setBounds(10, 10, 445, 50);
         topPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 
+        // 좌측 빈 공간 추가 (우측 버튼과 균형)
+        JLabel leftSpacer = new JLabel("                     ");
+        topPanel.add(leftSpacer, BorderLayout.WEST);
+
+        // 타이틀
         JLabel title = new JLabel("그룹 관리", JLabel.CENTER);
         title.setFont(titleFont);
         topPanel.add(title, BorderLayout.CENTER);
+
 
         // 수정
 		JButton settingsViewButton = createNavButton("설정",buttonFont);
@@ -92,16 +100,18 @@ public class MainPanel extends JPanel {
         RoundedButton createBtn = new RoundedButton("그룹 만들기", 20);
         createBtn.setFont(buttonFont);
 		createBtn.setPreferredSize(new Dimension(140, 50));
-        createBtn.setBackground(new Color(180, 150, 200));
+		Color buttonColor = new Color(173, 216, 230); // LightBlue
+		createBtn.setBackground(buttonColor);
        createBtn.setForeground(Color.WHITE);
-       addHoverClickEffect(createBtn, new Color(180, 150, 200));
+       addHoverClickEffect(createBtn, new Color(173, 216, 230));
 
         RoundedButton deleteBtn = new RoundedButton("그룹 삭제", 20);
       deleteBtn.setFont(buttonFont);
 		deleteBtn.setPreferredSize(new Dimension(140, 50));
-        deleteBtn.setBackground(new Color(180, 150, 200));
+		Color buttonColor1 = new Color(173, 216, 230); // LightBlue
+		deleteBtn.setBackground(buttonColor1);
         deleteBtn.setForeground(Color.WHITE);
-        addHoverClickEffect(deleteBtn, new Color(180, 150, 200));
+        addHoverClickEffect(deleteBtn, new Color(173, 216, 230));
 
         groupButtonPanel.add(createBtn);
         groupButtonPanel.add(deleteBtn);
@@ -448,5 +458,4 @@ public class MainPanel extends JPanel {
 	  	return panel;
     }
 }
-
 
