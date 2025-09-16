@@ -100,16 +100,17 @@ public class SchedulePanel extends JPanel {
         events = new ArrayList<>(Collections.nCopies(24, ""));
         
         LocalDate today = LocalDate.now();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd"); // 일정 날짜 포맷
-        String todayStr = today.format(formatter);
-        
-        if (todoData != null) {
-            for (todoList item : todoData.getTodolist()) {
-                // 1️⃣ 날짜 부분만 추출
-                String dateOnly = item.getDay().split("\\[")[0];
+      //DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd"); // ❌ 기존
+      DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-M-d");   // ✅ 수정
 
-                // 2️⃣ 오늘 날짜와 비교
-                if (!dateOnly.equals(todayStr)) continue;
+      if (todoData != null) {
+          for (todoList item : todoData.getTodolist()) {
+              // 1️⃣ 날짜 부분만 추출
+              String dateOnly = item.getDay().split("\\[")[0];
+
+              // 2️⃣ 문자열 비교 ❌ → LocalDate 비교 ✅
+              LocalDate itemDate = LocalDate.parse(dateOnly, formatter);
+              if (!itemDate.equals(today)) continue;
 
                 // 3️⃣ 시간 추출 및 events 업데이트
                 String timeStr = item.getTime(); // "14시 30분"
