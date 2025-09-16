@@ -157,36 +157,11 @@ public class PersonalInfoPage extends JFrame {
 		add(panel, BorderLayout.CENTER);
 		add(buttonPanel, BorderLayout.SOUTH);
 
-		applyTheme();
+		// 그룹 등록
+        ThemeManager.register("background", this);
+        ThemeManager.applyTheme();
 		FontManager.applyFontRecursively(this);
 		setVisible(true);
-	}
-
-	private void applyTheme() {
-		Color bgColor;
-		Color fgColor;
-
-		switch (Setting.theme) {
-		case "DARK":
-			bgColor = Color.BLACK;
-			fgColor = Color.WHITE;
-			break;
-		case "PASTEL":
-			bgColor = new Color(255, 228, 225);
-			fgColor = Color.BLACK;
-			break;
-		default:
-			bgColor = Color.decode("#f0f8ff");
-			fgColor = Color.BLACK;
-
-		}
-
-		panel.setBackground(bgColor);
-
-		for (Component comp : panel.getComponents()) {
-			comp.setBackground(bgColor);
-			comp.setForeground(fgColor);
-		}
 	}
 
 }
