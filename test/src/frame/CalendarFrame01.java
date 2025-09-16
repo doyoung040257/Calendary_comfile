@@ -375,34 +375,31 @@ public class CalendarFrame01 extends JPanel {
 	}
 
     private JButton createNavButton(String text, Font font) {
-        JButton button = new JButton(text) {
-        
-        @Override
-        protected void paintComponent(Graphics g) {
-            Graphics2D g2 = (Graphics2D) g.create();
-            g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-            // 배경 색상 (눌렸을 때 어둡게)
-            if (getModel().isArmed()) {
-                g2.setColor(getBackground().darker());
-            } else {
-                g2.setColor(getBackground());
-            }
-            // 둥근 사각형 배경
-            g2.fillRoundRect(0, 0, getWidth(), getHeight(), 30, 30);
-            g2.dispose();
-            // 버튼 텍스트 그대로 출력
-            super.paintComponent(g);
-        }
+        JButton button = new JButton(text) {    
+            @Override
+            protected void paintComponent(Graphics g) {
+                Graphics2D g2 = (Graphics2D) g.create();
+                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
-        @Override
-        protected void paintBorder(Graphics g) {
-            Graphics2D g2 = (Graphics2D) g.create();
-            g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-            g2.setColor(Color.GRAY); // 테두리 색상
-            g2.drawRoundRect(0, 0, getWidth() - 1, getHeight() - 1, 30, 30);
-            g2.dispose();
-        }
-    };
+                Color bg = getBackground();
+                Object selected = getClientProperty("selected");
+
+                if (selected != null && (boolean) selected) {
+                    bg = new Color(200, 230, 255); 
+                } else if (getModel().isRollover()) {
+                    bg = new Color(200, 230, 255); // Hover 색상
+                }
+
+                if (getModel().isArmed()) {
+                    bg = bg.darker();
+                }
+
+                g2.setColor(bg);
+                g2.fillRoundRect(0, 0, getWidth(), getHeight(), 30, 30);
+                g2.dispose();
+                super.paintComponent(g);
+            }
+        };
     
 	    button.setFont(font);
 	    button.setBackground(Color.WHITE);
@@ -414,6 +411,7 @@ public class CalendarFrame01 extends JPanel {
 	    button.setBorderPainted(false);
 	    button.setOpaque(false);
 	    button.putClientProperty("excludeTheme", Boolean.TRUE);
+	    
         
         return button;
     }
@@ -430,20 +428,20 @@ public class CalendarFrame01 extends JPanel {
                 Color bg = getBackground();
                 Object selected = getClientProperty("selected");
                 if (selected != null && (boolean) selected) {
-                    bg = new Color(255, 100, 100); // 강조색
+                    bg = new Color(200, 230, 255); // 강조색
+                } else if (getModel().isRollover()) {
+                    bg = new Color(200, 230, 255); // Hover 색상
                 }
 
                 if (getModel().isArmed()) {
-                    g2.setColor(bg.darker());
-                } else {
-                    g2.setColor(bg);
+                    bg = bg.darker();
                 }
 
                 // 둥근 사각형 배경
+                g2.setColor(bg);
                 g2.fillRoundRect(0, 0, getWidth(), getHeight(), 30, 30);
                 g2.dispose();
-
-                super.paintComponent(g);
+                super.paintComponent(g);;
             }
 
             @Override
@@ -553,7 +551,7 @@ public class CalendarFrame01 extends JPanel {
                 FontMetrics fm = g2.getFontMetrics();
                 int textWidth = fm.stringWidth(text);
                 int textHeight = fm.getAscent();
-                g2.setColor(Color.BLUE);   // 원하는 글자색
+                g2.setColor(Color.BLACK);   // 원하는 글자색
                 g2.drawString(text, (width - textWidth) / 2, (height + textHeight) / 2 - 2);
 
                 g2.dispose();
