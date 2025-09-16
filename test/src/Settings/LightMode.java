@@ -149,6 +149,10 @@ public class LightMode extends JFrame {
 			// SettingsMenu 창 열기
 			new SettingsMenu(user).setVisible(true);
 		});
+		
+		// 그룹 등록
+        ThemeManager.register("background", this);
+        ThemeManager.applyTheme();
 		FontManager.applyFontRecursively(this);
 		setLocationRelativeTo(null);
 		setVisible(true);
