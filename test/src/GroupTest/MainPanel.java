@@ -55,9 +55,6 @@ public class MainPanel extends JPanel {
         topPanel.setBounds(10, 10, 445, 50);
         topPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 
-        // 좌측 빈 공간 추가 (우측 버튼과 균형)
-        JLabel leftSpacer = new JLabel("                     ");
-        topPanel.add(leftSpacer, BorderLayout.WEST);
 
         // 타이틀
         JLabel title = new JLabel("그룹 관리", JLabel.CENTER);
@@ -493,5 +490,6 @@ public class MainPanel extends JPanel {
 	  	return panel;
     }
 }
+
 
 
