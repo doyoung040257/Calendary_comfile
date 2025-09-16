@@ -401,7 +401,7 @@ public class MainPanel extends JPanel {
 	            g2.fillRoundRect(0, 0, getWidth(), getHeight(), 30, 30);
 
 	            // 테두리
-	            g2.setColor(Color.GRAY);
+	            g2.setColor(getBackground());
 	            g2.drawRoundRect(0, 0, getWidth() - 1, getHeight() - 1, 30, 30);
 
 	            g2.dispose();
@@ -493,4 +493,5 @@ public class MainPanel extends JPanel {
 	  	return panel;
     }
 }
+
 
