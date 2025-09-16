@@ -173,11 +173,13 @@ public class TodoPageView extends JFrame {
 
 		JPanel centerPanel = createNavPanel();
 		centerPanel.setBounds(10, 130, 445, 430);
+		centerPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 		centerPanel.setLayout(new BorderLayout());
 		add(centerPanel);
 
 		todoListPanel = createNavPanel();
 		todoListPanel.setLayout(new BoxLayout(todoListPanel, BoxLayout.Y_AXIS));
+		todoListPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 		todoListPanel.setBackground(Color.WHITE);
 
 		JScrollPane todoListScrollPane = listScrollBox();
@@ -716,3 +718,4 @@ public class TodoPageView extends JFrame {
 		return panel;
 	}
 }
+
