@@ -64,6 +64,11 @@ public class MainPanel extends JPanel {
         title.setFont(titleFont);
         topPanel.add(title, BorderLayout.CENTER);
 
+		// 네모난 기본 배경 칠하지 않도록
+		topPanel.putClientProperty("excludeTheme", Boolean.FALSE);
+		topPanel.putClientProperty("roundPanel", Boolean.TRUE);
+		ThemeManager.register("groupA", topPanel);
+		topPanel.setOpaque(false);
 
         // 수정
 		JButton settingsViewButton = createNavButton("설정",buttonFont);
@@ -83,6 +88,12 @@ public class MainPanel extends JPanel {
         groupButtonContainer = createNavPanel();
         groupButtonContainer.setLayout(new BoxLayout(groupButtonContainer, BoxLayout.Y_AXIS));
         groupButtonContainer.setBackground(Color.WHITE);
+		// 네모난 기본 배경 칠하지 않도록
+		groupButtonContainer.putClientProperty("excludeTheme", Boolean.FALSE);
+		groupButtonContainer.putClientProperty("roundPanel", Boolean.TRUE);  
+        ThemeManager.register("groupA", groupButtonContainer);
+        groupButtonContainer.setOpaque(false);
+		
         scrollPane.setViewportView(groupButtonContainer);
         
         scrollPane.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
@@ -121,6 +132,9 @@ public class MainPanel extends JPanel {
         // ----------------- 이벤트 처리 -----------------
         createBtn.addActionListener(e -> createGroupAction());
         deleteBtn.addActionListener(e -> toggleDeleteMode());
+
+		createBtn.putClientProperty("excludeTheme", Boolean.TRUE);
+		deleteBtn.putClientProperty("excludeTheme", Boolean.TRUE);
 
         loadExistingGroups(); // ★ MODIFIED: 초기 로드
         setVisible(true);
@@ -458,4 +472,5 @@ public class MainPanel extends JPanel {
 	  	return panel;
     }
 }
+
 
