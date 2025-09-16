@@ -173,14 +173,14 @@ public class SettingsMenu extends JFrame {
 		panel.add(Box.createVerticalStrut(10));
 
 		FontManager.applyFontRecursively(this);
-		ThemeManager.applyTheme(this);
+//		ThemeManager.applyTheme();
 		add(panel);
 		setVisible(true);
 	}
 	
     private void applyTheme() {
         if (themeManager != null) {
-            themeManager.applyTheme(this);
+            themeManager.applyTheme();
         }
     }
 }
