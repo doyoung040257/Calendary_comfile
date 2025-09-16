@@ -35,7 +35,7 @@ public class todoAddition extends JFrame {
     	Font titleFont = new Font("맑은 고딕", Font.BOLD, 25);
         Font buttonFont = new Font("맑은 고딕", Font.BOLD, 16);
     	
-        setTitle("할 일 추가");
+        setTitle("My Todo");
         setSize(350, 600);
         setLocationRelativeTo(null);
         setLayout(null);
@@ -369,4 +369,5 @@ public class todoAddition extends JFrame {
 	  	return panel;
 	}
 }
+
 
