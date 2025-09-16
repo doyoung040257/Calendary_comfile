@@ -59,7 +59,7 @@ public class todoMain extends JPanel{
 		topPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5)); 
 		topPanel.setBounds(10, 10, 445, 50);
 		topPanel.setBackground(Color.decode("#D8BFD8")); 
-		ThemeManager.applyTheme(topPanel); // 테마 변경 설정 적용
+		ThemeManager.applyTheme(); // 테마 변경 설정 적용
 		add(topPanel);
 		
 		JLabel todo = new JLabel("할 일 작성하기", JLabel.CENTER);
@@ -293,4 +293,5 @@ public class todoMain extends JPanel{
         return userList;
     }
 }
+
 
