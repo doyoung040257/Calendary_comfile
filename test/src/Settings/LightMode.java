@@ -117,7 +117,7 @@ public class LightMode extends JFrame {
 		}
 
 		add(panel);
-		ThemeManager.applyTheme(this);
+		ThemeManager.applyTheme();
 
 		// 확인 버튼 클릭 시
 		chbtn.addActionListener(e -> {
@@ -134,7 +134,7 @@ public class LightMode extends JFrame {
 
 			for (Window w : Window.getWindows()) {
 		        if (w instanceof JFrame) {
-		            ThemeManager.applyTheme((JFrame) w);
+		            ThemeManager.applyTheme();
 		        }
 		    }
 			new CalendarFrame01(user).setVisible(true);
