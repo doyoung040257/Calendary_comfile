@@ -1,4 +1,3 @@
-
 package GroupTest;
 
 import javax.swing.*;
@@ -64,6 +63,8 @@ public class MainPanel extends JPanel {
         JLabel title = new JLabel("그룹 관리", JLabel.CENTER);
         title.setFont(titleFont);
         topPanel.add(title, BorderLayout.CENTER);
+        
+        
 
 		// 네모난 기본 배경 칠하지 않도록
 		topPanel.putClientProperty("excludeTheme", Boolean.FALSE);
@@ -87,18 +88,23 @@ public class MainPanel extends JPanel {
         scrollPane.setBounds(10, 70, 445, 550);
         
         groupButtonContainer = createNavPanel();
+        groupButtonContainer.setBorder(BorderFactory.createEmptyBorder(10, 5, 10, 5));
         groupButtonContainer.setLayout(new BoxLayout(groupButtonContainer, BoxLayout.Y_AXIS));
+        
+     // ✅ 무조건 흰색 유지
         groupButtonContainer.setBackground(Color.WHITE);
+        
 		// 네모난 기본 배경 칠하지 않도록
 		groupButtonContainer.putClientProperty("excludeTheme", Boolean.FALSE);
 		groupButtonContainer.putClientProperty("roundPanel", Boolean.TRUE);  
+		
         ThemeManager.register("groupA", groupButtonContainer);
         groupButtonContainer.setOpaque(false);
 		
         scrollPane.setViewportView(groupButtonContainer);
         
         scrollPane.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-        add(scrollPane, BorderLayout.CENTER);
+        add(scrollPane, BorderLayout.CENTER); 
 
         // ----------------- 하단 버튼 -----------------
         JPanel bottomPanel = new JPanel(new BorderLayout());
@@ -138,8 +144,9 @@ public class MainPanel extends JPanel {
 		deleteBtn.putClientProperty("excludeTheme", Boolean.TRUE);
 
 		ThemeManager.register("background", this);
-        ThemeManager.applyTheme(); 		
-
+        ThemeManager.applyTheme(); 
+		
+		
         loadExistingGroups(); // ★ MODIFIED: 초기 로드
         setVisible(true);
     }
@@ -315,11 +322,18 @@ public class MainPanel extends JPanel {
 
     private void addGroupButton(String groupName) {
         JPanel panel = createNavPanel();
+        
+     // 그룹 박스는 테마 제외, 배경 흰색 고정
+        panel.putClientProperty("excludeTheme", true);
+        panel.setBackground(Color.WHITE);
+        panel.setOpaque(true);
+        
         panel.setBackground(new Color(0,0,0,0));
         panel.setLayout(new BorderLayout(5, 5));
         panel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 50));
 
         JButton groupBtn = createNavButton(groupName, new Font("맑은 고딕", Font.BOLD, 16));
+        groupBtn.setBackground(Color.WHITE); // 항상 흰색
 //        groupBtn.setFocusPainted(false);
 //        addHoverClickEffect(groupBtn, new Color(200, 200, 255));
         groupBtn.addActionListener(e -> openMemberPanel(groupName));
@@ -387,7 +401,7 @@ public class MainPanel extends JPanel {
 	            g2.fillRoundRect(0, 0, getWidth(), getHeight(), 30, 30);
 
 	            // 테두리
-	            g2.setColor(getBackground());
+	            g2.setColor(Color.GRAY);
 	            g2.drawRoundRect(0, 0, getWidth() - 1, getHeight() - 1, 30, 30);
 
 	            g2.dispose();
@@ -443,6 +457,9 @@ public class MainPanel extends JPanel {
 		    button.setFocusPainted(false);
 		    button.setBorderPainted(false);
 		    button.setOpaque(false);
+		    
+		    //버튼 테마 제외
+		    button.putClientProperty("excludeTheme", true);
 
 		    // ✅ 여기서 바로 hover 효과 추가
 		    addHoverClickEffect(button, button.getBackground());
@@ -476,8 +493,4 @@ public class MainPanel extends JPanel {
 	  	return panel;
     }
 }
-
-
-
-
 
