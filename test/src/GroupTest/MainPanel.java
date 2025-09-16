@@ -60,6 +60,12 @@ public class MainPanel extends JPanel {
         title.setFont(titleFont);
         topPanel.add(title, BorderLayout.CENTER);
 
+		// 네모난 기본 배경 칠하지 않도록
+		topPanel.putClientProperty("excludeTheme", Boolean.FALSE);
+		topPanel.putClientProperty("roundPanel", Boolean.TRUE);
+		ThemeManager.register("groupA", topPanel);
+		topPanel.setOpaque(false);
+
         // 좌측에 빈 스페이서 추가 (설정 버튼과 같은 크기) -> 그룹 관리 타이틀 중앙으로 배치하기 위한 용도
         JButton leftSpacer = new JButton();
         leftSpacer.setOpaque(false);
@@ -488,6 +494,7 @@ public class MainPanel extends JPanel {
 	  	return panel;
     }
 }
+
 
 
 
