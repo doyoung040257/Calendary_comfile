@@ -31,7 +31,7 @@ public class todoModify extends JFrame {
 		Font titleFont = new Font("맑은 고딕", Font.BOLD, 25);
 		Font buttonFont = new Font("맑은 고딕", Font.BOLD, 14);
 
-		setTitle("할 일 수정");
+		setTitle("My Todo");
 		setSize(350, 600);
 		setLocationRelativeTo(null);
 		setLayout(null);
@@ -392,3 +392,4 @@ public class todoModify extends JFrame {
 		return panel;
 	}
 }
+
