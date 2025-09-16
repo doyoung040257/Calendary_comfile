@@ -31,7 +31,7 @@ public class MemberPanel extends JPanel {
         this.parentFrame = parentFrame;
 
         setLayout(new BorderLayout(10, 10));
-        setBackground(Color.WHITE);
+        setBackground(new Color(240, 248, 255)); // AliceBlue
 
         // ----------------- 상단 -----------------
         titleLabel = new JLabel(groupName + " - 멤버 목록", JLabel.CENTER);
@@ -62,11 +62,12 @@ public class MemberPanel extends JPanel {
         // 이전 화면 버튼
         JButton backBtn = new RoundedButton("이전 화면", 20);
         backBtn.setFont(buttonFont);
-        backBtn.setBackground(BUTTON_COLOR);
+        Color buttonColor = new Color(173, 216, 230); // LightBlue
+        backBtn.setBackground(buttonColor);
         backBtn.setForeground(Color.WHITE);
         backBtn.setFocusPainted(false);
         backBtn.setPreferredSize(buttonSize);
-        addHoverClickEffect(backBtn, BUTTON_COLOR);
+        addHoverClickEffect(backBtn, buttonColor);
         backBtn.addActionListener(e -> parentFrame.showGroupPanel());
         buttonPanel.add(backBtn);
 
@@ -101,8 +102,10 @@ public class MemberPanel extends JPanel {
                 memberLabel.setPreferredSize(new Dimension(150, 25));
 
                 RoundedButton scheduleBtn = new RoundedButton("일정 보기", 20);
-                styleButton(scheduleBtn, BUTTON_COLOR);
+                Color buttonColor = new Color(173, 216, 230); // LightBlue
+                scheduleBtn.setBackground(buttonColor);
                 scheduleBtn.setPreferredSize(new Dimension(120, 30));
+                addHoverClickEffect(scheduleBtn, buttonColor);
 
                 // 버튼 액션: 내부적으로 ID 사용
                 scheduleBtn.addActionListener(e -> {
