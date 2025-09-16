@@ -137,6 +137,9 @@ public class MainPanel extends JPanel {
 		createBtn.putClientProperty("excludeTheme", Boolean.TRUE);
 		deleteBtn.putClientProperty("excludeTheme", Boolean.TRUE);
 
+		ThemeManager.register("background", this);
+        ThemeManager.applyTheme(); 		
+
         loadExistingGroups(); // ★ MODIFIED: 초기 로드
         setVisible(true);
     }
@@ -473,6 +476,7 @@ public class MainPanel extends JPanel {
 	  	return panel;
     }
 }
+
 
 
 
