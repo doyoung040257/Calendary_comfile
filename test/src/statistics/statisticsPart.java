@@ -84,6 +84,7 @@ public class statisticsPart {
         button.setFocusPainted(false);
         button.setBorderPainted(false);
         button.setOpaque(false);
+		button.putClientProperty("excludeTheme", Boolean.TRUE);
 
         // 🚩 hover 활성화
         button.setRolloverEnabled(false);
@@ -117,5 +118,6 @@ public class statisticsPart {
 	  	return panel;
     }
 }
+
 
 
