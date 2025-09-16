@@ -30,12 +30,12 @@ public class SettingsMenu extends JFrame {
 
 	// User를 받는 생성자
 	public SettingsMenu(User currentUser) {
-	    this.user = currentUser;
-	    this.source = "calendar";
-	    this.themeManager = new ThemeManager(); // 기본값
-	    initComponents();
+		this.user = currentUser;
+		this.source = "calendar";
+		this.themeManager = new ThemeManager(); // 기본값
+		initComponents();
 	}
-	
+
 	// ✅ 그룹 페이지에서 열 때 호출하는 생성자
 	public SettingsMenu(User currentUser, String source, JPanel parentFrame) {
 		this.user = currentUser;
@@ -52,14 +52,14 @@ public class SettingsMenu extends JFrame {
 		this.themeManager = new ThemeManager();
 		initComponents();
 	}
-	
-    // ThemeManager를 받는 생성자 추가
-    public SettingsMenu(User currentUser, ThemeManager themeManager) {
-        this.user = currentUser;
-        this.themeManager = themeManager;
-        this.source = "calendar";
-        initComponents();
-    }
+
+	// ThemeManager를 받는 생성자 추가
+	public SettingsMenu(User currentUser, ThemeManager themeManager) {
+		this.user = currentUser;
+		this.themeManager = themeManager;
+		this.source = "calendar";
+		initComponents();
+	}
 
 	public void initComponents() {
 		Design design = new Design(); // 수정
@@ -69,22 +69,25 @@ public class SettingsMenu extends JFrame {
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setLocationRelativeTo(null);
 		setLayout(new FlowLayout());
-        applyTheme(); // 테마 적용
+		applyTheme(); // 테마 적용
 
 		Font buttonFont = new Font("맑은 고딕", Font.BOLD, 16);
 
 		JPanel panel = new JPanel();
 		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 		panel.setBorder(BorderFactory.createEmptyBorder(10, 50, 20, 50));
+		// 네모난 기본 배경 칠하지 않도록
+		panel.putClientProperty("excludeTheme", Boolean.FALSE);
+		panel.putClientProperty("roundPanel", Boolean.TRUE);
+		ThemeManager.register("groupA", panel);
+		panel.setOpaque(false);
 
 		// 버튼들
 		JButton themeBtn = design.createNavButton("테마 설정", buttonFont);
 		JButton infoBtn = design.createNavButton("개인정보 수정", buttonFont);
 		JButton notificationBtn = design.createNavButton("알림 설정", buttonFont);
-		;
 		JButton fontBtn = design.createNavButton("글꼴 변경", buttonFont);
 		JButton logoutBtn = design.createNavButton("로그아웃", buttonFont);
-		;
 
 		// 테마 설정 페이지
 		themeBtn.addActionListener(e -> {
@@ -115,8 +118,8 @@ public class SettingsMenu extends JFrame {
 		// 글꼴 변경 버튼 클릭
 		fontBtn.addActionListener(e -> {
 			this.setVisible(false); // 메뉴 숨기기
-		    FontSettingPage fontPage = new FontSettingPage(this); // parentMenu 전달
-		    fontPage.setVisible(true);
+			FontSettingPage fontPage = new FontSettingPage(this); // parentMenu 전달
+			fontPage.setVisible(true);
 		});
 
 		// 로그아웃 버튼 페이지
@@ -134,11 +137,11 @@ public class SettingsMenu extends JFrame {
 
 				// ✅ 세션 해제
 				SessionManager.logout();
-				
-				  // ✅ 열려 있는 모든 창 닫기
-		        for (Window window : Window.getWindows()) {
-		            window.dispose();
-		        }
+
+				// ✅ 열려 있는 모든 창 닫기
+				for (Window window : Window.getWindows()) {
+					window.dispose();
+				}
 
 				this.dispose(); // 설정 메뉴 닫기
 				new LoginFrame().setVisible(true); // 로그인 페이지 열기
@@ -173,14 +176,17 @@ public class SettingsMenu extends JFrame {
 		panel.add(Box.createVerticalStrut(10));
 
 		FontManager.applyFontRecursively(this);
-//		ThemeManager.applyTheme();
+
+		// 그룹 등록
+		ThemeManager.register("background", this);
+		ThemeManager.applyTheme();
 		add(panel);
 		setVisible(true);
 	}
-	
-    private void applyTheme() {
-        if (themeManager != null) {
-            themeManager.applyTheme();
-        }
-    }
+
+	private void applyTheme() {
+		if (themeManager != null) {
+			themeManager.applyTheme();
+		}
+	}
 }
