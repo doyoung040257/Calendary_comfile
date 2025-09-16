@@ -326,7 +326,7 @@ public class statisticsPanel extends JPanel{
         year_month.setText(year + "년 " + String.format("%02d", month) + "월");
     }
     
-    private void updateStatistics() {
+    public void updateStatistics() {
 		intWork = 0;
 		intHealth = 0;
 		intStudy = 0;
@@ -381,3 +381,4 @@ public class statisticsPanel extends JPanel{
 	    others2.setText("기타(" + intOthers + ")");
 	}
 }
+
