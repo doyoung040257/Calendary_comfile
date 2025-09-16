@@ -87,9 +87,9 @@ public class Notificationsetting extends JFrame {
             // 테마 적용 (owner가 null이면 현재 창 적용)
             Window owner = this.getOwner();
             if (owner != null) {
-                ThemeManager.applyTheme(owner);
+                ThemeManager.applyTheme();
             }
-            ThemeManager.applyTheme(this);
+            ThemeManager.applyTheme();
 
             // 현재 창 닫기
             this.dispose();
@@ -126,7 +126,7 @@ public class Notificationsetting extends JFrame {
 
 		FontManager.applyFontRecursively(this);
 		// 테마 적용
-		ThemeManager.applyTheme(this);
+		ThemeManager.applyTheme();
 		setVisible(true);
 	}
 }
