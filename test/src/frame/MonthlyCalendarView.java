@@ -58,7 +58,7 @@ public class MonthlyCalendarView extends JFrame {
         setSize(800, 800);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null);
-        applyTheme(); // 테마 적용
+        //applyTheme(); // 테마 적용
 
         Container contentPane = getContentPane();
         contentPane.setLayout(new BorderLayout(10, 10));
@@ -66,11 +66,11 @@ public class MonthlyCalendarView extends JFrame {
 
         // --- 상단 (NORTH): 월 이동 및 표시 섹션 (둥근 하늘색 패널) ---
         JPanel topPanel = createNavPanel(); // 둥근 패널
-        topPanel.setBackground(Color.decode("#ADD8E6")); // 하늘색
+//      topPanel.setBackground(Color.decode("#ADD8E6")); // 하늘색
         topPanel.setLayout(new BorderLayout());
         topPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-        ThemeManager.applyTheme(topPanel);
-
+        ThemeManager.applyTheme();
+        
         monthLabel = new JLabel();
         monthLabel.setFont(new Font("맑은 고딕", Font.BOLD, 22));
 
@@ -146,7 +146,7 @@ public class MonthlyCalendarView extends JFrame {
 
     private void applyTheme() {
         if (themeManager != null) {
-            themeManager.applyTheme(this);
+            themeManager.applyTheme();
         }
     }
 
@@ -314,6 +314,14 @@ public class MonthlyCalendarView extends JFrame {
                 g2.dispose();
             }
         };
+        
+     // 네모난 기본 배경 칠하지 않도록
+        panel.putClientProperty("excludeTheme", Boolean.FALSE);;
+        panel.putClientProperty("roundPanel", Boolean.TRUE);  
+        ThemeManager.register("groupB", panel);
+        panel.setOpaque(false);
+
+        
         panel.setOpaque(false);
         return panel;
     }
