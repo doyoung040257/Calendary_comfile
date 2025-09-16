@@ -49,10 +49,17 @@ public class SchedulePanel extends JPanel {
 	private void initUI(MainFrame frame, todoListMake todoData) {
 		User currentUser = UserDatabase.getUser(memberName); // memberName == User ID
 		setLayout(new BorderLayout(10, 10));
-		Color highlightColor = new Color(180, 150, 200);
+
+        // ----------------- 배경색 변경 -----------------
+        Color backgroundColor = new Color(240, 248, 255); // AliceBlue
+        setBackground(backgroundColor);
+
+		Color buttonColor = new Color(173, 216, 230); // LightBlue
 
 		// 상단 타이틀
 		JPanel topPanel = new JPanel();
+		topPanel.setBorder(BorderFactory.createEmptyBorder(10, 0, 0, 0));
+
 		topPanel.setLayout(new BoxLayout(topPanel, BoxLayout.Y_AXIS));
 		topPanel.setOpaque(false); // 배경 투명
 
@@ -79,7 +86,6 @@ public class SchedulePanel extends JPanel {
 		UserDatabase.loadUsers();
 
 		// 2. 현재 사용자(User) 가져오기
-
 		if (currentUser != null) {
 			System.out.println("User 데이터 로드 성공:");
 			System.out.println("ID: " + currentUser.getId());
@@ -99,22 +105,19 @@ public class SchedulePanel extends JPanel {
 		events = new ArrayList<>(Collections.nCopies(24, ""));
 
 		LocalDate today = LocalDate.now();
-		// DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd"); // ❌
-		// 기존
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-M-d"); // ✅ 수정
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-M-d"); // 기존
 
 		if (todoData != null) {
 			for (todoList item : todoData.getTodolist()) {
 				// 1️⃣ 날짜 부분만 추출
 				String dateOnly = item.getDay().split("\\[")[0];
-
+				
 				// 2️⃣ 문자열 비교 ❌ → LocalDate 비교 ✅
 				LocalDate itemDate = LocalDate.parse(dateOnly, formatter);
-				if (!itemDate.equals(today))
-					continue;
+				if (!itemDate.equals(today)) continue;
 
 				// 3️⃣ 시간 추출 및 events 업데이트
-				String timeStr = item.getTime(); // "14시 30분"
+				String timeStr = item.getTime();
 				int hour = 0;
 				try {
 					hour = Integer.parseInt(timeStr.replaceAll("시.*", ""));
@@ -124,10 +127,10 @@ public class SchedulePanel extends JPanel {
 
 				// ✅ 할일 + 메모 형식 만들기
 				String taskText = item.getWork();
-
+				
 				// 메모 가져오기
 				String note = item.getNote();
-
+				
 				// 메모가 null, 빈칸, "메모를 입력하세요"인 경우 → 무시
 				if (note != null && !note.isEmpty() && !note.equals("메모를 입력하세요")) {
 				    taskText += " (" + note + ")";
@@ -140,7 +143,6 @@ public class SchedulePanel extends JPanel {
 				    events.set(hour, current + "\n" + taskText);
 				}
 			}
-
 		} else {
 			if (isGroup) {
 				events = frame.getGroupSchedules().getOrDefault(groupName, new ArrayList<>());
@@ -176,56 +178,59 @@ public class SchedulePanel extends JPanel {
 
 				JTextArea textArea = new JTextArea();
 				textArea.setText(value != null ? value.toString() : "");
-				textArea.setLineWrap(true); // 줄바꿈 활성화
+				textArea.setLineWrap(true);  // 줄바꿈 활성화
 				textArea.setWrapStyleWord(true); // 단어 단위로 줄바꿈
 				textArea.setFont(new Font("맑은 고딕", Font.PLAIN, 14));
 				textArea.setOpaque(true);
 
-				// 색상 지정
+				// ----------------- 색상 적용 -----------------
+				Color cellDefault = backgroundColor; 
+				Color cellSelected = buttonColor; 
+				Color cellTask = new Color(255, 255, 153); 
+
 				if (column == 0) { // 시간 컬럼
-					textArea.setBackground(new Color(220, 220, 220)); // 연한 회색
+					textArea.setBackground(new Color(220, 220, 220));
 				} else { // 일정 컬럼
 					if (isSelected)
-						textArea.setBackground(new Color(173, 216, 230));
+						textArea.setBackground(cellSelected);
 					else if (value != null && !value.toString().isEmpty())
-						textArea.setBackground(new Color(255, 255, 153));
+						textArea.setBackground(cellTask);
 					else
-						textArea.setBackground(Color.WHITE);
+						textArea.setBackground(cellDefault);
 				}
-
-//                if (isSelected) textArea.setBackground(new Color(173, 216, 230));
-//                //else if (value != null && !value.toString().isEmpty()) textArea.setBackground(new Color(255, 255, 153));
-//                else textArea.setBackground(Color.WHITE);
 
 				return textArea;
 			}
 		});
 
 		JScrollPane scrollPane = new JScrollPane(table);
+        scrollPane.getViewport().setBackground(backgroundColor);
+        scrollPane.setBackground(backgroundColor);
 		add(scrollPane, BorderLayout.CENTER);
 
 		updateTableFromEvents();
 
-		// JTable 행 높이 자동 조정 (줄바꿈 대응)
+		// JTable 행 높이 자동 조정
 		for (int row = 0; row < table.getRowCount(); row++) {
-			int maxHeight = 30; // 기본 높이
+			int maxHeight = 30;
 			Object value = table.getValueAt(row, 1);
 			if (value != null) {
-				int lines = value.toString().split("\n").length; // 줄 수 계산
-				maxHeight = Math.max(maxHeight, lines * 20); // 1줄당 20픽셀
+				int lines = value.toString().split("\n").length;
+				maxHeight = Math.max(maxHeight, lines * 20);
 			}
 			table.setRowHeight(row, maxHeight);
 		}
 
 		// 하단 이전 화면 버튼
 		JPanel bottomPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 10));
+		bottomPanel.setOpaque(false);
 		RoundedButton backBtn = new RoundedButton("이전 화면", 20);
 		backBtn.setPreferredSize(new Dimension(140, 40));
-		styleButton(backBtn, highlightColor);
+		styleButton(backBtn, buttonColor);
 
 		backBtn.addActionListener(e -> {
 			if (parentFrame != null) {
-				parentFrame.showMemberPanel(groupName); // MemberPanel로 돌아감
+				parentFrame.showMemberPanel(groupName);
 			}
 		});
 
@@ -236,92 +241,93 @@ public class SchedulePanel extends JPanel {
 	// JTable 업데이트
 	private void updateTableFromEvents() {
 		for (int h = 0; h < 24; h++) {
-			table.setValueAt(events.get(h), h, 1); // 이미 이어붙인 문자열 그대로 JTable에 표시
+			table.setValueAt(events.get(h), h, 1);
 		}
 	}
 
 	// 일정 추가
-	private void addEventAction() {
-		int[] selectedRows = table.getSelectedRows();
-		if (selectedRows.length == 0) {
-			JOptionPane.showMessageDialog(this, "추가할 시간대를 선택해주세요.");
-			return;
-		}
-
-		for (int row : selectedRows) {
-			String cell = (String) table.getValueAt(row, 1);
-			if (cell != null && !cell.isEmpty()) {
-				JOptionPane.showMessageDialog(this, "선택된 시간대에 이미 일정이 있습니다.");
+		private void addEventAction() {
+			int[] selectedRows = table.getSelectedRows();
+			if (selectedRows.length == 0) {
+				JOptionPane.showMessageDialog(this, "추가할 시간대를 선택해주세요.");
 				return;
 			}
+
+			for (int row : selectedRows) {
+				String cell = (String) table.getValueAt(row, 1);
+				if (cell != null && !cell.isEmpty()) {
+					JOptionPane.showMessageDialog(this, "선택된 시간대에 이미 일정이 있습니다.");
+					return;
+				}
+			}
+
+			// ✅ todoAddition 연결 부분
+			todoListMake todoData = null;
+			lg.User currentUser = lg.SessionManager.getCurrentUser();
+			if (currentUser != null) {
+				todoData = currentUser.getTodolist();
+			}
+
+			// 일정 추가 창 열기 (afterSave 콜백 안에서 테이블 갱신)
+			todoAddition addFrame = new todoAddition(todoData, () -> {
+				updateTableFromEvents(); // 새 일정 반영
+				table.repaint();
+			}, null);
+
+			addFrame.todo_addition_page();
 		}
 
-		// ✅ todoAddition 연결 부분
-		todoListMake todoData = null;
-		lg.User currentUser = lg.SessionManager.getCurrentUser();
-		if (currentUser != null) {
-			todoData = currentUser.getTodolist();
-		}
+		// 일정 수정/삭제
+		private void editOrDeleteAction() {
+			int[] selectedRows = table.getSelectedRows();
+			if (selectedRows.length == 0) {
+				JOptionPane.showMessageDialog(this, "수정할 시간대를 선택해주세요.");
+				return;
+			}
 
-		// 일정 추가 창 열기 (afterSave 콜백 안에서 테이블 갱신)
-		todoAddition addFrame = new todoAddition(todoData, () -> {
-			updateTableFromEvents(); // 새 일정 반영
+			boolean allEmpty = true;
+			for (int row : selectedRows) {
+				String cell = (String) table.getValueAt(row, 1);
+				if (cell != null && !cell.isEmpty()) {
+					allEmpty = false;
+					break;
+				}
+			}
+			if (allEmpty) {
+				JOptionPane.showMessageDialog(this, "일정이 없습니다.");
+				return;
+			}
+
+			String newEvent = JOptionPane.showInputDialog(this, "선택 범위 일정 수정/삭제 (빈칸 → 삭제):");
+			if (newEvent == null)
+				return;
+
+			if (newEvent.isEmpty()) {
+				int confirm = JOptionPane.showConfirmDialog(this, "삭제하시겠습니까?", "확인", JOptionPane.YES_NO_OPTION);
+				if (confirm == JOptionPane.YES_OPTION) {
+					for (int row : selectedRows) {
+						String current = (String) table.getValueAt(row, 1);
+						table.setValueAt("", row, 1);
+						if (current != null && !current.isEmpty())
+							events.removeIf(ev -> ev.startsWith(current + "("));
+					}
+				}
+			} else {
+				int confirm = JOptionPane.showConfirmDialog(this, "수정하시겠습니까?", "확인", JOptionPane.YES_NO_OPTION);
+				if (confirm == JOptionPane.YES_OPTION) {
+					for (int row : selectedRows) {
+						String current = (String) table.getValueAt(row, 1);
+						table.setValueAt(newEvent, row, 1);
+						if (current != null && !current.isEmpty())
+							events.removeIf(ev -> ev.startsWith(current + "("));
+						events.add(newEvent + "(" + row + "시)");
+					}
+				}
+			}
+			table.clearSelection();
 			table.repaint();
-		}, null);
-
-		addFrame.todo_addition_page();
-	}
-
-	// 일정 수정/삭제
-	private void editOrDeleteAction() {
-		int[] selectedRows = table.getSelectedRows();
-		if (selectedRows.length == 0) {
-			JOptionPane.showMessageDialog(this, "수정할 시간대를 선택해주세요.");
-			return;
 		}
 
-		boolean allEmpty = true;
-		for (int row : selectedRows) {
-			String cell = (String) table.getValueAt(row, 1);
-			if (cell != null && !cell.isEmpty()) {
-				allEmpty = false;
-				break;
-			}
-		}
-		if (allEmpty) {
-			JOptionPane.showMessageDialog(this, "일정이 없습니다.");
-			return;
-		}
-
-		String newEvent = JOptionPane.showInputDialog(this, "선택 범위 일정 수정/삭제 (빈칸 → 삭제):");
-		if (newEvent == null)
-			return;
-
-		if (newEvent.isEmpty()) {
-			int confirm = JOptionPane.showConfirmDialog(this, "삭제하시겠습니까?", "확인", JOptionPane.YES_NO_OPTION);
-			if (confirm == JOptionPane.YES_OPTION) {
-				for (int row : selectedRows) {
-					String current = (String) table.getValueAt(row, 1);
-					table.setValueAt("", row, 1);
-					if (current != null && !current.isEmpty())
-						events.removeIf(ev -> ev.startsWith(current + "("));
-				}
-			}
-		} else {
-			int confirm = JOptionPane.showConfirmDialog(this, "수정하시겠습니까?", "확인", JOptionPane.YES_NO_OPTION);
-			if (confirm == JOptionPane.YES_OPTION) {
-				for (int row : selectedRows) {
-					String current = (String) table.getValueAt(row, 1);
-					table.setValueAt(newEvent, row, 1);
-					if (current != null && !current.isEmpty())
-						events.removeIf(ev -> ev.startsWith(current + "("));
-					events.add(newEvent + "(" + row + "시)");
-				}
-			}
-		}
-		table.clearSelection();
-		table.repaint();
-	}
 
 	// 버튼 스타일
 	private void styleButton(RoundedButton button, Color bgColor) {
