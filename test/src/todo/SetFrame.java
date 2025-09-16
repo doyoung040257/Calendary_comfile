@@ -38,7 +38,7 @@ public class SetFrame extends JFrame {
 	private void initComponents() {
 		todoListMake todoListData = currentUser.getTodolist();
 
-		setTitle("프로그램 이름");
+		setTitle("My Todo");
 		setSize(480, 800);
 //		getContentPane().setBackground(Color.decode("#F0F8FF"));
 //		ThemeManager.applyTheme();
@@ -278,3 +278,4 @@ public class SetFrame extends JFrame {
 		cardLayout.show(cardPanel, key);
 	}
 }
+
