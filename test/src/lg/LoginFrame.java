@@ -26,7 +26,7 @@ public class LoginFrame extends JFrame {
 		setLocationRelativeTo(null);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-		// ✅ root 패널 배경색 (AliceBlue)
+		// ✅ root 패널
 		JPanel root = new JPanel(new GridBagLayout());
 		root.setBackground(new Color(240, 248, 255));
 		root.setOpaque(true);
@@ -36,19 +36,52 @@ public class LoginFrame extends JFrame {
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.weightx = 1.0;
 
-		// 위쪽 스페이서
-		gbc.gridy = 0;
-		gbc.weighty = 0.8;
-		root.add(Box.createVerticalStrut(1), gbc);
+		// ------------------------------------
+		// ⛅ 구름 + 제목(MyTodo) 묶어서 추가
+		// ------------------------------------
+		JPanel topPanel = new JPanel();
+		topPanel.setLayout(new BoxLayout(topPanel, BoxLayout.Y_AXIS));
+		topPanel.setBorder(BorderFactory.createEmptyBorder(70, 0, 0,0));
+		topPanel.setOpaque(false);
 
-		// 폼
+		// 구름 아이콘
+		ImageIcon cloudIcon = new ImageIcon(getClass().getResource("/images/CC.png"));
+		Image scaledImage = cloudIcon.getImage().getScaledInstance(200, 90, Image.SCALE_SMOOTH);
+		ImageIcon scaledIcon = new ImageIcon(scaledImage);
+
+		JLabel cloudLabel = new JLabel(scaledIcon);
+		cloudLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+		// 제목
+		JLabel titleLabel = new JLabel("MyTodo");
+		titleLabel.setFont(new Font("맑은 고딕", Font.BOLD, 28));
+		titleLabel.setForeground(new Color(70, 130, 180)); // CornflowerBlue
+		titleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+		// 👉 구름과 제목 사이 딱 붙게 (2px만 여백)
+		topPanel.add(cloudLabel);
+		topPanel.add(Box.createVerticalStrut(0));
+		topPanel.add(titleLabel);
+
+		gbc.gridy = 0;
+		gbc.weighty = 0;
+		root.add(topPanel, gbc);
+
+		// ------------------------------------
+		// 폼 (아이디, 비밀번호, 버튼 영역)
+		// ------------------------------------
 		gbc.gridy = 1;
 		gbc.weighty = 0;
+		// 👉 제목과 입력창 사이 여백 20px 주기
+		gbc.insets = new Insets(140, 0, 0, 0);
 		root.add(buildForm(), gbc);
 
+		// ------------------------------------
 		// 아래쪽 스페이서
+		// ------------------------------------
 		gbc.gridy = 2;
-		gbc.weighty = 0.2;
+		gbc.weighty = 1.0; // 나머지 공간 아래로
+		gbc.insets = new Insets(0, 0, 0, 0);
 		root.add(Box.createVerticalStrut(1), gbc);
 
 		FontManager.applyFontRecursively(this);
