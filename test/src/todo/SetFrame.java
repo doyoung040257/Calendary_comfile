@@ -8,6 +8,7 @@ import javax.swing.*;
 import GroupTest.MainFrame;
 import GroupTest.MainPanel;
 import GroupTest.MemberPanel;
+import Settings.ThemeManager;
 import frame.CalendarFrame01;
 import lg.User;
 
@@ -15,259 +16,265 @@ import statistics.statisticsController;
 import statistics.statisticsPanel;
 
 public class SetFrame extends JFrame {
-	
+
 	private JPanel cardPanel;
-    private User currentUser;
-    private CardLayout cardLayout;; 
+	private User currentUser;
+	private CardLayout cardLayout;;
 	private MainFrame groupFrame;
-	
+
 	public JPanel getCardPanel() {
-	    return cardPanel;
+		return cardPanel;
 	}
 
 	public CardLayout getCardLayout() {
-	    return cardLayout;
+		return cardLayout;
 	}
-	
-    public SetFrame(User user) {
-        this.currentUser = user;
-        initComponents();
-    }
 
-    private void initComponents() {
-    	todoListMake todoListData = currentUser.getTodolist();
-    	
-    	setTitle("프로그램 이름");
-		setSize(480,800);
-		getContentPane().setBackground(Color.white);
+	public SetFrame(User user) {
+		this.currentUser = user;
+		initComponents();
+	}
+
+	private void initComponents() {
+		todoListMake todoListData = currentUser.getTodolist();
+
+		setTitle("프로그램 이름");
+		setSize(480, 800);
+//		getContentPane().setBackground(Color.decode("#F0F8FF"));
+//		ThemeManager.applyTheme();
 		setLayout(new BorderLayout());
 		setLocationRelativeTo(null);
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setResizable(false);
-		
-        Font titleFont = new Font("맑은 고딕", Font.BOLD, 22);
-        Font buttonFont = new Font("맑은 고딕", Font.BOLD, 16);
-        
-        //카드레이아웃적용패널
-        cardLayout = new CardLayout();
-        cardPanel = new JPanel(cardLayout);
 
-        this.groupFrame = new MainFrame(currentUser);
-        MainPanel groupPanel = new MainPanel(groupFrame, this, currentUser); // ★ this 전달
-        
+		Font titleFont = new Font("맑은 고딕", Font.BOLD, 22);
+		Font buttonFont = new Font("맑은 고딕", Font.BOLD, 16);
+
+		// 카드레이아웃적용패널
+		cardLayout = new CardLayout();
+		cardPanel = new JPanel(cardLayout);
+
+		this.groupFrame = new MainFrame(currentUser);
+		MainPanel groupPanel = new MainPanel(groupFrame, this, currentUser); // ★ this 전달
+
 		// 카드 추가
-        cardPanel.add(new CalendarFrame01(), "HOME");
-        cardPanel.add(new statisticsPanel(cardPanel, cardLayout, todoListData, this), "STATISTICS");
-        cardPanel.add(groupPanel, "GROUP");
-        
-        add(cardPanel, BorderLayout.CENTER);;
-        
-        cardLayout.show(cardPanel, "HOME");
-        
-        JPanel bottomPanel = createNavPanel();
-        bottomPanel.setLayout(new GridLayout(1, 3, 10, 0));
-        bottomPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5)); 
-	    bottomPanel.setBackground(Color.decode("#D8BFD8"));
-	    bottomPanel.setPreferredSize(new Dimension(0, 70));
-	    add(bottomPanel, BorderLayout.SOUTH);
-	
-	    // ✅ 아이콘 불러오기 (resources/images 안에 넣어야 함)
-        ImageIcon homeIcon = resizeIcon(new ImageIcon(getClass().getResource("/images/hh.png")), 32, 32);
-        ImageIcon todoIcon = resizeIcon(new ImageIcon(getClass().getResource("/images/rr.png")), 32, 32);
-        ImageIcon groupIcon = resizeIcon(new ImageIcon(getClass().getResource("/images/gg.png")), 32, 32);
-	
-        JButton homeButton = createNavButton(homeIcon);
-        JButton todoButton = createNavButton(todoIcon);
-        JButton groupButton = createNavButton(groupIcon);
-		
+		cardPanel.add(new CalendarFrame01(), "HOME");
+		cardPanel.add(new statisticsPanel(cardPanel, cardLayout, todoListData, this), "STATISTICS");
+		cardPanel.add(groupPanel, "GROUP");
+
+		add(cardPanel, BorderLayout.CENTER);
+		;
+
+		cardLayout.show(cardPanel, "HOME");
+
+		JPanel bottomPanel = createNavPanel();
+		bottomPanel.setLayout(new GridLayout(1, 3, 10, 0));
+		bottomPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+		bottomPanel.setBackground(Color.decode("#F0F8FF")); // 홈 버튼 패널 배경색
+		bottomPanel.setPreferredSize(new Dimension(0, 70));
+		add(bottomPanel, BorderLayout.SOUTH);
+
+
+
+		// ✅ 아이콘 불러오기 (resources/images 안에 넣어야 함)
+		ImageIcon homeIcon = resizeIcon(new ImageIcon(getClass().getResource("/images/hh.png")), 32, 32);
+		ImageIcon todoIcon = resizeIcon(new ImageIcon(getClass().getResource("/images/rr.png")), 32, 32);
+		ImageIcon groupIcon = resizeIcon(new ImageIcon(getClass().getResource("/images/gg.png")), 32, 32);
+
+		JButton homeButton = createNavButton(homeIcon);
+		JButton todoButton = createNavButton(todoIcon);
+		JButton groupButton = createNavButton(groupIcon);
+
 		bottomPanel.add(homeButton);
 		bottomPanel.add(todoButton);
 		bottomPanel.add(groupButton);
-	    
-	    homeButton.addActionListener(e -> {
-	    	JOptionPane.showMessageDialog(this,"홈 입니다");
-	    	cardLayout.show(cardPanel,"HOME");
-	    });
-	
-	    todoButton.addActionListener(e -> {
-	    	JOptionPane.showMessageDialog(this, "통계 페이지로 이동합니다");
-	        for (Component comp : cardPanel.getComponents()) {
-	            if (comp instanceof statisticsPanel) {
-	                ((statisticsPanel) comp).updateStatistics(); // ★ 갱신
-	                break;
-	            }
+
+		homeButton.addActionListener(e -> {
+			JOptionPane.showMessageDialog(this, "홈 입니다");
+			cardLayout.show(cardPanel, "HOME");
+		});
+
+		todoButton.addActionListener(e -> {
+			JOptionPane.showMessageDialog(this, "통계 페이지로 이동합니다");
+			for (Component comp : cardPanel.getComponents()) {
+				if (comp instanceof statisticsPanel) {
+					((statisticsPanel) comp).updateStatistics(); // ★ 갱신
+					break;
+				}
 			}
-	    	cardLayout.show(cardPanel,"STATISTICS");
-	    });
+			cardLayout.show(cardPanel, "STATISTICS");
+		});
 
-        groupButton.addActionListener(e -> {
-            JOptionPane.showMessageDialog(this, "그룹 페이지로 이동합니다");
-            cardLayout.show(cardPanel,"GROUP");
-        });
-
+		groupButton.addActionListener(e -> {
+			JOptionPane.showMessageDialog(this, "그룹 페이지로 이동합니다");
+			cardLayout.show(cardPanel, "GROUP");
+		});
+		
+		bottomPanel.putClientProperty("excludeTheme", Boolean.FALSE);
+		bottomPanel.putClientProperty("roundPanel", Boolean.TRUE);  
+        ThemeManager.register("groupB", bottomPanel);
+        bottomPanel.setOpaque(false);
+		
+        
+        ThemeManager.register("background", this);
+        ThemeManager.applyTheme(); 
 		setVisible(true);
-    }
-    
-    public void showMemberPanel(String groupName) {
-        MemberPanel mp = new MemberPanel(groupFrame, groupName, groupFrame.getMainPanel(), currentUser, this);
-        cardPanel.add(mp, "Member_" + groupName);
-        cardLayout.show(cardPanel, "Member_" + groupName);
+	}
 
-        // 레이아웃 갱신 강제
-        cardPanel.revalidate();
-        cardPanel.repaint();
-    }
-    
-    // MemberPanel -> 이전 화면 (GROUP)
-    public void showGroupPanel() {
-        cardLayout.show(cardPanel, "GROUP");
-    }
+	public void showMemberPanel(String groupName) {
+		MemberPanel mp = new MemberPanel(groupFrame, groupName, groupFrame.getMainPanel(), currentUser, this);
+		cardPanel.add(mp, "Member_" + groupName);
+		cardLayout.show(cardPanel, "Member_" + groupName);
 
-    // 일정 보기 -> SchedulePanel 표시
-    public void showSchedulePanel(String groupName, String member, JPanel schedulePanel) {
-        cardPanel.add(schedulePanel, "Schedule_" + groupName + "_" + member);
-        cardLayout.show(cardPanel, "Schedule_" + groupName + "_" + member);
-    }
+		// 레이아웃 갱신 강제
+		cardPanel.revalidate();
+		cardPanel.repaint();
+	}
 
-    
-	
+	// MemberPanel -> 이전 화면 (GROUP)
+	public void showGroupPanel() {
+		cardLayout.show(cardPanel, "GROUP");
+	}
+
+	// 일정 보기 -> SchedulePanel 표시
+	public void showSchedulePanel(String groupName, String member, JPanel schedulePanel) {
+		cardPanel.add(schedulePanel, "Schedule_" + groupName + "_" + member);
+		cardLayout.show(cardPanel, "Schedule_" + groupName + "_" + member);
+	}
+
 	// 스크롤 패널 사용 시 사용
-    private JScrollPane listScrollBox() {
-        JScrollPane scrollPane = new JScrollPane() {
-            @Override
-            protected void paintComponent(Graphics g) {
-                super.paintComponent(g); // ← 기존 배경을 지우고 시작
-                Graphics2D g2 = (Graphics2D) g.create();
-                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+	private JScrollPane listScrollBox() {
+		JScrollPane scrollPane = new JScrollPane() {
+			@Override
+			protected void paintComponent(Graphics g) {
+				super.paintComponent(g); // ← 기존 배경을 지우고 시작
+				Graphics2D g2 = (Graphics2D) g.create();
+				g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
-                // 둥근 배경 채우기
-                g2.setColor(getBackground());
-                g2.fillRoundRect(0, 0, getWidth(), getHeight(), 30, 30);
+				// 둥근 배경 채우기
+				g2.setColor(getBackground());
+				g2.fillRoundRect(0, 0, getWidth(), getHeight(), 30, 30);
 
-                // 테두리
-                g2.setColor(Color.GRAY);
-                g2.drawRoundRect(0, 0, getWidth() - 1, getHeight() - 1, 30, 30);
+				// 테두리
+				g2.setColor(Color.GRAY);
+				g2.drawRoundRect(0, 0, getWidth() - 1, getHeight() - 1, 30, 30);
 
-                g2.dispose();
-            }
-        };
+				g2.dispose();
+			}
+		};
 
-        scrollPane.setBorder(null);
-        scrollPane.setOpaque(false);
-        scrollPane.getViewport().setOpaque(false);
+		scrollPane.setBorder(null);
+		scrollPane.setOpaque(false);
+		scrollPane.getViewport().setOpaque(false);
 
-        // 스크롤바를 완전히 숨김
-        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
-        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+		// 스크롤바를 완전히 숨김
+		scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
+		scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 
-        // 마우스 휠 스크롤만 가능
-        scrollPane.getVerticalScrollBar().setUnitIncrement(20);
+		// 마우스 휠 스크롤만 가능
+		scrollPane.getVerticalScrollBar().setUnitIncrement(20);
 
-        return scrollPane;
-    }
-	
-    private JButton createNavButton(ImageIcon icon) {
-        JButton button = new JButton(icon) {
-        
-        @Override
-        protected void paintComponent(Graphics g) {
-            Graphics2D g2 = (Graphics2D) g.create();
-            g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-            Color bg = getBackground();
+		return scrollPane;
+	}
 
-            // 🔹 Hover 상태일 때 배경색 변경
-            if (getModel().isRollover()) {
-                bg = new Color(173, 216, 230); // 연한 파랑 (hover 색상)
-            }
+	private JButton createNavButton(ImageIcon icon) {
+		JButton button = new JButton(icon) {
 
-            // 🔹 눌렸을 때는 조금 더 어둡게
-            if (getModel().isArmed()) {
-                bg = bg.darker();
-            }
+			@Override
+			protected void paintComponent(Graphics g) {
+				Graphics2D g2 = (Graphics2D) g.create();
+				g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+				Color bg = getBackground();
 
-            // 배경 그리기
-            g2.setColor(bg);
-            g2.fillRoundRect(0, 0, getWidth(), getHeight(), 30, 30);
-            g2.dispose();
-            
-            // 둥근 사각형 배경
-            g2.fillRoundRect(0, 0, getWidth(), getHeight(), 30, 30);
-            g2.dispose();
-            
-            // 버튼 텍스트 그대로 출력
-            super.paintComponent(g);
-        }
+				// 🔹 Hover 상태일 때 배경색 변경
+				if (getModel().isRollover()) {
+					bg = new Color(173, 216, 230); // 연한 파랑 (hover 색상)
+				}
 
+				// 🔹 눌렸을 때는 조금 더 어둡게
+				if (getModel().isArmed()) {
+					bg = bg.darker();
+				}
 
-        @Override
-        protected void paintBorder(Graphics g) {
-            Graphics2D g2 = (Graphics2D) g.create();
-            g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-            g2.setColor(Color.GRAY); // 테두리 색상
-            g2.drawRoundRect(0, 0, getWidth() - 1, getHeight() - 1, 30, 30);
-            g2.dispose();
-        }
-    };
-	    button.setBackground(Color.WHITE);
-	    button.setForeground(Color.BLACK);
-	
-	    // 기본 버튼 효과 제거
-	    button.setContentAreaFilled(false);
-	    button.setFocusPainted(false);
-	    button.setBorderPainted(false);
-	    button.setOpaque(false);
-        
-        return button;
-    }
-    
-    public JPanel createNavPanel() {
-        JPanel panel = new JPanel() {
-            @Override
-            protected void paintComponent(Graphics g) {
-                super.paintComponent(g);
-                Graphics2D g2 = (Graphics2D) g.create();
-                // 안티앨리어싱 (부드럽게)
-                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-                // 배경을 둥근 사각형으로 채우기
-                g2.setColor(getBackground());
-                g2.fillRoundRect(0, 0, getWidth(), getHeight(), 30, 30); 
-                // (x, y, w, h, arcW, arcH)
-                g2.dispose();
-            }
-	      @Override
-	      protected void paintBorder(Graphics g) {
-	          Graphics2D g2 = (Graphics2D) g.create();
-	          g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-	          g2.dispose();
-	      }
-	  };
-	  	panel.setOpaque(false); // 네모난 기본 배경 칠하지 않도록
-	  	return panel;
-    }
-        // 아이콘 크기 조정
-    private ImageIcon resizeIcon(ImageIcon icon, int w, int h) {
-        Image img = icon.getImage();
-        Image scaled = img.getScaledInstance(w, h, Image.SCALE_SMOOTH);
-        return new ImageIcon(scaled);
-    }
-    
-    public void showCategoryPanel(String category, YearMonth ym) {
-        String key = "Category_" + category + "_" + ym;
+				// 배경 그리기
+				g2.setColor(bg);
+				g2.fillRoundRect(0, 0, getWidth(), getHeight(), 30, 30);
+				g2.dispose();
 
-        for (Component comp : cardPanel.getComponents()) {
-            if (key.equals(comp.getName())) {
-                cardLayout.show(cardPanel, key);
-                return;
-            }
-        }
+				// 버튼 텍스트 그대로 출력
+				super.paintComponent(g);
+			}
 
-        JPanel panel = new statisticsController(category, ym, currentUser.getTodolist(), this);
-        panel.setName(key); // ★ 컴포넌트 이름 지정
-        cardPanel.add(panel, key);
+			@Override
+			protected void paintBorder(Graphics g) {
+				Graphics2D g2 = (Graphics2D) g.create();
+				g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+				g2.setColor(Color.GRAY); // 테두리 색상
+				g2.drawRoundRect(0, 0, getWidth() - 1, getHeight() - 1, 30, 30);
+				g2.dispose();
+			}
+		};
+//		button.setBackground(Color.WHITE);
+//		button.setForeground(Color.BLACK);
 
-        // 해당 패널 보여주기
-        cardLayout.show(cardPanel, key);
-    }
+		// 기본 버튼 효과 제거
+		button.setContentAreaFilled(false);
+		button.setFocusPainted(false);
+		button.setBorderPainted(false);
+		button.setOpaque(false);
+		button.putClientProperty("excludeTheme", Boolean.TRUE); // 수정, 버튼 메서드에 이거 추가하면 버튼은 색 미적용
+
+		return button;
+	}
+
+	public JPanel createNavPanel() {
+		JPanel panel = new JPanel() {
+			@Override
+			protected void paintComponent(Graphics g) {
+				super.paintComponent(g);
+				Graphics2D g2 = (Graphics2D) g.create();
+				// 안티앨리어싱 (부드럽게)
+				g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+				// 배경을 둥근 사각형으로 채우기
+				g2.setColor(getBackground());
+				g2.fillRoundRect(0, 0, getWidth(), getHeight(), 30, 30);
+				// (x, y, w, h, arcW, arcH)
+				g2.dispose();
+			}
+
+			@Override
+			protected void paintBorder(Graphics g) {
+				Graphics2D g2 = (Graphics2D) g.create();
+				g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+				g2.dispose();
+			}
+		};
+		panel.setOpaque(false); // 네모난 기본 배경 칠하지 않도록
+		return panel;
+	}
+
+	// 아이콘 크기 조정
+	private ImageIcon resizeIcon(ImageIcon icon, int w, int h) {
+		Image img = icon.getImage();
+		Image scaled = img.getScaledInstance(w, h, Image.SCALE_SMOOTH);
+		return new ImageIcon(scaled);
+	}
+
+	public void showCategoryPanel(String category, YearMonth ym) {
+		String key = "Category_" + category + "_" + ym;
+
+		for (Component comp : cardPanel.getComponents()) {
+			if (key.equals(comp.getName())) {
+				cardLayout.show(cardPanel, key);
+				return;
+			}
+		}
+
+		JPanel panel = new statisticsController(category, ym, currentUser.getTodolist(), this);
+		panel.setName(key); // ★ 컴포넌트 이름 지정
+		cardPanel.add(panel, key);
+
+		// 해당 패널 보여주기
+		cardLayout.show(cardPanel, key);
+	}
 }
-
-
