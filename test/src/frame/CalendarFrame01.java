@@ -295,7 +295,7 @@ public class CalendarFrame01 extends JPanel {
         if (tasks.isEmpty()) {
             progressBar.setValue(0);
             progressBar.setString("할 일 없음");
-            progressBar.setForeground(Color.LIGHT_GRAY);
+            progressBar.setForeground(Color.WHITE);
             return;
         }
 
@@ -570,5 +570,6 @@ public class CalendarFrame01 extends JPanel {
 		return this.user; 
 	}
 }
+
 
 
