@@ -10,6 +10,7 @@ import todo.todoList;
 public class UserDatabase {
     public static Map<String, User> userDatabase = new HashMap<>();
     private static final String FILE_NAME = "users.dat";
+    private static final long serialVersionUID = 1L;
 
     public static void addUser(User user) {
         userDatabase.put(user.getId(), user);
@@ -31,11 +32,18 @@ public class UserDatabase {
 
     @SuppressWarnings("unchecked")
     public static void loadUsers() {
-        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(FILE_NAME))) {
+        File file = new File(FILE_NAME);
+        if (!file.exists()) {
+            userDatabase = new HashMap<>();
+            return;
+        }
+        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(file))) {
             userDatabase = (Map<String, User>) ois.readObject();
         } catch (Exception e) {
+            e.printStackTrace();
             userDatabase = new HashMap<>();
         }
     }
+
 }
 
