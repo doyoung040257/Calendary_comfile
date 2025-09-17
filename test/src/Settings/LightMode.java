@@ -39,7 +39,7 @@ public class LightMode extends JFrame {
 	private void initComponents() {
 		Design design = new Design();
 		Font buttonFont = new Font("맑은 고딕", Font.BOLD, 16);
-		
+
 		setTitle("배경 선택");
 		setSize(300, 255);
 
@@ -50,8 +50,8 @@ public class LightMode extends JFrame {
 		title = new JLabel("배경 선택", SwingConstants.CENTER);
 //		title.setBorder(BorderFactory.createEmptyBorder(10, 0, 0, 0));
 		title.setFont(new Font("맑은 고딕", Font.BOLD, 26));
-		
-		JPanel titlePanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 10)); 
+
+		JPanel titlePanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 10));
 		titlePanel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 20));
 		titlePanel.setOpaque(false);
 		titlePanel.add(title);
@@ -64,7 +64,7 @@ public class LightMode extends JFrame {
 		defaultBtn.setFont(new Font("맑은 고딕", Font.PLAIN, 20));
 		pastelBtn.setFont(new Font("맑은 고딕", Font.PLAIN, 20));
 		darkBtn.setFont(new Font("맑은 고딕", Font.PLAIN, 20));
-		
+
 		JPanel radioPanel = new JPanel();
 		radioPanel.setLayout(new BoxLayout(radioPanel, BoxLayout.Y_AXIS));
 		radioPanel.setOpaque(false);
@@ -72,7 +72,7 @@ public class LightMode extends JFrame {
 		defaultBtn.setAlignmentX(Component.LEFT_ALIGNMENT);
 		pastelBtn.setAlignmentX(Component.LEFT_ALIGNMENT);
 		darkBtn.setAlignmentX(Component.LEFT_ALIGNMENT);
-		
+
 		radioPanel.add(defaultBtn);
 		radioPanel.add(pastelBtn);
 		radioPanel.add(darkBtn);
@@ -93,8 +93,8 @@ public class LightMode extends JFrame {
 		JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 10)); // 가운데 정렬, 버튼 사이 간격 20px
 		buttonPanel.add(chbtn);
 		buttonPanel.add(backButton);
-		
-		//패널 정렬
+
+		// 패널 정렬
 		titlePanel.setAlignmentX(Component.CENTER_ALIGNMENT);
 		radioPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
 		buttonPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -117,7 +117,6 @@ public class LightMode extends JFrame {
 		}
 
 		add(panel);
-		ThemeManager.applyTheme();
 
 		// 확인 버튼 클릭 시
 		chbtn.addActionListener(e -> {
@@ -133,10 +132,10 @@ public class LightMode extends JFrame {
 			closeAllSettingsWindows();
 
 			for (Window w : Window.getWindows()) {
-		        if (w instanceof JFrame) {
-		            ThemeManager.applyTheme();
-		        }
-		    }
+				if (w instanceof JFrame) {
+					ThemeManager.applyTheme();
+				}
+			}
 			new CalendarFrame01(user).setVisible(true);
 			this.dispose();
 
@@ -149,10 +148,14 @@ public class LightMode extends JFrame {
 			// SettingsMenu 창 열기
 			new SettingsMenu(user).setVisible(true);
 		});
-		
+		// 네모난 기본 배경 칠하지 않도록
+		panel.putClientProperty("excludeTheme", Boolean.FALSE);
+		panel.putClientProperty("roundPanel", Boolean.TRUE);
+		ThemeManager.register("groupA", panel);
+
 		// 그룹 등록
-        ThemeManager.register("background", this);
-        ThemeManager.applyTheme();
+		ThemeManager.register("background", this);
+		ThemeManager.applyTheme();
 		FontManager.applyFontRecursively(this);
 		setLocationRelativeTo(null);
 		setVisible(true);
@@ -171,4 +174,3 @@ public class LightMode extends JFrame {
 	}
 
 }
-
