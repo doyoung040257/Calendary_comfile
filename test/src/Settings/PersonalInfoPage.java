@@ -58,17 +58,19 @@ public class PersonalInfoPage extends JFrame {
 		panel.setBorder(BorderFactory.createEmptyBorder(0,0,10,0));
 
 		// 아이디는 수정 불가
-		panel.add(new JLabel("아이디:", SwingConstants.CENTER));
+		panel.add(new JLabel("아이디:", SwingConstants.CENTER));		
 		panel.add(new JLabel(user.getId()));
 
 		// 이름
 		panel.add(new JLabel("이름:", SwingConstants.CENTER));
 		nameField = new JTextField(user.getName());
+		nameField.setBorder(BorderFactory.createEmptyBorder(0, 5, 0, 5)); // 좌우 여백
 		panel.add(nameField);
 
 		// 생년월일
 		panel.add(new JLabel("생년월일:", SwingConstants.CENTER));
 		birthField = new JTextField(user.getBirth());
+		birthField.setBorder(BorderFactory.createEmptyBorder(0, 5, 0, 5));
 		panel.add(birthField);
 
 		// 성별
@@ -88,40 +90,17 @@ public class PersonalInfoPage extends JFrame {
 		genderGroup.add(femaleBtn);
 
 		// 성별 버튼을 담은 패널 생성
-		JPanel genderPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+		JPanel genderPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
+		genderPanel.setBorder(BorderFactory.createEmptyBorder(0, 5, 0, 20));
 		genderPanel.add(maleBtn);
 		genderPanel.add(femaleBtn);
 		
-		// 패널 색상 적용
-		Color bgColor, fgColor;
-		switch (Setting.theme) {
-		    case "DARK":
-		        bgColor = Color.BLACK;
-		        fgColor = Color.WHITE;
-		        break;
-		    case "PASTEL":
-		        bgColor = new Color(255, 228, 225);
-		        fgColor = Color.BLACK;
-		        break;
-		    default:
-		        bgColor = Color.decode("#f0f8ff");
-		        fgColor = Color.BLACK;
-		}
-
-		// genderPanel 배경
-		genderPanel.setBackground(bgColor);
-
-		// JRadioButton 배경 적용
-		maleBtn.setBackground(bgColor);
-		maleBtn.setForeground(fgColor);
-		femaleBtn.setBackground(bgColor);
-		femaleBtn.setForeground(fgColor);
-
 		panel.add(genderPanel);
 
 		// 이메일
 		panel.add(new JLabel("이메일:", SwingConstants.CENTER));
 		emailField = new JTextField(user.getEmail());
+		emailField.setBorder(BorderFactory.createEmptyBorder(0, 5, 0, 5));
 		panel.add(emailField);
 
 		savebtn = design.createNavButton("확인", buttonFont);
@@ -147,8 +126,8 @@ public class PersonalInfoPage extends JFrame {
 		backButton.addActionListener(e -> {
 			new SettingsMenu(user).setVisible(true); // 로그인된 User 객체 전달
 			this.dispose();
-		});
-
+		});	
+		
 		JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 5));
 		buttonPanel.add(savebtn);
 		buttonPanel.add(backButton);
