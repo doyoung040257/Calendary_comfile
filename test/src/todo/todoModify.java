@@ -58,7 +58,7 @@ public class todoModify extends JFrame {
 		centerPanel.setBackground(Color.WHITE);
 		add(centerPanel);
 
-		// 할 일 - 그룹
+		// 할 일 - 목록
 		JPanel one = createNavPanel();
 		one.setLayout(null);
 		one.setBounds(10, 10, 290, 35);
@@ -70,7 +70,7 @@ public class todoModify extends JFrame {
 		ThemeManager.register("groupA", one);
 		one.setOpaque(false);
 
-		JLabel todoGroup = new JLabel("그룹", JLabel.CENTER);
+		JLabel todoGroup = new JLabel("목록", JLabel.CENTER);
 		todoGroup.setBounds(5, 5, 50, 25);
 		todoGroup.setFont(buttonFont);
 		one.add(todoGroup);
@@ -392,4 +392,5 @@ public class todoModify extends JFrame {
 		return panel;
 	}
 }
+
 
