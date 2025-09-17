@@ -65,7 +65,7 @@ public class SettingsMenu extends JFrame {
 		Design design = new Design(); // 수정
 
 		setTitle("설정");
-		setSize(250, 310);
+		setSize(400, 400);
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setLocationRelativeTo(null);
 		setLayout(new FlowLayout());
@@ -160,6 +160,15 @@ public class SettingsMenu extends JFrame {
 			}
 			dispose(); // 설정창 닫기
 		});
+
+		// ✅ 버튼 크기 통일
+		Dimension btnSize = new Dimension(150, 40);
+		JButton[] buttons = { themeBtn, infoBtn, notificationBtn, fontBtn, logoutBtn, backButton };
+		for (JButton btn : buttons) {
+			btn.setPreferredSize(btnSize);
+			btn.setMaximumSize(btnSize);
+			btn.setMinimumSize(btnSize);
+		}
 
 		// 버튼 추가
 		panel.add(themeBtn);
