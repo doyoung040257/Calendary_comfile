@@ -398,7 +398,7 @@ public class TodoPageView extends JFrame {
 		JPanel todoItemPanel = createNavPanel();
 		todoItemPanel.setLayout(new BoxLayout(todoItemPanel, BoxLayout.X_AXIS));
 		todoItemPanel.setMaximumSize(new Dimension(400, 50));
-		todoItemPanel.setBackground(Color.GRAY);
+		todoItemPanel.setBackground(Color.decode("#F0F8FF"));
 		todoItemPanel.putClientProperty("excludeTheme", Boolean.TRUE);
 
 		if (isDeleteMode) {
@@ -432,10 +432,10 @@ public class TodoPageView extends JFrame {
 		todoLabel.setText(todo.title + stars); // 문자열 그대로 표시
 
 		if (todo.completed) {
-			todoLabel.setForeground(getBackground()); // 완료된 항목 색상 회색
+			todoLabel.setForeground(Color.GARY); // 완료된 항목 색상 회색
 			todoLabel.setFont(GlobalFont.currentFont.deriveFont(Font.BOLD | Font.ITALIC, 18f));
 		} else {
-			todoLabel.setForeground(getBackground()); // 일반 항목 검정색
+			todoLabel.setForeground(Color.BLACK); // 일반 항목 검정색
 			todoLabel.setFont(GlobalFont.currentFont.deriveFont(Font.BOLD, 18f));
 		}
 
@@ -727,3 +727,4 @@ public class TodoPageView extends JFrame {
 		return panel;
 	}
 }
+
