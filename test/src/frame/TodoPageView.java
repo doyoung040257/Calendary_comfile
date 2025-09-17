@@ -167,7 +167,7 @@ public class TodoPageView extends JFrame {
 		progressLabel.setFont(new Font("맑은 고딕", Font.BOLD, 16));
 
 		JPanel progressPanel = new JPanel();
-		progressPanel.setBounds(10, 70, 445, 50);
+		progressPanel.setBounds(10, 80, 445, 50);
 		progressPanel.setLayout(new BorderLayout());
 		progressPanel.setOpaque(false);
 		progressPanel.add(progressBar, BorderLayout.CENTER);
@@ -177,7 +177,7 @@ public class TodoPageView extends JFrame {
 		refreshDateDisplay();
 
 		JPanel centerPanel = createNavPanel();
-		centerPanel.setBounds(10, 130, 445, 430);
+		centerPanel.setBounds(10, 140, 445, 420);
 		centerPanel.setLayout(new BorderLayout());
 		add(centerPanel);
 
@@ -727,6 +727,7 @@ public class TodoPageView extends JFrame {
 		return panel;
 	}
 }
+
 
 
 
