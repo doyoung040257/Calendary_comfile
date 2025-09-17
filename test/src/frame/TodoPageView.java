@@ -432,7 +432,7 @@ public class TodoPageView extends JFrame {
 		todoLabel.setText(todo.title + stars); // 문자열 그대로 표시
 
 		if (todo.completed) {
-			todoLabel.setForeground(Color.GARY); // 완료된 항목 색상 회색
+			todoLabel.setForeground(Color.GRAY); // 완료된 항목 색상 회색
 			todoLabel.setFont(GlobalFont.currentFont.deriveFont(Font.BOLD | Font.ITALIC, 18f));
 		} else {
 			todoLabel.setForeground(Color.BLACK); // 일반 항목 검정색
@@ -727,4 +727,5 @@ public class TodoPageView extends JFrame {
 		return panel;
 	}
 }
+
 
