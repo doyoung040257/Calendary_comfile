@@ -66,7 +66,7 @@ public class TodoPageView extends JFrame {
 		JPanel topSectionPanel = createNavPanel();
 		topSectionPanel.setLayout(new BoxLayout(topSectionPanel, BoxLayout.Y_AXIS));
 		topSectionPanel.setBorder(new EmptyBorder(0, 0, 0, 0));
-		topSectionPanel.setBounds(10, 10, 445, 60);
+		topSectionPanel.setBounds(10, 10, 445, 70);
 		add(topSectionPanel);
 
 		JPanel dateNavigationPanel = createNavPanel();
@@ -727,5 +727,6 @@ public class TodoPageView extends JFrame {
 		return panel;
 	}
 }
+
 
 
