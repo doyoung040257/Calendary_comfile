@@ -10,6 +10,7 @@ import GroupTest.MainPanel;
 import GroupTest.MemberPanel;
 import Settings.ThemeManager;
 import frame.CalendarFrame01;
+import lg.SessionManager;
 import lg.User;
 
 import statistics.statisticsController;
@@ -90,12 +91,16 @@ public class SetFrame extends JFrame {
 		bottomPanel.add(groupButton);
 
 		homeButton.addActionListener(e -> {
-			JOptionPane.showMessageDialog(this, "홈 입니다");
+			if (SessionManager.getCurrentUser().isNotificationsEnabled()) {
+                JOptionPane.showMessageDialog(this, "홈 입니다");
+			}
 			cardLayout.show(cardPanel, "HOME");
 		});
 
 		todoButton.addActionListener(e -> {
-			JOptionPane.showMessageDialog(this, "통계 페이지로 이동합니다");
+			if (SessionManager.getCurrentUser().isNotificationsEnabled()) {
+                JOptionPane.showMessageDialog(this, "통계 페이지로 이동합니다");
+			}
 			for (Component comp : cardPanel.getComponents()) {
 				if (comp instanceof statisticsPanel) {
 					((statisticsPanel) comp).updateStatistics(); // ★ 갱신
@@ -106,7 +111,9 @@ public class SetFrame extends JFrame {
 		});
 
 		groupButton.addActionListener(e -> {
-			JOptionPane.showMessageDialog(this, "그룹 페이지로 이동합니다");
+			if (SessionManager.getCurrentUser().isNotificationsEnabled()) {
+                JOptionPane.showMessageDialog(this, "그룹 페이지로 이동합니다");
+			}
 			cardLayout.show(cardPanel, "GROUP");
 		});
 		
