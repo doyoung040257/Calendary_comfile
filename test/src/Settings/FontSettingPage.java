@@ -114,11 +114,22 @@ public class FontSettingPage extends JFrame {
 		boldBtn.addActionListener(updatePreview);
 		italicBtn.addActionListener(updatePreview);
 
+		// 네모난 기본 배경 칠하지 않도록
+		topPanel.putClientProperty("excludeTheme", Boolean.FALSE);
+		topPanel.putClientProperty("roundPanel", Boolean.TRUE);
+		ThemeManager.register("groupA", topPanel);
+
+		// 네모난 기본 배경 칠하지 않도록
+		previewLabel.putClientProperty("excludeTheme", Boolean.FALSE);
+		previewLabel.putClientProperty("roundPanel", Boolean.TRUE);
+		ThemeManager.register("groupB", previewLabel);
+
 		FontManager.applyFontRecursively(this);
 
 		// 그룹 등록
 		ThemeManager.register("background", this);
 		ThemeManager.applyTheme();
+		
 
 	}
 
