@@ -40,7 +40,7 @@ public class PersonalInfoPage extends JFrame {
 	private JRadioButton maleBtn;
 	private JRadioButton femaleBtn;
 	private ButtonGroup genderGroup;
-	
+
 	public PersonalInfoPage(User user) { // User 객체를 생성자로 받음
 		if (user == null)
 			throw new IllegalArgumentException("User cannot be null");
@@ -49,16 +49,16 @@ public class PersonalInfoPage extends JFrame {
 
 		Design design = new Design();
 		Font buttonFont = new Font("맑은 고딕", Font.BOLD, 16);
-		
+
 		setSize(280, 280);
 		setLocationRelativeTo(null);
-		
+
 		panel = new JPanel();
 		panel.setLayout(new GridLayout(5, 2, 0, 0));
-		panel.setBorder(BorderFactory.createEmptyBorder(0,0,10,0));
+		panel.setBorder(BorderFactory.createEmptyBorder(0, 0, 10, 0));
 
 		// 아이디는 수정 불가
-		panel.add(new JLabel("아이디:", SwingConstants.CENTER));		
+		panel.add(new JLabel("아이디:", SwingConstants.CENTER));
 		panel.add(new JLabel(user.getId()));
 
 		// 이름
@@ -80,9 +80,9 @@ public class PersonalInfoPage extends JFrame {
 
 		// 로그인된 User 객체에 따라 선택 초기화
 		if ("남자".equals(user.getGender())) {
-		    maleBtn.setSelected(true);
+			maleBtn.setSelected(true);
 		} else {
-		    femaleBtn.setSelected(true);
+			femaleBtn.setSelected(true);
 		}
 		// 그룹 지정
 		genderGroup = new ButtonGroup();
@@ -94,7 +94,7 @@ public class PersonalInfoPage extends JFrame {
 		genderPanel.setBorder(BorderFactory.createEmptyBorder(0, 5, 0, 20));
 		genderPanel.add(maleBtn);
 		genderPanel.add(femaleBtn);
-		
+
 		panel.add(genderPanel);
 
 		// 이메일
@@ -109,10 +109,10 @@ public class PersonalInfoPage extends JFrame {
 			user.setName(nameField.getText());
 			user.setBirth(birthField.getText());
 			if (maleBtn.isSelected()) {
-		        user.setGender("남자");
-		    } else if (femaleBtn.isSelected()) {
-		        user.setGender("여자");
-		    }
+				user.setGender("남자");
+			} else if (femaleBtn.isSelected()) {
+				user.setGender("여자");
+			}
 			user.setEmail(emailField.getText());
 
 			JOptionPane.showMessageDialog(this, "정보가 성공적으로 저장되었습니다.");
@@ -126,23 +126,29 @@ public class PersonalInfoPage extends JFrame {
 		backButton.addActionListener(e -> {
 			new SettingsMenu(user).setVisible(true); // 로그인된 User 객체 전달
 			this.dispose();
-		});	
-		
+		});
+
 		JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 5));
 		buttonPanel.add(savebtn);
 		buttonPanel.add(backButton);
+		
 
 		setLayout(new BorderLayout());
 		add(panel, BorderLayout.CENTER);
 		add(buttonPanel, BorderLayout.SOUTH);
 
+		// 네모난 기본 배경 칠하지 않도록
+		panel.putClientProperty("excludeTheme", Boolean.FALSE);
+		panel.putClientProperty("roundPanel", Boolean.TRUE);
+		ThemeManager.register("groupA", panel);
+		savebtn.putClientProperty("excludeTheme", Boolean.TRUE);
+		backButton.putClientProperty("excludeTheme", Boolean.TRUE);
+
 		// 그룹 등록
-        ThemeManager.register("background", this);
-        ThemeManager.applyTheme();
+		ThemeManager.register("background", this);
+		ThemeManager.applyTheme();
 		FontManager.applyFontRecursively(this);
 		setVisible(true);
 	}
 
 }
-
-
