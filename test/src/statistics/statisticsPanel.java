@@ -148,7 +148,6 @@ public class statisticsPanel extends JPanel {
 		JPanel middlePanel = part.createNavPanel();
 		middlePanel.setBounds(10, 70, 445, 215);
 		middlePanel.setLayout(new GridLayout(1, 2));
-		middlePanel.setBackground(Color.WHITE);
 		add(middlePanel, BorderLayout.CENTER);
 
 		// 네모난 기본 배경 칠하지 않도록
@@ -160,6 +159,7 @@ public class statisticsPanel extends JPanel {
 		// 중간 패널 왼쪽 (통계 그림)
 		JPanel middleLeftPanel = new JPanel();
 		middleLeftPanel.setOpaque(false);
+		middleLeftPanel.putClientProperty("excludeTheme", Boolean.TRUE);
 		middleLeftPanel.add(staticgraph);
 		middlePanel.add(middleLeftPanel);
 
@@ -167,6 +167,7 @@ public class statisticsPanel extends JPanel {
 		JPanel middleRightPanel = new JPanel();
 		middleRightPanel.setLayout(new GridLayout(6, 1)); // 6행 1열
 		middleRightPanel.setOpaque(false);
+		middleRightPanel.putClientProperty("excludeTheme", Boolean.TRUE);
 		middlePanel.add(middleRightPanel);
 
 		// 통계목록(업무,건강,공부,취미,금융,기타)
@@ -183,6 +184,13 @@ public class statisticsPanel extends JPanel {
 		four.setOpaque(false);
 		five.setOpaque(false);
 		six.setOpaque(false);
+
+		one.putClientProperty("excludeTheme", Boolean.TRUE);
+		two.putClientProperty("excludeTheme", Boolean.TRUE);
+		three.putClientProperty("excludeTheme", Boolean.TRUE);
+		four.putClientProperty("excludeTheme", Boolean.TRUE);
+		five.putClientProperty("excludeTheme", Boolean.TRUE);
+		six.putClientProperty("excludeTheme", Boolean.TRUE);
 
 		middleRightPanel.add(one);
 		middleRightPanel.add(two);
@@ -204,6 +212,13 @@ public class statisticsPanel extends JPanel {
 		colorHobby.setBackground(Color.decode("#388E3C"));
 		colorFinance.setBackground(Color.decode("#1976D2"));
 		colorOthers.setBackground(Color.decode("#7B1FA2"));
+		
+		colorWork.putClientProperty("excludeTheme", Boolean.TRUE);
+		colorHealth.putClientProperty("excludeTheme", Boolean.TRUE);
+		colorStudy.putClientProperty("excludeTheme", Boolean.TRUE);
+		colorHobby.putClientProperty("excludeTheme", Boolean.TRUE);
+		colorFinance.putClientProperty("excludeTheme", Boolean.TRUE);
+		colorOthers.putClientProperty("excludeTheme", Boolean.TRUE);
 
 		JLabel work = new JLabel("업무");
 		JLabel health = new JLabel("건강");
@@ -225,6 +240,13 @@ public class statisticsPanel extends JPanel {
 		progressBarHobby.setStringPainted(true);
 		progressBarFinance.setStringPainted(true);
 		progressBarOthers.setStringPainted(true);
+		
+		progressBarWork.putClientProperty("excludeTheme", Boolean.TRUE);
+		progressBarHealth.putClientProperty("excludeTheme", Boolean.TRUE);
+		progressBarStudy.putClientProperty("excludeTheme", Boolean.TRUE);
+		progressBarHobby.putClientProperty("excludeTheme", Boolean.TRUE);
+		progressBarFinance.putClientProperty("excludeTheme", Boolean.TRUE);
+		progressBarOthers.putClientProperty("excludeTheme", Boolean.TRUE);
 
 		one.add(colorWork);
 		one.add(work);
