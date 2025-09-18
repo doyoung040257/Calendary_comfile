@@ -84,7 +84,7 @@ public class todoAddition extends JFrame {
         two.setBounds(10, 55, 290, 35);
         centerPanel.add(two);
         
-        JLabel todoTitle = new JLabel("할 일", JLabel.CENTER);
+        JLabel todoTitle = new JLabel("이름", JLabel.CENTER);
         todoTitle.setBounds(5,5,50,25);
 		todoTitle.setFont(buttonFont);
         two.add(todoTitle);
@@ -369,6 +369,7 @@ public class todoAddition extends JFrame {
 	  	return panel;
 	}
 }
+
 
 
 
