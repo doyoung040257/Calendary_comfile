@@ -180,7 +180,7 @@ public class SettingsMenu extends JFrame {
 		panel.add(fontBtn); // 글꼴 변경 버튼 추가
 		panel.add(Box.createVerticalStrut(10));
 		panel.add(logoutBtn);
-		panel.add(Box.createVerticalStrut(10));
+		panel.add(Box.createVerticalStrut(10));    
 		panel.add(backButton);
 		panel.add(Box.createVerticalStrut(10));
 
