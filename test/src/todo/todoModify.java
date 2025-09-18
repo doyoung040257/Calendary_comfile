@@ -103,7 +103,7 @@ public class todoModify extends JFrame {
 		ThemeManager.register("groupA", two);
 		two.setOpaque(false);
 
-		JLabel todoTitle = new JLabel("할 일", JLabel.CENTER);
+		JLabel todoTitle = new JLabel("이름", JLabel.CENTER);
 		todoTitle.setBounds(5, 5, 50, 25);
 		todoTitle.setFont(buttonFont);
 		two.add(todoTitle);
@@ -117,7 +117,7 @@ public class todoModify extends JFrame {
 		txt.addFocusListener(new FocusListener() {
 			@Override
 			public void focusGained(FocusEvent e) {
-				if (txt.getText().equals("할 일 입력"))
+				if (txt.getText().equals("할 일 이름 입력"))
 					txt.setText("");
 			}
 
@@ -392,5 +392,6 @@ public class todoModify extends JFrame {
 		return panel;
 	}
 }
+
 
 
