@@ -38,6 +38,7 @@ import javax.swing.border.Border;
 import Settings.GlobalFont;
 import Settings.SettingsMenu;
 import Settings.ThemeManager;
+import lg.SessionManager;
 import lg.User; // User 클래스 임포트 추가
 
 public class CalendarFrame01 extends JPanel {
@@ -148,8 +149,10 @@ public class CalendarFrame01 extends JPanel {
         // 설정버튼
 		JButton settingsViewButton = createNavButton("설정",buttonFont);
 		topPanel.add(settingsViewButton, BorderLayout.EAST);
-        settingsViewButton.addActionListener(e -> {
-            JOptionPane.showMessageDialog(this, "설정 화면으로 이동합니다.");
+        settingsViewButton.addActionListener(e -> {       	
+        	if (SessionManager.getCurrentUser().isNotificationsEnabled()) {
+                JOptionPane.showMessageDialog(this, "설정 화면으로 이동합니다.");
+            }
             new SettingsMenu(this.user).setVisible(true);
         });
 
@@ -175,6 +178,7 @@ public class CalendarFrame01 extends JPanel {
         progressBar.setPreferredSize(new Dimension(445, 25));
         progressBar.setForeground(Color.decode("#F5E6CC"));
         progressBar.setBackground(Color.LIGHT_GRAY);
+        progressBar.putClientProperty("excludeTheme", Boolean.TRUE);
         
         JPanel progressAndDayPanel = createNavPanel();
         progressAndDayPanel.setBounds(10, 140, 445, 25);
@@ -295,7 +299,7 @@ public class CalendarFrame01 extends JPanel {
         if (tasks.isEmpty()) {
             progressBar.setValue(0);
             progressBar.setString("할 일 없음");
-            progressBar.setForeground(Color.WHITE);
+            progressBar.setForeground(Color.LIGHT_GRAY);
             return;
         }
 
@@ -570,6 +574,5 @@ public class CalendarFrame01 extends JPanel {
 		return this.user; 
 	}
 }
-
 
 
