@@ -115,7 +115,9 @@ public class PersonalInfoPage extends JFrame {
 			}
 			user.setEmail(emailField.getText());
 
-			JOptionPane.showMessageDialog(this, "정보가 성공적으로 저장되었습니다.");
+			if (SessionManager.getCurrentUser().isNotificationsEnabled()) {
+                JOptionPane.showMessageDialog(this, "정보가 성공적으로 저장되었습니다.");
+			}
 
 			// 현재 창 닫고 메인 캘린더로 이동
 			this.dispose();
