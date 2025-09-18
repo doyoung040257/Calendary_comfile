@@ -89,7 +89,7 @@ public class todoAddition extends JFrame {
 		todoTitle.setFont(buttonFont);
         two.add(todoTitle);
 
-        JTextField txt = new JTextField("할 일 입력");
+        JTextField txt = new JTextField("할 일 이름 입력");
         txt.setBounds(60,5,220,25);
         SwingUtilities.invokeLater(() -> getRootPane().requestFocusInWindow());
         txt.setBorder(new LineBorder(Color.BLACK, 1));
@@ -369,6 +369,7 @@ public class todoAddition extends JFrame {
 	  	return panel;
 	}
 }
+
 
 
 
