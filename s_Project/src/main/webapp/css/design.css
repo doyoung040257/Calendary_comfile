@@ -1,0 +1,73 @@
+@charset "UTF-8";
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f7f3ef;
+}
+#container {
+    width: 90%;
+    max-width: 1400px;
+    height: calc(95vh - 130px);
+    margin: 40px auto 80px auto;
+    background-color: #fffdf9;
+    padding: 10px;
+    border: 1px solid #cccccc;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    box-sizing: border-box;
+
+    /* ✅ 추가 */
+    overflow-x: auto;    /* 가로 스크롤 생김 (내용이 넘칠 경우) */
+    overflow-y: auto;    /* 세로도 넘칠 경우 스크롤 생김 */
+}
+/* 테이블 */
+.table {
+    width: 100%;
+    margin-top: 20px;
+    border-collapse: collapse;
+}
+.table th, .table td {
+    padding: 12px;
+    border: 1px solid #cccccc;
+    text-align: center;
+}
+.table th {
+    background-color: #e6d8c3;
+    color: #333;
+}
+.table tbody tr:hover {
+    background-color: #f1f9ff;
+}
+
+/* 글쓰기 버튼 영역 */
+#write {
+    text-align: right;
+    margin-top: 10px;
+}
+
+/* 버튼 스타일 */
+input[type="submit"], input[type="reset"], button {
+	all: unset;
+    padding: 10px 20px;
+    margin-right: 10px;
+    border: none;
+    border-radius: 4px;
+    background-color: #c49b63;
+    color: #fff;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+input[type="text"], input[type="email"], input[type="password"], textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+textarea {
+    resize: vertical;
+}

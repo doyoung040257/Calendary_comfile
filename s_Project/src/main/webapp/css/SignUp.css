@@ -1,0 +1,118 @@
+
+body {
+    margin: 0;
+    /* height: 100vh;  ★★ 제거 또는 조정 (아래 .main-content-wrapper로 이동) */
+    /* display: flex;  ★★ 제거 */
+    /* justify-content: center; ★★ 제거 */
+    /* align-items: center; ★★ 제거 */
+    font-family: 'Arial', sans-serif;
+    background-color: #f7f3ef;
+    color: #333;
+}
+
+/* 기존 header.jsp 인라인 스타일 중 .main-content-wrapper 부분에 추가하거나,
+   login.css에 이 부분을 추가하세요! (아래처럼 login.css에 추가하는 게 깔끔)
+*/
+.main-content-wrapper {
+    /* header.jsp의 인라인 스타일 그대로 가져오고, flex 관련 속성 추가 */
+    min-height: calc(100vh - 60px); /* 화면 전체 높이 - (네비 높이 + 푸터 높이 예상치) */
+    padding: 20px;
+    box-sizing: border-box; /* 패딩이 높이에 포함되도록! */
+
+    /* ★★★★★ 이 부분이 핵심입니다! 이 div의 자식(로그인 폼)을 중앙에 배치! ★★★★★ */
+    display: flex;
+    justify-content: center; /* 가로 중앙 정렬 */
+    align-items: center; /* 세로 중앙 정렬 */
+    /* height: 100%; 또는 flex-grow: 1; 이 필요할 수 있음 */
+    /* min-height 속성이 이미 있어서 height: 100%; 는 굳이 없어도 됨 */
+}
+
+.signup-container { /* login-container를 signup-container로 변경 */
+    position: relative;
+    width: 380px; /* 회원가입 필드가 늘어날 수도 있으니 너비를 좀 키워줬어! */
+    padding: 40px 30px;
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 20px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1); /* 섀도우도 좀 더 연하게 바꿨어! */
+    text-align: center;
+    border: 1px solid rgba(0, 0, 0, 0.1); /* 테두리도 연하게! */
+}
+
+.avatar img {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    margin-top: -70px;
+    background-color: #f0f0f0; /* ✨ 아바타 배경도 밝게! */
+    padding: 15px;
+    filter: none; /* invert 필터를 제거해서 아이콘이 원래 색으로 보이게 해! */
+}
+
+.input-box {
+    position: relative;
+    margin: 20px 0;
+}
+
+.input-box .icon {
+    position: absolute;
+    top: 50%;
+    left: 10px;
+    transform: translateY(-50%);
+    color: #666; /* ✨ 아이콘 색도 어둡게! */
+    font-size: 16px;
+}
+
+.input-box input {
+    width: 80%;
+    padding: 10px 40px;
+    border: 1px solid #eee; /* ✨ 인풋 테두리 추가해서 구분을 줬어! */
+    outline: none;
+    border-radius: 8px;
+    background-color: #f8f8f8; /* ✨ 인풋 배경도 밝게! */
+    color: #333; /* ✨ 인풋 글자색도 어둡게! */
+    font-size: 14px;
+}
+
+.input-box input::placeholder {
+    color: #999; /* ✨ 플레이스홀더 색도 어둡게! */
+}
+
+.options {
+    display: flex;
+    justify-content: center; /* 회원가입은 가운데 정렬 */
+    align-items: center;
+    font-size: 12px;
+    color: #666; /* ✨ 옵션 글자색도 어둡게! */
+    margin-top: 20px; /* 위에 버튼이랑 여백을 좀 더 줬어! */
+}
+
+.options a {
+    color: #007bff; /* ✨ 링크는 파란색으로 바꾸면 더 눈에 잘 들어올 거야! */
+    text-decoration: none;
+}
+
+.options a:hover {
+    color: #0056b3; /* ✨ 호버 색도 어두운 파랑으로! */
+}
+
+.signup-btn { /* login-btn을 signup-btn으로 변경 */
+    width: 100%;
+    padding: 10px;
+    background-color: #007bff; /* ✨ 버튼 배경색은 포인트 컬러로! */
+    color: #ffffff; /* ✨ 버튼 글자색은 흰색! */
+    border: none;
+    border-radius: 20px;
+    margin-top: 20px;
+    cursor: pointer;
+    letter-spacing: 1px;
+    transition: 0.3s;
+}
+
+.signup-btn:hover {
+    background-color: #0056b3; /* ✨ 호버 시 좀 더 어둡게! */
+}
+
+.signup-btn:active {
+    transform: scale(0.98);
+    background-color: #004085; /* ✨ 클릭 시 더 어둡게! */
+}
